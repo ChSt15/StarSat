@@ -1,0 +1,31 @@
+To use with windows workspace:
+- Install git.
+- Unpack the WindowsPackage_DiscoveryBoard.zip.
+- Delete the STM32F4_RODOS_Template folder.
+- Open console inside the workspace folder.
+- Enter "git clone https://github.com/ChSt15/FloatSat" to clone the repository.
+
+
+Uploading your changes to the repository:
+- Open console inside the workspace folder.
+- Enter "git add ." to add all changes.
+- Enter "git commit -m "Your changes"" to commit your changes.
+- Enter "git push" to upload your changes to the repository.
+
+
+Downloading changes from the repository:
+- Open console inside the workspace folder.
+- Enter "git pull" to download the changes from the repository.
+
+
+Creating a new branch for testing without accidentally uploading it to the repository:
+- Open console inside the workspace folder.
+- Enter "git checkout -b "Your branch name"" to create a new branch.
+- Enter "git checkout "Your branch name"" to switch to your branch.
+
+
+Adding your changes to the main branch:
+- Open console inside the workspace folder.
+- Enter "git checkout main" to switch to the main branch.
+- Enter "git merge "Your branch name"" to merge your branch with the main branch.
+- Enter "git push" to upload your changes to the repository.
