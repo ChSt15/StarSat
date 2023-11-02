@@ -1,9 +1,32 @@
 To use with windows workspace:
 - Install git.
 - Unpack the WindowsPackage_DiscoveryBoard.zip.
+- Go into the workspace folder
 - Delete the STM32F4_RODOS_Template folder.
 - Open console inside the workspace folder.
-- Enter "git clone https://github.com/ChSt15/FloatSat" to clone the repository.
+- Enter following into console
+   - git init
+   - git remote add origin https://github.com/ChSt15/FloatSat
+   - git fetch origin
+   - git checkout -b main --track origin/main
+- Create a new branch for your changes.
+
+
+Creating a new branch for your changes:
+- Open console inside the workspace folder.
+- Enter "git checkout -b "Your branch name"" to create a new branch.
+- Enter "git checkout "Your branch name"" to switch to your branch.
+
+
+Adding your changes to the main branch:
+- Open console inside the workspace folder.
+- Go through the upload you changes to the repository steps.
+- Publish your branch to github "git push --set-upstream origin "Your branch name"".
+- Click on "Compare & pull request" for your branch.
+- Click on "Create pull request".
+- Enter a title and a description for your pull request.
+- Click on "Create pull request".
+- Wait for the pull request to be merged.
 
 
 Uploading your changes to the repository:
@@ -18,14 +41,12 @@ Downloading changes from the repository:
 - Enter "git pull" to download the changes from the repository.
 
 
-Creating a new branch for testing without accidentally uploading it to the repository:
-- Open console inside the workspace folder.
-- Enter "git checkout -b "Your branch name"" to create a new branch.
-- Enter "git checkout "Your branch name"" to switch to your branch.
-
-
-Adding your changes to the main branch:
+Update your branch with the main branch:
 - Open console inside the workspace folder.
 - Enter "git checkout main" to switch to the main branch.
-- Enter "git merge "Your branch name"" to merge your branch with the main branch.
+- Enter "git pull" to download the changes from the repository.
+- Enter "git checkout "Your branch name"" to switch to your branch.
+- Enter "git merge main" to merge the changes from the main branch into your branch.
 - Enter "git push" to upload your changes to the repository.
+
+
