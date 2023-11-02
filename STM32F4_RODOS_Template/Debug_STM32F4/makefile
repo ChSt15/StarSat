@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include hardware/subdir.mk
 -include subdir.mk
 -include objects.mk
 
@@ -55,7 +56,7 @@ all: STM32F4_RODOS_Template.elf secondary-outputs
 STM32F4_RODOS_Template.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g3 -T "D:\UniWuerzburg\WS2021\LURL\Eclipse 2019\Eclipse 2019\Workspace\rodos\src\bare-metal\stm32f4\scripts\stm32_flash.ld" -nostartfiles -nodefaultlibs -nostdlib -Xlinker --gc-sections -L"D:\UniWuerzburg\WS2021\LURL\Eclipse 2019\Eclipse 2019\Workspace\rodos\Debug_STM32F4" -L"D:\UniWuerzburg\WS2021\LURL\Eclipse 2019\Eclipse 2019\Workspace\support_libs\Debug_STM32F4" -Wl,-Map,"STM32F4_RODOS_Template.map" -o "STM32F4_RODOS_Template.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g3 -T "C:\WindowsPackage_DiscoveryBoard - Kopie\Workspace\rodos\src\bare-metal\stm32f4\scripts\stm32_flash.ld" -nostartfiles -nodefaultlibs -nostdlib -Xlinker --gc-sections -L"C:\WindowsPackage_DiscoveryBoard - Kopie\Workspace\rodos\Debug_STM32F4" -L"C:\WindowsPackage_DiscoveryBoard - Kopie\Workspace\support_libs\Debug_STM32F4" -Wl,-Map,"STM32F4_RODOS_Template.map" -o "STM32F4_RODOS_Template.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
