@@ -24,11 +24,15 @@ extern Topic<TimestampedData<IMUData>> imuDataTopic;
 /**
  * @brief The IMU class to contain all logic for initialising the IMU and reading data from it.
  */
-class IMU {
+class IMU : public Thread {
 private:
 
 
 public:
+
+	void init() override;
+
+	void run() override;
 
 
 };
@@ -39,3 +43,6 @@ public:
  * @note This is defined in imu.cpp
  */
 extern IMU imu;
+
+
+#endif
