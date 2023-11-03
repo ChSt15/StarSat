@@ -1,10 +1,14 @@
 #ifndef FLOATSAT_HARDWARE_IMU_HPP_
 #define FLOATSAT_HARDWARE_IMU_HPP_
 
+/**
+ * Include the headers ordered my how close they relate to this file.
+*/
+
 #include "rodos.h"
 #include "matlib.h"
 
-#include "../data_structs.hpp"
+#include "../timestamp.hpp"
 
 
 /**
