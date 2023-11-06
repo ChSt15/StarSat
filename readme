@@ -12,6 +12,19 @@ To use with windows workspace:
 - Create a new branch for youwdadwsdr changes.
 
 
+Working with git:
+- If working on a new subject (Feature, system class etc. anythign new), create a new branch for this.
+- Do not make any changes to other things during this time, especially if being worked on by someone else.
+- To work on something else temporarily, upload changes and then switch branch.
+- If finished and to move new feature to main branch, follow adding changes to main branch.
+
+
+Resolving conflicts:
+- Results from people making changes to the same thing or removing files you worked on.
+- Either accept our or their changes.
+- Do: git merge --strategy-option ours/theirs
+
+
 Creating a new branch for your changes:
 - Open console inside the workspace folder.
 - Enter "git checkout -b "Your branch name"" to create a new branch.
