@@ -10,7 +10,7 @@ Topic<TimestampedData<IMUData>> imuDataTopic(-1, "IMU Topic");
 
 void IMU::init() {
 
-	PRINTF("plswork");
+	PRINTF("plswork hduasgxhakjdgksk");
 }
 
 void IMU::run() {
