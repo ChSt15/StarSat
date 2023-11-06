@@ -62,7 +62,7 @@ hardware/imu.o: ../hardware/imu.cpp \
  C:\WindowsPackage_DiscoveryBoard\ -\ Kopie\Workspace\rodos\api/hal/hal_sharedmemory.h \
  C:\WindowsPackage_DiscoveryBoard\ -\ Kopie\Workspace\rodos\src\bare-metal-generic/scheduler.h \
  C:\WindowsPackage_DiscoveryBoard\ -\ Kopie\Workspace\support_libs/matlib.h \
- ../hardware/../data_structs.hpp ../hardware/imu.hpp
+ ../hardware/../timestamp.hpp ../hardware/imu.hpp
 
 C:\WindowsPackage_DiscoveryBoard\ -\ Kopie\Workspace\rodos\api/rodos.h:
 
@@ -190,6 +190,6 @@ C:\WindowsPackage_DiscoveryBoard\ -\ Kopie\Workspace\rodos\src\bare-metal-generi
 
 C:\WindowsPackage_DiscoveryBoard\ -\ Kopie\Workspace\support_libs/matlib.h:
 
-../hardware/../data_structs.hpp:
+../hardware/../timestamp.hpp:
 
 ../hardware/imu.hpp:
