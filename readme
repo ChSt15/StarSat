@@ -9,7 +9,13 @@ To use with windows workspace:
    - git remote add origin https://github.com/ChSt15/FloatSat
    - git fetch origin
    - git checkout -b main --track origin/main
-- Create a new branch for your changes.
+
+
+Working with git:
+- If working on a new subject (Feature, system class etc. anythign new), create a new branch for this.
+- Do not make any changes to other things during this time, especially if being worked on by someone else.
+- To work on something else temporarily, upload changes and then switch branch.
+- If finished and to move new feature to main branch, follow adding changes to main branch.
 
 
 Creating a new branch for your changes:
