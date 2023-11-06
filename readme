@@ -18,6 +18,12 @@ Working with git:
 - If finished and to move new feature to main branch, follow adding changes to main branch.
 
 
+Resolving conflicts:
+- Results from people making changes to the same thing or removing files you worked on.
+- Either accept our or their changes.
+- Do: git merge --strategy-option ours/theirs
+
+
 Creating a new branch for your changes:
 - Open console inside the workspace folder.
 - Enter "git checkout -b "Your branch name"" to create a new branch.
