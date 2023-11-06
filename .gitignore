@@ -1,4 +1,3 @@
-.metadata
-rodos
-STM32F4_Template
-support_libs
+*
+!readme
+!STM32F4_RODOS_Template
