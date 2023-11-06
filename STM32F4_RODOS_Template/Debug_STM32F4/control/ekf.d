@@ -1,4 +1,4 @@
-hardware/imu.o: ../hardware/imu.cpp \
+control/ekf.o: ../control/ekf.cpp \
  C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\rodos\api/rodos.h \
  C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\rodos\api/rodos-apis.h \
  C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\rodos\src\bare-metal-generic/hw_predefines.h \
@@ -62,7 +62,8 @@ hardware/imu.o: ../hardware/imu.cpp \
  C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\rodos\api/hal/hal_sharedmemory.h \
  C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\rodos\src\bare-metal-generic/scheduler.h \
  C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\support_libs/matlib.h \
- ../hardware/../timestamp.hpp ../hardware/imu.hpp
+ ../control/../timestamp.hpp ../control/ekf.hpp \
+ ../control/../hardware/imu.hpp ../control/../hardware/../timestamp.hpp
 
 C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\rodos\api/rodos.h:
 
@@ -190,6 +191,10 @@ C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\rodos\src\bare-metal-gener
 
 C:\Users\DerDax\Desktop\Rodos\Eclipse\ 2019\Workspace\support_libs/matlib.h:
 
-../hardware/../timestamp.hpp:
+../control/../timestamp.hpp:
 
-../hardware/imu.hpp:
+../control/ekf.hpp:
+
+../control/../hardware/imu.hpp:
+
+../control/../hardware/../timestamp.hpp:

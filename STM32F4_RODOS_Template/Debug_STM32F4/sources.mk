@@ -29,4 +29,5 @@ CPP_DEPS :=
 SUBDIRS := \
 control \
 hardware \
+. \
 
