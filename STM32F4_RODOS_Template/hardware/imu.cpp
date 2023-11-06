@@ -8,12 +8,9 @@
 /// @brief definition of the global IMU data topic.
 Topic<TimestampedData<IMUData>> imuDataTopic(-1, "IMU Topic");
 
-
-
 void IMU::init() {
 
 	PRINTF("plswork");
-
 }
 
 void IMU::run() {
