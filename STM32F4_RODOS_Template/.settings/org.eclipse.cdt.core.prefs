@@ -1,6 +1,0 @@
-eclipse.preferences.version=1
-environment/project/ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.12578087/PATH/delimiter=;
-environment/project/ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.12578087/PATH/operation=replace
-environment/project/ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.12578087/PATH/value=${workspace_loc}\\..\\GNU Tools ARM Embedded\\bin;${PATH}
-environment/project/ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.12578087/append=true
-environment/project/ilg.gnuarmeclipse.managedbuild.cross.config.elf.debug.12578087/appendContributed=true
