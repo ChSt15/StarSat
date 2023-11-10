@@ -21,10 +21,6 @@ struct IMUData {
 };
 
 
-/// @brief definition of the global IMU data topic.
-extern Topic<TimestampedData<IMUData>> imuDataTopic;
-
-
 /**
  * @brief The IMU class to contain all logic for initialising the IMU and reading data from it.
  */
@@ -33,6 +29,9 @@ private:
 
 
 public:
+
+	/// @brief definition of the global IMU data topic.
+	Topic<TimestampedData<IMUData>> imuDataTopic;
 
 	void init() override;
 
