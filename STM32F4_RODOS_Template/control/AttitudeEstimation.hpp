@@ -21,7 +21,7 @@ public:
 	// @param gyro -> angluarvelocity vector in rad/s
 	// @param mag -> magneticfieldstrength vector in gauss
 	// @param accel -> linearacceleration vector in g
-	// @return normalized qouaternion
+	// @return normalized quaternion
 	Quaternion estimate(Vector3D gyro, Vector3D mag, Vector3D accel);
 
 private:

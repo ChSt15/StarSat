@@ -17,7 +17,7 @@ struct IMU_Calib
     Vector3D gyroOffset;        // [rad/s]
     Vector3D accelOffset;       // [g]
     Vector3D magMin;            // [gauss]
-    Vector3D magMax;           // [gauss]
+    Vector3D magMax;            // [gauss]
 };
 
 
