@@ -4,22 +4,23 @@
 #define LSM9DS1_XLG_ADDR 0x6B
 
 
-IMU::IMU()
+IMU::IMU(RODOS::I2C_IDX i2c):
+	i2c(i2c)
 {
 
 }
 
-IMU_Data IMU::getData()
+TimestampedData<IMUData> IMU::getData()
 {
 	return this->data;
 }
 
-IMU_Calib IMU::getCalib()
+IMUCalib IMU::getCalib()
 {
 	return this->calib;
 }
 
-void IMU::setCalib(IMU_Calib calib)
+void IMU::setCalib(IMUCalib calib)
 {
 
 }
