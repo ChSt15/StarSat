@@ -6,17 +6,17 @@ AngularPositionControl::AngularPositionControl()
 
 }
 
-void AngularPositionControl::setParams(PositionControlParams params)
+void AngularPositionControl::setParams(const PositionControlParams& params)
 {
-
+    controlParams = params;
 }
 
-PositionControlParams AngularPositionControl::getParams()
+const PositionControlParams& AngularPositionControl::getParams()
 {
-
+    return controlParams;
 }
 
-void AngularPositionControl::setDisiredAngle(float angle_set)
+void AngularPositionControl::setDesiredAngle(float angle_set)
 {
 
 }

@@ -6,19 +6,19 @@ AngularVelocityControl::AngularVelocityControl()
 
 }
 
-void AngularVelocityControl::setParams(VelocityControlParams params)
+void AngularVelocityControl::setParams(const VelocityControlParams& params)
 {
-
+    controlParams = params;
 }
 
-VelocityControlParams AngularVelocityControl::getParams()
+const VelocityControlParams& AngularVelocityControl::getParams()
 {
-
+    return controlParams;
 }
 
-void AngularVelocityControl::setDisiredAngularVelocity(float w_set)
+void AngularVelocityControl::setDesiredAngularVelocity(float w_set)
 {
-
+    
 }
 
 float AngularVelocityControl::getSpeed(float w_mes)

@@ -5,14 +5,20 @@
 
 struct PositionControlParams
 {
-	float P;
-	float I;
-	float D;
+	float P = 0;
+	float I = 0;
+	float D = 0;
+	float limit = 2*3.14; /// @brief limit for output in range -limit to limit in rad
 };
 
 
 class AngularPositionControl
 {
+private:
+
+	float desiredAngle;
+
+	PositionControlParams controlParams;
 
 public:
 
@@ -20,26 +26,21 @@ public:
 
 	// @brief Sets Controlparameters
 	// @params Controlparameter defined in AngularPositionControl.hpp
-	void setParams(PositionControlParams params);
+	void setParams(const PositionControlParams& params);
 
 	// @brief Gets Controlparameters
 	// @return Controlparameter defined in AngularPositionControl.hpp
-	PositionControlParams getParams();
+	const PositionControlParams& getParams();
 
-	// @brief Sets disired angle of satellite (Controler Input)
+	// @brief Sets desired angle of satellite (Controler Input)
 	// @param angle_set -> disired angle [rad]
-	void setDisiredAngle(float angle_set);
+	void setDesiredAngle(float angle_set);
 
 	// @brief Gets the Speed for reactionwheel (Controler Output)
 	// @param angle_mes -> measured angle of satellite [rad]
 	// @return reactionwheel speed [RPM]
 	float getSpeed(float angle_mes);
 
-private:
-
-	float disiredAngle;
-
-	PositionControlParams controlParams;
 };
 
 

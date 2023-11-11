@@ -6,24 +6,24 @@ ReactionwheelControl::ReactionwheelControl()
 
 }
 
-void ReactionwheelControl::setParams(ReactionwheelControlParams params)
+void ReactionwheelControl::setParams(const ReactionwheelControlParams& params)
 {
 
 }
 
-ReactionwheelControlParams ReactionwheelControl::getParams()
+const ReactionwheelControlParams& ReactionwheelControl::getParams()
 {
 
 }
 
-void ReactionwheelControl::setDisiredSpeed(float v_set)
+void ReactionwheelControl::setDesiredSpeed(float w_set)
 {
 
 }
 
-float ReactionwheelControl::getVoltage(float v_mes)
+float ReactionwheelControl::update(float w_mes)
 {
 
 }
 
-ReactionwheelControl reacwheelcontrol;
+ReactionwheelControl reactionwheelControl;

@@ -5,13 +5,20 @@
 
 struct ReactionwheelControlParams
 {
-	float P;
-	float I;
+	float P = 0;
+	float I = 0;
+	float D = 0;
+	float limit = 1; /// @brief limit for output in range -limit to limit
 };
 
 
 class ReactionwheelControl
 {
+private:
+
+	float desiredSpeed;
+
+	ReactionwheelControlParams controlParams;
 
 public:
 
@@ -19,29 +26,24 @@ public:
 
 	// @brief Sets Controlparameters
 	// @params Controlparameter defined in ReactionwheelControl.hpp
-	void setParams(ReactionwheelControlParams params);
+	void setParams(const ReactionwheelControlParams& params);
 
 	// @brief Gets Controlparameters
 	// @return Controlparameter defined in ReactionwheelControl.hpp
-	ReactionwheelControlParams getParams();
+	const ReactionwheelControlParams& getParams();
 
-	// @brief Sets disired Speed for reactionwheel (Controler Input)
-	// @param v_set -> disired reactionwheel speed [RPM]
-	void setDisiredSpeed(float v_set);
+	// @brief Sets desired Speed for reactionwheel (Controler Input)
+	// @param w_set -> disired reactionwheel speed [RPM]
+	void setDesiredSpeed(float w_set);
 
-	// @brief Gets the Voltage for reactionwheel (Controler Output)
-	// @param v_mes -> measured reactionwheel speed [RPM]
-	// @return voltage in V 
-	float getVoltage(float v_mes);
+	// @brief Calculates the Power output for reactionwheel (Controller Output)
+	// @param rpmMeas -> measured reactionwheel speed [RPM]
+	// @return output for power in range of -1 to 1
+	float update(float w_mes);
 
-private:
-
-	float disiredSpeed;
-
-	ReactionwheelControlParams controlParams;
 };
 
 
-extern ReactionwheelControl reacwheelcontrol;
+extern ReactionwheelControl reactionwheelControl;
 
 #endif
