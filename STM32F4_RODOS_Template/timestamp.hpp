@@ -1,5 +1,5 @@
-#ifndef FLOATSAT_TIMESTAMP_
-#define FLOATSAT_TIMESTAMP_
+#ifndef FLOATSAT_TIMESTAMP_HPP
+#define FLOATSAT_TIMESTAMP_HPP
 
 
 /**
@@ -7,6 +7,7 @@
  */
 template <typename T>
 struct TimestampedData {
+    /// @brief Timestamp in nanoseconds
     int64_t timestamp;
     T data;
 };
