@@ -6,15 +6,14 @@ QEKF::QEKF()
 
 }
 
-void QEKF::init(Vector3D mag, Vector3D accel)
+void QEKF::init(IMU_Data imudata)
 {
 
 }
 
-Quaternion QEKF::estimate(Vector3D gyro, Vector3D mag, Vector3D accel)
+Attitude_Data QEKF::estimate(IMU_Data imudata)
 {
-	// added just so compiler is happy
-	return Quaternion();
+
 }
 
 void QEKF::propagate(Vector3D gyro)
