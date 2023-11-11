@@ -1,51 +1,77 @@
 #ifndef FLOATSAT_HARDWARE_IMU_HPP_
 #define FLOATSAT_HARDWARE_IMU_HPP_
 
-/**
- * Include the headers ordered my how close they relate to this file.
-*/
-
 #include "rodos.h"
 #include "matlib.h"
 
-#include "../timestamp.hpp"
+struct IMU_Data 
+{
+    Vector3D angularVelocity;   // [rad/s]
+    Vector3D magneticField;     // [gauss]
+    Vector3D acceleration;      // [g]
+    float temperature;          // [°C]
+};
 
-
-/**
- * @brief Struct to contain the data from the IMU
- */
-struct IMUData {
-    Vector3D acceleration;
-    Vector3D angularVelocity;
-    Vector3D magneticField;
+struct IMU_Calib
+{
+    Vector3D gyroOffset;        // [rad/s]
+    Vector3D accelOffset;       // [g]
+    Vector3D magMin;            // [gauss]
+    Vector3D mag_Max;           // [gauss]
 };
 
 
-/**
- * @brief The IMU class to contain all logic for initialising the IMU and reading data from it.
- */
-class IMU : public Thread {
-private:
-
+class IMU
+{
 
 public:
 
-	/// @brief definition of the global IMU data topic.
-	Topic<TimestampedData<IMUData>> imuDataTopic;
+    IMU();
 
-	void init() override;
+    // @brief Get IMU data
+    // @return IMU data struct defined in imu.cpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g] and temperature [°C])
+    IMU_Data getData();
 
-	void run() override;
+    // @brief Get IMU calibration data
+    // @return IMU calibration struct defined in imu.cpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
+    IMU_Calib getCalib();
 
+    // @brif Sets IMU Calibration Parameters
+    // @param calib -> IMU calibration struct defined in imu.cpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
+    void setCalib(IMU_Calib calib);
 
+private:
+
+    // @brief Checks I2C Enable Pins (if connected), just for initial Testing/Debugging
+    void Check_I2C_Enable();
+    // @brief Checks the WHO_AM_I registers to confirm sensor adress is correct, just for initial Testing/Debugging
+    void Check_WHOAMI();
+
+    // @brief Initializes gyro
+    void gyroInit();
+    // @brief Reads gyro and saves to class varriable "data" (we can make it return the date aswell)
+    void gyroRead();
+
+    // @brief Initializes accelerometer
+    void accelInit();
+    // @brief Reads accelerometer and saves to class varriable "data" (we can make it return the date aswell)
+    void accelRead();
+
+    // @brief Initializes magnetometer
+    void magInit();
+    // @brief Reads magnetometer and saves to class varriable "data" (we can make it return the date aswell)
+    void magRead();
+
+    // @brief Reads Gyro and saves to class varriable "data" (we can make it return the date aswell)
+    void TempRead();
+
+    IMU_Data data;
+    IMU_Calib calib;
+
+    //HAL_I2C i2c;
 };
 
 
-/**
- * @brief The global IMU object. To be used by other applications.
- * @note This is defined in imu.cpp
- */
 extern IMU imu;
-
 
 #endif

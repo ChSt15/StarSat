@@ -10,16 +10,32 @@ class QEKF
 
 public:
 
-	QEKF(float std_gyro, float std_mag, float std_accel);
-	void init(Vector3D gyro, Vector3D mag, Vector3D accel);
+	QEKF();
+
+	// @brief Calculation of initial orientation
+	// @param mag -> magneticfieldstrength vector in gauss
+	// @param accel -> linearacceleration vector in g
+	void init(Vector3D mag, Vector3D accel);
+
+	// @brief Orientation estimation
+	// @param gyro -> angluarvelocity vector in rad/s
+	// @param mag -> magneticfieldstrength vector in gauss
+	// @param accel -> linearacceleration vector in g
+	// @return normalized qouaternion
 	Quaternion estimate(Vector3D gyro, Vector3D mag, Vector3D accel);
 
 private:
 
+	// @brief Propagation step using only gyro
+	// @param gyro -> angluarvelocity vector in rad/s
 	void propagate(Vector3D gyro);
+
+	// @brief Update step using magnetometer and accelerometer
+	// @param mag -> magneticfieldstrength vector in gauss
+	// @param accel -> linearacceleration vector in g
 	void update(Vector3D mag, Vector3D accel);
 
-	//TODO: define all Matrices/vectors used
+	// TODO: define all Matrices/vectors used
 };
 
 

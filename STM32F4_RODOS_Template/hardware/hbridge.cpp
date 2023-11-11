@@ -1,7 +1,7 @@
 #include "hbridge.hpp"
 
 
-HBridge::HBridge(int frequency, int increments, PWM_IDX pwm1_id, PWM_IDX pwm2_id)
+HBridge::HBridge()
 {
 
 }
