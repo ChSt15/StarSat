@@ -15,12 +15,14 @@ struct IMUData
     float temperature;          // [�C]
 };
 
+/**
+ * @brief Calibration data for an imu sensor (e.g. magnetometer, accel, gyro)
+ * @note This is a generic struct. Each sensor is calibrated using: y = scale * (x - bias). For gyro and accel, scale is probably identity matrix.
+*/
 struct IMUCalib
 {
-    Vector3D gyroOffset;        // [rad/s]
-    Vector3D accelOffset;       // [g]
-    Vector3D magOffset;         // [gauss] Is for hard iron calibration. Calibration: B = magScale*(B_raw - magOffset)
-    Matrix3D magScale;          // [gauss] Is for soft iron calibration, could theoretically deal with axis misalignment aswell. Calibration: B = magScale*(B_raw - magOffset)
+    Vector3D bias;       // Bias of sensor. E.g. for magnetometer this is the soft iron offset.
+    Matrix3D scale;      // Scale of sensor. E.g. for magnetometer this is the hard iron offset. Also deals with non-orthogonality.
 };
 
 
@@ -28,8 +30,14 @@ class IMU
 {
 private:
 
-    TimestampedData<IMUData> data;
-    IMUCalib calib;
+    /// @brief Data from IMU with calibration
+    TimestampedData<IMUData> dataCalibrated;
+    /// @brief Data from IMU without calibration
+    TimestampedData<IMUData> dataRaw;
+
+    IMUCalib gyroCalib;
+    IMUCalib accelCalib;
+    IMUCalib magCalib;
 
     HAL_I2C i2c;
 
@@ -42,17 +50,34 @@ public:
     */
     IMU(RODOS::I2C_IDX i2c);
 
-    /// @brief Get IMU data
+    /// @brief Get IMU data. Used by the attitude estimation.
     /// @return Timestamped IMU data struct defined in imu.hpp. Timestamp is of time of reading.
     TimestampedData<IMUData> getData();
 
-    /// @brief Get IMU calibration data
-    /// @return IMU calibration struct defined in imu.hpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
-    IMUCalib getCalib();
+    /// @brief Gets the uncalibrated IMU data. Used by the calibration routine.
+    /// @return Timestamped IMU data struct defined in imu.hpp. Timestamp is of time of reading.
+    TimestampedData<IMUData> getDataRaw();
 
-    /// @brif Sets IMU Calibration Parameters
-    /// @param calib -> IMU calibration struct defined in imu.hpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
-    void setCalib(IMUCalib calib);
+    /// @brief Set the Gyro calibration values
+    /// @param calib 
+    void setGyroCalib(const IMUCalib& calib);
+
+    /// @brief Get the Gyro calibration values
+    const IMUCalib& getGyroCalib();
+
+    /// @brief Set the Accel calibration values
+    /// @param calib
+    void setAccelCalib(const IMUCalib& calib);
+
+    /// @brief Get the Accel calibration values
+    const IMUCalib& getAccelCalib();
+
+    /// @brief Set the Mag calibration values
+    /// @param calib
+    void setMagCalib(const IMUCalib& calib);
+
+    /// @brief Get the Mag calibration values
+    const IMUCalib& getMagCalib();
 
 private:
 

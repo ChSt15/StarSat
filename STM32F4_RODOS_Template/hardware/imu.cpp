@@ -12,17 +12,42 @@ IMU::IMU(RODOS::I2C_IDX i2c):
 
 TimestampedData<IMUData> IMU::getData()
 {
-	return this->data;
+	return this->dataCalibrated;
 }
 
-IMUCalib IMU::getCalib()
+TimestampedData<IMUData> IMU::getDataRaw()
 {
-	return this->calib;
+	return this->dataRaw;
 }
 
-void IMU::setCalib(IMUCalib calib)
+void IMU::setGyroCalib(const IMUCalib& calib)
 {
 
+}
+
+const IMUCalib& IMU::getGyroCalib()
+{
+	return this->gyroCalib;
+}
+
+void IMU::setAccelCalib(const IMUCalib& calib)
+{
+
+}
+
+const IMUCalib& IMU::getAccelCalib()
+{
+	return this->accelCalib;
+}
+
+void IMU::setMagCalib(const IMUCalib& calib)
+{
+
+}
+
+const IMUCalib& IMU::getMagCalib()
+{
+	return this->magCalib;
 }
 
 void IMU::Check_I2C_Enable()
