@@ -1,5 +1,5 @@
-#ifndef FLOATSAT_HARDWARE_REACTIONWHEELCONTROL_HPP_
-#define FLOATSAT_HARDWARE_REACTIONWHEELCONTROL_HPP_
+#ifndef FLOATSAT_CONTROL_REACTIONWHEELCONTROL_HPP_
+#define FLOATSAT_CONTROL_REACTIONWHEELCONTROL_HPP_
 
 #include "rodos.h"
 
@@ -25,12 +25,12 @@ public:
 	// @return Controlparameter defined in ReactionwheelControl.hpp
 	ReactionwheelControlParams getParams();
 
-	// @brief Sets disired Velocity for reactionwheel (Controler Input)
+	// @brief Sets disired Speed for reactionwheel (Controler Input)
 	// @param v_set -> disired reactionwheel speed [RPM]
-	void setDisiredVelocity(float v_set);
+	void setDisiredSpeed(float v_set);
 
 	// @brief Gets the Voltage for reactionwheel (Controler Output)
-	// @param v_set -> measured reactionwheel speed [RPM]
+	// @param v_mes -> measured reactionwheel speed [RPM]
 	// @return voltage in V 
 	float getVoltage(float v_mes);
 

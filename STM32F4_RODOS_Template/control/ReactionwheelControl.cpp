@@ -16,7 +16,7 @@ ReactionwheelControlParams ReactionwheelControl::getParams()
 
 }
 
-void ReactionwheelControl::setDisiredVelocity(float v_set)
+void ReactionwheelControl::setDisiredSpeed(float v_set)
 {
 
 }
