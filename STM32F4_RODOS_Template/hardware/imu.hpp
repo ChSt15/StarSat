@@ -17,7 +17,7 @@ struct IMU_Calib
     Vector3D gyroOffset;        // [rad/s]
     Vector3D accelOffset;       // [g]
     Vector3D magMin;            // [gauss]
-    Vector3D mag_Max;           // [gauss]
+    Vector3D magMax;           // [gauss]
 };
 
 
@@ -68,6 +68,7 @@ private:
     IMU_Data data;
     IMU_Calib calib;
 
+    //// compiler complains if defined without decleration
     //HAL_I2C i2c;
 };
 
