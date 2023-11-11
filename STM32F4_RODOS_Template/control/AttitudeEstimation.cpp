@@ -1,3 +1,9 @@
+#include "rodos.h"
+#include "matlib.h"
+
+#include "../timestamp.hpp"
+#include "../hardware/imu.hpp"
+
 #include "AttitudeEstimation.hpp"
 
 
@@ -6,12 +12,12 @@ QEKF::QEKF()
 
 }
 
-void QEKF::init(IMU_Data imudata)
+void QEKF::init(const IMUData& imudata)
 {
 
 }
 
-Attitude_Data QEKF::estimate(IMU_Data imudata)
+const TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& imudata)
 {
 
 }

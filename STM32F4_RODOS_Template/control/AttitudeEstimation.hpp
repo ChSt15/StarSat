@@ -4,6 +4,7 @@
 #include "rodos.h"
 #include "matlib.h"
 
+#include "../timestamp.hpp"
 #include "../hardware/imu.hpp"
 
 struct Attitude_Data 
@@ -15,19 +16,23 @@ struct Attitude_Data
 
 class QEKF
 {
+private:
+
+	// TODO: define all Matrices/vectors used
 
 public:
+
 
 	QEKF();
 
 	// @brief Calculation of initial orientation
 	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
-	void init(IMU_Data imudata);
+	void init(const IMUData& imudata);
 
 	// @brief Orientation estimation
-	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
-	// @return Attitude data defined in AttitudeEstimation.hpp (normalized quaternion and angluarVelocity [rad/s])
-	Attitude_Data estimate(IMU_Data imudata);
+	// @param imudata -> IMU data struct defined in imu.hpp with timestamp of measurement.
+	// @return Attitude data defined in AttitudeEstimation.hpp with timestamp of estimation.
+	const TimestampedData<Attitude_Data>& estimate(const TimestampedData<IMUData>& imudata);
 
 private:
 
@@ -40,7 +45,6 @@ private:
 	// @param accel -> linearacceleration vector in g
 	void update(Vector3D mag, Vector3D accel);
 
-	// TODO: define all Matrices/vectors used
 };
 
 
