@@ -9,7 +9,7 @@ To use with windows workspace:
    - git remote add origin https://github.com/ChSt15/FloatSat
    - git fetch origin
    - git checkout -b main --track origin/main
-- Create a new branch for youwdadwsdr changes.
+- Create a new branch for you changes.
 
 
 Working with git:
