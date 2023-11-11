@@ -3,22 +3,29 @@
 
 #include "rodos.h"
 
+
 class HBridge
 {
 
 public:
 
-	HBridge(int frequency, int increments, PWM_IDX pwm1_id, PWM_IDX pwm2_id);
+	HBridge();
+
+	// @brief Sets voltage of HBridge for reactionwheel
+	// @param voltage -> voltage in V (in range of -5V and +5V)
 	void setVoltage(float voltage);
 
 private:
 
-	HAL_PWM pwm1;
-	HAL_PWM pwm2;
+	// compiler complains if defined without decleration
+	//HAL_PWM pwm1;
+	//HAL_PWM pwm2;
 
-	int pwm_frequency;
-	int pwm_increments;
+	// i think these were recommended, change if i am wrong - max
+	int pwm_frequency = 5000;
+	int pwm_increments = 1000;
 };
+
 
 extern HBridge hbridge;
 
