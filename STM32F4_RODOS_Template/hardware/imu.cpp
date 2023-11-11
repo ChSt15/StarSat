@@ -1,33 +1,74 @@
-#include "rodos.h"
-#include "matlib.h"
-
-#include "../timestamp.hpp"
 #include "imu.hpp"
 
+#define LSM9DS1_M_ADDR 0x1E
+#define LSM9DS1_XLG_ADDR 0x6B
 
-/// @brief definition of the global IMU data topic.
-Topic<TimestampedData<IMUData>> imuDataTopic(-1, "IMU Topic");
 
-void IMU::init() {
-
-	PRINTF("plswork hduasgxhakjdgksk");
-}
-
-void IMU::run() {
-
-	while(1) {
-
-		PRINTF("IMU Thread!");
-
-		suspendCallerUntil(NOW() + 1*SECONDS);
-
-	}
+IMU::IMU(RODOS::I2C_IDX i2c):
+	i2c(i2c)
+{
 
 }
 
+TimestampedData<IMUData> IMU::getData()
+{
+	return this->data;
+}
 
-/**
- * @brief The global IMU object. To be used by other applications.
- * @note This is defined in imu.cpp
- */
+IMUCalib IMU::getCalib()
+{
+	return this->calib;
+}
+
+void IMU::setCalib(IMUCalib calib)
+{
+
+}
+
+void IMU::Check_I2C_Enable()
+{
+
+}
+
+void IMU::Check_WHOAMI()
+{
+
+}
+
+void IMU::gyroInit()
+{
+
+}
+
+void IMU::gyroRead()
+{
+
+}
+
+void IMU::accelInit()
+{
+
+}
+
+void IMU::accelRead()
+{
+
+}
+
+void IMU::magInit()
+{
+
+}
+
+void IMU::magRead()
+{
+
+}
+
+void IMU::TempRead()
+{
+
+}
+
+
 IMU imu;
