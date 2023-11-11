@@ -29,15 +29,15 @@ public:
     IMU();
 
     // @brief Get IMU data
-    // @return IMU data struct defined in imu.cpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g] and temperature [°C])
+    // @return IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g] and temperature [°C])
     IMU_Data getData();
 
     // @brief Get IMU calibration data
-    // @return IMU calibration struct defined in imu.cpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
+    // @return IMU calibration struct defined in imu.hpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
     IMU_Calib getCalib();
 
     // @brif Sets IMU Calibration Parameters
-    // @param calib -> IMU calibration struct defined in imu.cpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
+    // @param calib -> IMU calibration struct defined in imu.hpp (angularVelocityOffset [rad/s], magneticFieldMin/Max [gauss], accelerationOffset [g])
     void setCalib(IMU_Calib calib);
 
 private:

@@ -6,6 +6,13 @@
 
 #include "../hardware/imu.hpp"
 
+struct Attitude_Data 
+{
+	Quaternion attitude;
+	Vector3D angularVelocity;
+};
+
+
 class QEKF
 {
 
@@ -14,13 +21,13 @@ public:
 	QEKF();
 
 	// @brief Calculation of initial orientation
-	// @param imudata -> IMU data struct defined in imu.cpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
+	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
 	void init(IMU_Data imudata);
 
 	// @brief Orientation estimation
-	// @param imudata -> IMU data struct defined in imu.cpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
-	// @return normalized quaternion
-	Quaternion estimate(IMU_Data imudata);
+	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
+	// @return Attitude data defined in AttitudeEstimation.hpp (normalized quaternion and angluarVeöpcity [rad/s])
+	Attitude_Data estimate(IMU_Data imudata);
 
 private:
 
