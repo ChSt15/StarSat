@@ -4,6 +4,7 @@
 #include "rodos.h"
 #include "matlib.h"
 
+#include "../hardware/imu.hpp"
 
 class QEKF
 {
@@ -13,16 +14,13 @@ public:
 	QEKF();
 
 	// @brief Calculation of initial orientation
-	// @param mag -> magneticfieldstrength vector in gauss
-	// @param accel -> linearacceleration vector in g
-	void init(Vector3D mag, Vector3D accel);
+	// @param imudata -> IMU data struct defined in imu.cpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
+	void init(IMU_Data imudata);
 
 	// @brief Orientation estimation
-	// @param gyro -> angluarvelocity vector in rad/s
-	// @param mag -> magneticfieldstrength vector in gauss
-	// @param accel -> linearacceleration vector in g
+	// @param imudata -> IMU data struct defined in imu.cpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
 	// @return normalized quaternion
-	Quaternion estimate(Vector3D gyro, Vector3D mag, Vector3D accel);
+	Quaternion estimate(IMU_Data imudata);
 
 private:
 
