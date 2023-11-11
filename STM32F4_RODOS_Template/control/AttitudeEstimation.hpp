@@ -26,7 +26,7 @@ public:
 
 	// @brief Orientation estimation
 	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
-	// @return Attitude data defined in AttitudeEstimation.hpp (normalized quaternion and angluarVeöpcity [rad/s])
+	// @return Attitude data defined in AttitudeEstimation.hpp (normalized quaternion and angluarVelocity [rad/s])
 	Attitude_Data estimate(IMU_Data imudata);
 
 private:
