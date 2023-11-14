@@ -20,6 +20,9 @@ private:
 
 	// TODO: define all Matrices/vectors used
 
+	// State
+	Quaternion X;
+
 public:
 
 
