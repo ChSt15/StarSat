@@ -9,6 +9,12 @@
 
 QEKF::QEKF()
 {
+	P = P.invert();
+	P.determinant();
+	P = P;
+	P = P + P;
+	P = P * P;
+	c = a * b;
 
 }
 

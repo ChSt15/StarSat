@@ -3,6 +3,7 @@
 
 #include "rodos.h"
 #include "matlib.h"
+#include "math.h"
 
 #include "../timestamp.hpp"
 #include "../hardware/imu.hpp"
@@ -23,8 +24,11 @@ private:
 	// State
 	Quaternion X;
 
-	Matrix_F <4, 4> P;
-
+	Matrix_F<4,4> P;
+	Matrix_F<5,2> a;
+	Matrix_F<2,6> b;
+	Matrix_F<5,6> c;
+	Matrix3D test;
 
 public:
 
