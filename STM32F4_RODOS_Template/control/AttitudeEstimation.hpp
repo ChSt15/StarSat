@@ -23,6 +23,9 @@ private:
 	// State
 	Quaternion X;
 
+	Matrix_F <4, 4> P;
+
+
 public:
 
 

@@ -24,12 +24,12 @@ void QEKF::init(const IMUData& imudata)
 	double yaw = atan2(magy_h, magx_h);
 
 	// Convert to quaternion
-	this->X = RPY(roll, pitch, yaw).toQuaternion();
+	this->X = YPR(yaw, pitch, roll).toQuaternion();
 }
 
 const TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& imudata)
 {
-
+	
 }
 
 void QEKF::propagate(Vector3D gyro)
