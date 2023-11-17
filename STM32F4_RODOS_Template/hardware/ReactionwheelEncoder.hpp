@@ -3,6 +3,11 @@
 
 #include "rodos.h"
 
+/**
+ * @notes!!!!!!!!!!!!!!!!!1 
+ * - Check the class consts. They are only temporary values!
+*/
+
 
 // i think we will get a template for this, so this is just a minimal overview
 class ReactionwheelEncoder
@@ -10,10 +15,12 @@ class ReactionwheelEncoder
 
 public:
 
-	ReactionwheelEncoder();
+	static constexpr float REACTIONWHEEL_ENCODER_RESOLUTION = 1; // Number of counts per revolution
+
+	ReactionwheelEncoder(RODOS::GPIO_PIN inA = RODOS::GPIO_000, RODOS::GPIO_PIN inB = RODOS::GPIO_000);
 
 	// @brief Gets speed of reactionwheel
-	// @return reactionwheel speed [RPM]
+	// @return reactionwheel speed RAD/s
 	float getSpeed();
 
 private:

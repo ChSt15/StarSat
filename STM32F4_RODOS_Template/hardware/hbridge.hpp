@@ -24,7 +24,7 @@ public:
 	 * @param pwm1 PWM output connected to the HBridge pin 1
 	 * @param pwm2 PWM output connected to the HBridge pin 2
 	*/
-	HBridge(RODOS::PWM_IDX pwm1, RODOS::PWM_IDX pwm2);
+	HBridge(RODOS::PWM_IDX pwm1 = RODOS::PWM_IDX00, RODOS::PWM_IDX pwm2 = RODOS::PWM_IDX01);
 
 	/**
 	 * @brief Set the power of the HBridge

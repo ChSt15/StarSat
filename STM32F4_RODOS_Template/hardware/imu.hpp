@@ -40,7 +40,7 @@ public:
      * @param i2c I2C bus to which the IMU is connected
      * @note Might need to add params for the I2C pins
     */
-    IMU(RODOS::I2C_IDX i2c);
+    IMU(RODOS::I2C_IDX i2c = RODOS::I2C_IDX1);
 
     /// @brief Get IMU data
     /// @return Timestamped IMU data struct defined in imu.hpp. Timestamp is of time of reading.

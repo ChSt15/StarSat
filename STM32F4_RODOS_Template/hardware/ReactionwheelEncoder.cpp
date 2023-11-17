@@ -1,7 +1,7 @@
 #include "ReactionwheelEncoder.hpp"
 
 
-ReactionwheelEncoder::ReactionwheelEncoder()
+ReactionwheelEncoder::ReactionwheelEncoder(RODOS::GPIO_PIN inA, RODOS::GPIO_PIN inB)
 {
 
 }
