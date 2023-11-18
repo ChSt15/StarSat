@@ -18,48 +18,69 @@ extern Topic<TimestampedData<Attitude_Data>> AttitudeDataTopic;
 
 class QEKF
 {
-private:
+public:
 
-	// TODO: define all Matrices/vectors used
+	bool is_initialized = false;
+
+private:
 
 	// State
 	Vector_F<4> X;
-	// Covariance
+	// Covariance of state
 	Matrix_F<4, 4> P;
 
-	//--------Prediction
+	//-------- Prediction ----------//
+	// Jakobians of prediction
 	Matrix_F<4, 4> A;
 	Matrix_F<4, 3> G;
+	// Covariance of process noise
 	Matrix_F<3, 3> Q;
 
-	//--------Correction (accel)
+	//--------Correction (accel) ----------//
+	// Gain
 	Matrix_F<4, 3> K_a;
+	// Jakobian of mesurment prediction
 	Matrix_F<3, 4> C_a;
+	// Covariance innovation
 	Matrix_F<3, 3> S_a;
+	// Covariance of measurment noise
 	Matrix_F<3, 3> R_a;
+	// Measurment inovation
 	Vector_F<3> v_a;
+	// Measurment prediction
 	Vector_F<3> z_a;
 
-	//--------Correction (mag)
+	//--------Correction (mag) ----------//
+	// Gain
 	Matrix_F<4, 1> K_m;
+	// Jakobian of mesurment prediction
 	Matrix_F<1, 4> C_m;
+	// Covariance innovation
 	Matrix_F<1, 1> S_m;
+	// Covariance of measurment noise
 	Matrix_F<1, 1> R_m;
+	//Measurment inovation
 	float v_yaw;
+	// Measurment prediction
 	float z_yaw;
+	// Measurment
 	float y_yaw;
-
+	// Helper rotaions
 	Matrix_F<3, 3> body2nav;
 	Matrix_F<3, 3> nav2body;
 
 	// Last timestamp
 	float last_t;
 
+	// Attitude data
 	TimestampedData <Attitude_Data> data;
 
-public:
+	// std of sensors
+	Vector3D_F sigma_gyro = 1;
+	Vector3D_F sigma_accel = 1;
+	float sigma_yaw = 1;
 
-	bool is_initialized = false;
+public:
 
 	QEKF();
 

@@ -9,6 +9,7 @@
 
 Topic<TimestampedData<Attitude_Data>> AttitudeDataTopic(-1, "AttitudeData");
 
+
 QEKF::QEKF()
 {
 	P.r[0][0] = 1;
@@ -16,15 +17,15 @@ QEKF::QEKF()
 	P.r[2][2] = 1;
 	P.r[3][3] = 1;
 
-	Q.r[0][0] = 1;
-	Q.r[1][1] = 1;
-	Q.r[2][2] = 1;
+	Q.r[0][0] = sigma_gyro.x * sigma_gyro.x;
+	Q.r[1][1] = sigma_gyro.y * sigma_gyro.y;
+	Q.r[2][2] = sigma_gyro.z * sigma_gyro.z;
 
-	R_a.r[0][0] = 1;
-	R_a.r[1][1] = 1;
-	R_a.r[2][2] = 1;
+	R_a.r[0][0] = sigma_accel.x * sigma_accel.x;
+	R_a.r[1][1] = sigma_accel.y * sigma_accel.y;
+	R_a.r[2][2] = sigma_accel.z * sigma_accel.z;
 
-	R_m.r[0][0] = 1;
+	R_m.r[0][0] = sigma_yaw;
 }
 
 void QEKF::init(IMUData& imudata)
