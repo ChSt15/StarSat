@@ -3,6 +3,8 @@
 #define LSM9DS1_M_ADDR 0x1E
 #define LSM9DS1_XLG_ADDR 0x6B
 
+Topic<IMUData> IMUDataTopic(-1, "IMUData");
+
 
 IMU::IMU(RODOS::I2C_IDX i2c):
 	i2c(i2c)
