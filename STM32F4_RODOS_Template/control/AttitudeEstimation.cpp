@@ -7,14 +7,27 @@
 #include "AttitudeEstimation.hpp"
 
 
-Topic<Attitude_Data> AttitudeDataTopic(-1, "AttitudeData");
+Topic<TimestampedData<Attitude_Data>> AttitudeDataTopic(-1, "AttitudeData");
 
 QEKF::QEKF()
 {
+	P.r[0][0] = 1;
+	P.r[1][1] = 1;
+	P.r[2][2] = 1;
+	P.r[3][3] = 1;
 
+	Q.r[0][0] = 1;
+	Q.r[1][1] = 1;
+	Q.r[2][2] = 1;
+
+	R_a.r[0][0] = 1;
+	R_a.r[1][1] = 1;
+	R_a.r[2][2] = 1;
+
+	R_m.r[0][0] = 1;
 }
 
-void QEKF::init(const IMUData& imudata)
+void QEKF::init(IMUData& imudata)
 {
 	// Calc roll, pitch from accelerometer
 	double roll  = -atan2(imudata.acceleration.x, sqrt(pow(imudata.acceleration.y, 2) + pow(imudata.acceleration.z, 2)));
@@ -34,24 +47,30 @@ void QEKF::init(const IMUData& imudata)
 
 	last_t = SECONDS_NOW();
 
-}
-
-
-
-const TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& imudata)
-{
-	this->propagate(Vector3D_F(imudata.data.angularVelocity.x, imudata.data.angularVelocity.y, imudata.data.angularVelocity.z));
-
-	this->update_accel(Vector3D_F(imudata.data.acceleration.x, imudata.data.acceleration.y, imudata.data.acceleration.z));
-	this->update_mag(Vector3D_F(imudata.data.magneticField.x, imudata.data.magneticField.y, imudata.data.magneticField.z));
-
-
+	is_initialized = true;
 }
 
 #define q0 	X.r[0][0]
 #define q1 	X.r[1][0]
 #define q2 	X.r[2][0]
 #define q3 	X.r[3][0]
+
+
+TimestampedData<Attitude_Data>& QEKF::estimate(TimestampedData<IMUData>& imudata)
+{
+	this->propagate(Vector3D_F(imudata.data.angularVelocity.x, imudata.data.angularVelocity.y, imudata.data.angularVelocity.z));
+
+	this->update_accel(Vector3D_F(imudata.data.acceleration.x, imudata.data.acceleration.y, imudata.data.acceleration.z));
+	this->update_mag(Vector3D_F(imudata.data.magneticField.x, imudata.data.magneticField.y, imudata.data.magneticField.z));
+
+	data.timestamp = NOW();
+	data.data.attitude = Quaternion(q0, q1, q2, q3);
+	data.data.angularVelocity = imudata.data.angularVelocity;
+
+	return data;
+}
+
+
 
 void QEKF::propagate(Vector3D_F w)
 {
@@ -77,16 +96,16 @@ void QEKF::propagate(Vector3D_F w)
 	q3 = q3 / quat_length;
 
 	// Jakobian of state prediction (with respect to X)
-	A.r[0][0] =  1;					A.r[1][0] =  0.5 * w.x * dt;	A.r[2][0] =  0.5 * w.y * dt;	A.r[3][0] =  0.5 * w.z * dt;
-	A.r[0][1] = -0.5 * w.x * dt;	A.r[1][1] =  1;					A.r[2][1] = -0.5 * w.z * dt;	A.r[3][1] =  0.5 * w.y * dt;
-	A.r[0][2] = -0.5 * w.y * dt;	A.r[1][2] =  0.5 * w.z * dt;	A.r[2][2] =  1;					A.r[3][2] = -0.5 * w.x * dt;
-	A.r[0][3] = -0.5 * w.z * dt;	A.r[1][3] = -0.5 * w.y * dt;	A.r[2][3] =  0.5 * w.x * dt;	A.r[3][3] =  1;
-
+	A.r[0][0] =  1;					A.r[0][1] =  0.5 * w.x * dt;	A.r[0][2] =  0.5 * w.y * dt;	A.r[0][3] =  0.5 * w.z * dt;
+	A.r[1][0] = -0.5 * w.x * dt;	A.r[1][1] =  1;					A.r[1][2] = -0.5 * w.z * dt;	A.r[1][3] =  0.5 * w.y * dt;
+	A.r[2][0] = -0.5 * w.y * dt;	A.r[2][1] =  0.5 * w.z * dt;	A.r[2][2] =  1;					A.r[2][3] = -0.5 * w.x * dt;
+	A.r[3][0] = -0.5 * w.z * dt;	A.r[3][1] = -0.5 * w.y * dt;	A.r[3][2] =  0.5 * w.x * dt;	A.r[3][3] =  1;
+	
 	// Jakobian of state prediction (with respect to w)
-	G.r[0][0] = -0.5 * old_q1 * dt;		G.r[1][0] = -0.5 * old_q2 * dt;		G.r[2][0] = -0.5 * old_q3 * dt;	
-	G.r[0][1] =  0.5 * old_q0 * dt;		G.r[1][1] = -0.5 * old_q3 * dt;		G.r[2][1] =  0.5 * old_q2 * dt;
-	G.r[0][2] =  0.5 * old_q3 * dt;		G.r[1][2] =  0.5 * old_q0 * dt;		G.r[2][2] = -0.5 * old_q1 * dt;
-	G.r[0][3] = -0.5 * old_q2 * dt;		G.r[1][3] =  0.5 * old_q1 * dt;		G.r[2][3] =  0.5 * old_q0 * dt;
+	G.r[0][0] = -0.5 * old_q1 * dt;		G.r[0][1] = -0.5 * old_q2 * dt;		G.r[0][2] = -0.5 * old_q3 * dt;	
+	G.r[1][0] =  0.5 * old_q0 * dt;		G.r[1][1] = -0.5 * old_q3 * dt;		G.r[1][2] =  0.5 * old_q2 * dt;
+	G.r[2][0] =  0.5 * old_q3 * dt;		G.r[2][1] =  0.5 * old_q0 * dt;		G.r[2][2] = -0.5 * old_q1 * dt;
+	G.r[3][0] = -0.5 * old_q2 * dt;		G.r[3][1] =  0.5 * old_q1 * dt;		G.r[3][2] =  0.5 * old_q0 * dt;
 
 	// Covariance prediction
 	P = A * P * A.transpose() + G * Q * G.transpose();
@@ -103,10 +122,9 @@ void QEKF::update_accel(Vector3D_F a)
 	z_a.r[2][0] = -(q0*q0 - q1*q1 - q2*q2 + q3*q3);
 
 	// Jakobian of mesurment prediction (with respect to X)
-	C_a.r[0][0] =  2 * q2;	C_a.r[1][0] = -2 * q1;	C_a.r[2][0] = -2 * q0;
-	C_a.r[0][1] = -2 * q3;	C_a.r[1][1] = -2 * q0;	C_a.r[2][1] =  2 * q1;
-	C_a.r[0][2] =  2 * q0;	C_a.r[1][2] = -2 * q3;	C_a.r[2][2] =  2 * q2;
-	C_a.r[0][3] = -2 * q1;	C_a.r[1][3] = -2 * q2;	C_a.r[2][3] = -2 * q3;
+	C_a.r[0][0] =  2 * q2;	C_a.r[0][1] = -2 * q3;	C_a.r[0][2] =  2 * q0;	C_a.r[0][3] = -2 * q1;
+	C_a.r[1][0] = -2 * q1;	C_a.r[1][1] = -2 * q0;	C_a.r[1][2] = -2 * q3;	C_a.r[1][3] = -2 * q2;
+	C_a.r[2][0] = -2 * q0;	C_a.r[2][1] =  2 * q1;	C_a.r[2][2] =  2 * q2;	C_a.r[2][3] = -2 * q3;
 
 	// Measurment innovation
 	v_a = a.normalize() - z_a;
@@ -138,24 +156,18 @@ void QEKF::update_accel(Vector3D_F a)
 void QEKF::update_mag(Vector3D_F m)
 {
 	// Rotations
-	nav2body.r[0][0] = q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3;
-	nav2body.r[0][1] = 2 * (q1 * q2 - q0 * q3);
-	nav2body.r[0][2] = 2 * (q0 * q2 + q1 * q3);
-	nav2body.r[1][0] = 2 * (q1 * q2 + q0 * q3);
-	nav2body.r[1][1] = q0 * q0 - q1 * q1 + q2 * q2 - q3 * q3;
-	nav2body.r[1][2] = 2 * (q2 * q3 - q0 * q1);
-	nav2body.r[2][0] = 2 * (q1 * q3 - q0 * q2);
-	nav2body.r[2][1] = 2 * (q0 * q1 + q2 * q3);
-	nav2body.r[2][2] = q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3;
+	nav2body.r[0][0] = q0*q0 + q1*q1 - q2*q2 - q3*q3;	nav2body.r[0][1] = 2*(q1 * q2 + q0 * q3);			nav2body.r[0][2] = 2*(q0 * q2 - q1 * q3);
+	nav2body.r[1][0] = 2*(q1 * q2 - q0 * q3);			nav2body.r[1][1] = q0*q0 - q1*q1 + q2*q2 - q3*q3;	nav2body.r[1][2] = 2*(q2 * q3 + q0 * q1);
+	nav2body.r[2][0] = 2*(q1 * q3 + q0 * q2);			nav2body.r[2][1] = 2*(q0 * q1 - q2 * q3);			nav2body.r[2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3;
 	body2nav = nav2body.transpose();
 
 	// "correct" tilt
 	Vector3D_F mn = body2nav * m;
-	Vector3D_F mnh = { mn.x, mn.y, 0 };
+	Vector3D_F mnh = {mn.x, mn.y, 0};
 	Vector3D_F mb = nav2body * mnh;
 
 	// Yaw measurment 
-	y_yaw = atan2(-mb.y, mb.x);
+	y_yaw = atan2(mb.y, mb.x);
 
 	// Measurment prediction
 	z_yaw = atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
@@ -163,12 +175,12 @@ void QEKF::update_mag(Vector3D_F m)
 	// Jakobian of mesurment prediction (with respect to X)
 	C_m.r[0][0] = (2 * q3 * (1 - 2 * (q3 * q3 + q2 * q2))) / (4 * pow((q3 * q0 + q1 * q2), 2) + (1 - 2 * pow((q3 * q3 + q2 * q2), 2)));
 	C_m.r[0][1] = (2 * q2 * (1 - 2 * (q3 * q3 + q2 * q2))) / (4 * pow((q2 * q1 + q3 * q0), 2) + (1 - 2 * pow((q3 * q3 + q2 * q2), 2)));
-	C_m.r[0][2] = (2 * (2 * q1 * q2 * q2 + 4 * q3 * q0 * q2 - 2 * q1 * q3 * q3 + q1)) / (pow((2 * (q2 * q2 + q3 * q3) - 1), 2) + 4 * pow((q1 * q2 + q3 * q0), 2));
-	C_m.r[0][3] = (2 * (2 * q0 * q3 * q3 + 4 * q1 * q2 * q3 - 2 * q0 * q2 * q2 + q0)) / (pow((2 * (q3 * q3 + q2 * q2) - 1), 2) + 4 * pow((q0 * q3 + q1 * q2), 2));
+	C_m.r[0][2] = (2 * (2 * q1 * q2 * q2 + 4 * q3 * q0 * q2 - 2 * q1 * q3 * q3 + q1)) / (4 * (q0 * q0 - 1) * q3 * q3 + 8 * q0 * q1 * q2 * q3 + 4 * q2 * q2 * (q1 * q1 + 2 * q3 * q3 - 1) + 4 * q2 * q2 * q2 * q2 + 4 * q3 * q3 * q3 * q3 + 1);
+	C_m.r[0][3] = (q0 * (-4 * q2 * q2 + 4 * q3 * q3 + 2) + 8 * q1 * q2 * q3) / (4 * (q0 * q0 - 1) * q3 * q3 + 8 * q0 * q1 * q2 * q3 + 4 * q2 * q2 * (q1 * q1 + 2 * q3 * q3 - 1) + 4 * q2 * q2 * q2 * q2 + 4 * q3 * q3 * q3 * q3 + 1);
 
 	// Measurment innovation
 	v_yaw = y_yaw - z_yaw;
-
+	
 	// Covariance innovation
 	S_m = C_m * P * C_m.transpose() + R_m;
 

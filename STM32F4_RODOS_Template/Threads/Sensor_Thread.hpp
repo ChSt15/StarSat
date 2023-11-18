@@ -5,6 +5,7 @@
 
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/imu.hpp"
+#include "../timestamp.hpp"
 
 
 class SensorThread : public Thread

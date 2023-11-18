@@ -6,10 +6,10 @@
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/imu.hpp"
 
-static CommBuffer<IMUData> IMUDataBuffer;
+static CommBuffer<TimestampedData<IMUData>> IMUDataBuffer;
 static Subscriber IMUDataSubsciber(IMUDataTopic, IMUDataBuffer);
 
-static CommBuffer<Attitude_Data> AttitudeDataBuffer;
+static CommBuffer<TimestampedData<Attitude_Data>> AttitudeDataBuffer;
 static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer);
 
 
@@ -20,21 +20,20 @@ void DebugThread::init()
 
 void DebugThread::run()
 {
-
-	Attitude_Data AttitudeDataReceiver;
-	IMUData IMUDataReceiver;
+	TimestampedData<IMUData> IMUDataReceiver;
+	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 
 	while (true)
 	{
 		IMUDataBuffer.get(IMUDataReceiver);
-		PRINTF("Gyro: %f, %f, %f\n", IMUDataReceiver.angularVelocity.x, IMUDataReceiver.angularVelocity.y, IMUDataReceiver.angularVelocity.z);
-		PRINTF("Accel: %f, %f, %f\n", IMUDataReceiver.acceleration.x, IMUDataReceiver.acceleration.y, IMUDataReceiver.acceleration.z);
-		PRINTF("Mag: %f, %f, %f\n", IMUDataReceiver.magneticField.x, IMUDataReceiver.magneticField.y, IMUDataReceiver.magneticField.z);
-		PRINTF("Temp: %f\n\n", IMUDataReceiver.temperature);
+		PRINTF("Gyro: %f, %f, %f\n", IMUDataReceiver.data.angularVelocity.x, IMUDataReceiver.data.angularVelocity.y, IMUDataReceiver.data.angularVelocity.z);
+		PRINTF("Accel: %f, %f, %f\n", IMUDataReceiver.data.acceleration.x, IMUDataReceiver.data.acceleration.y, IMUDataReceiver.data.acceleration.z);
+		PRINTF("Mag: %f, %f, %f\n", IMUDataReceiver.data.magneticField.x, IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.z);
+		PRINTF("Temp: %f\n\n", IMUDataReceiver.data.temperature);
 
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
-		YPR ypr = AttitudeDataReceiver.attitude.toYPR();
-		PRINTF("Yaw: %f, Pitch: %f, Roll: %f\n\n", ypr.yaw, ypr.pitch, ypr.roll);
+		YPR ypr = AttitudeDataReceiver.data.attitude.toYPR();
+		PRINTF("Yaw: %f, Pitch: %f, Roll: %f\n\n", rad2Grad(ypr.yaw), rad2Grad(ypr.pitch), rad2Grad(ypr.roll));
 		
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}

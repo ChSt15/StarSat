@@ -14,7 +14,7 @@ struct Attitude_Data
 	Vector3D angularVelocity;
 };
 
-extern Topic<Attitude_Data> AttitudeDataTopic;
+extern Topic<TimestampedData<Attitude_Data>> AttitudeDataTopic;
 
 class QEKF
 {
@@ -55,19 +55,22 @@ private:
 	// Last timestamp
 	float last_t;
 
+	TimestampedData <Attitude_Data> data;
+
 public:
 
+	bool is_initialized = false;
 
 	QEKF();
 
 	// @brief Calculation of initial orientation
 	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
-	void init(const IMUData& imudata);
+	void init(IMUData& imudata);
 
 	// @brief Orientation estimation
 	// @param imudata -> IMU data struct defined in imu.hpp with timestamp of measurement.
 	// @return Attitude data defined in AttitudeEstimation.hpp with timestamp of estimation.
-	const TimestampedData<Attitude_Data>& estimate(const TimestampedData<IMUData>& imudata);
+	TimestampedData<Attitude_Data>& estimate(TimestampedData<IMUData>& imudata);
 
 private:
 

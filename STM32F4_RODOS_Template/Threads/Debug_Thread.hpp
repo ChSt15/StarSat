@@ -6,6 +6,7 @@
 
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/imu.hpp"
+#include "../timestamp.hpp"
 
 
 // WARNING: just a temporary solution, will be deleted once TTC is implemented
