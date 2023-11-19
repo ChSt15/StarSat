@@ -99,7 +99,7 @@ TimestampedData<Attitude_Data>& QEKF::estimate(TimestampedData<IMUData>& imudata
 
 	data.timestamp = NOW();
 	data.data.attitude = Quaternion(q0, q1, q2, q3);
-	data.data.angularVelocity = imudata.data.angularVelocity;
+	data.data.angularVelocity = Vector3D(wx, wy, wz);
 
 	return data;
 }
@@ -155,8 +155,7 @@ void QEKF::propagate(Vector3D_F w)
 	A.r[8][8] = 1;
 	A.r[9][9] = 1;
 
-	// Jakobian of state prediction (with respect to w)
-	
+	// Jakobian of state prediction (with respect to (w, drift))
 	//G.r[0][0] = -0.5 * old_q1 * dt;		G.r[0][1] = -0.5 * old_q2 * dt;		G.r[0][2] = -0.5 * old_q3 * dt;	
 	//G.r[1][0] =  0.5 * old_q0 * dt;		G.r[1][1] = -0.5 * old_q3 * dt;		G.r[1][2] =  0.5 * old_q2 * dt;
 	//G.r[2][0] =  0.5 * old_q3 * dt;		G.r[2][1] =  0.5 * old_q0 * dt;		G.r[2][2] = -0.5 * old_q1 * dt;
