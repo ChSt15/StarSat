@@ -36,7 +36,7 @@ private:
 	// Covariance of process noise
 	Matrix_F<3, 3> Q;
 
-	//--------Correction (accel) ----------//
+	//-------- Correction (accel) ----------//
 	// Gain
 	Matrix_F<4, 3> K_a;
 	// Jakobian of mesurment prediction
@@ -50,7 +50,7 @@ private:
 	// Measurment prediction
 	Vector_F<3> z_a;
 
-	//--------Correction (mag) ----------//
+	//-------- Correction (mag) ----------//
 	// Gain
 	Matrix_F<4, 1> K_m;
 	// Jakobian of mesurment prediction
@@ -69,6 +69,9 @@ private:
 	Matrix_F<3, 3> body2nav;
 	Matrix_F<3, 3> nav2body;
 
+	// Helper identity 4x4
+	Matrix_F<4, 4> eye_4x4;
+
 	// Last timestamp
 	float last_t;
 
@@ -76,8 +79,8 @@ private:
 	TimestampedData <Attitude_Data> data;
 
 	// std of sensors
-	Vector3D_F sigma_gyro = 1;
-	Vector3D_F sigma_accel = 1;
+	Vector3D_F sigma_gyro = Vector3D_F(1, 1, 1);
+	Vector3D_F sigma_accel = Vector3D_F(1, 1, 1);
 	float sigma_yaw = 1;
 
 public:

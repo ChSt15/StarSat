@@ -26,6 +26,11 @@ QEKF::QEKF()
 	R_a.r[2][2] = sigma_accel.z * sigma_accel.z;
 
 	R_m.r[0][0] = sigma_yaw;
+
+	eye_4x4.r[0][0] = 1;
+	eye_4x4.r[1][1] = 1;
+	eye_4x4.r[2][2] = 1;
+	eye_4x4.r[3][3] = 1;
 }
 
 void QEKF::init(IMUData& imudata)
@@ -119,7 +124,7 @@ void QEKF::update_accel(Vector3D_F a)
 {
 	// Measurment predection
 	z_a.r[0][0] = -2 * (q1*q3 - q0*q2);
-	z_a.r[1][0] = -2 * (q0*q1 - q2*q3);
+	z_a.r[1][0] = -2 * (q2*q3 + q0*q1);
 	z_a.r[2][0] = -(q0*q0 - q1*q1 - q2*q2 + q3*q3);
 
 	// Jakobian of mesurment prediction (with respect to X)
@@ -147,8 +152,7 @@ void QEKF::update_accel(Vector3D_F a)
 	q3 = q3 / quat_length;
 
 	// Update covariance
-	Matrix_F<4, 4> eye;
-	P = (eye - K_a * C_a) * P;
+	P = (eye_4x4 - K_a * C_a) * P;
 
 	// Force symmetric covariance
 	P = (P + P.transpose()) / 2;
@@ -162,7 +166,7 @@ void QEKF::update_mag(Vector3D_F m)
 	nav2body.r[2][0] = 2*(q1 * q3 + q0 * q2);			nav2body.r[2][1] = 2*(q0 * q1 - q2 * q3);			nav2body.r[2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3;
 	body2nav = nav2body.transpose();
 
-	// "correct" tilt
+	// Correct tilt
 	Vector3D_F mn = body2nav * m;
 	Vector3D_F mnh = {mn.x, mn.y, 0};
 	Vector3D_F mb = nav2body * mnh;
@@ -199,8 +203,7 @@ void QEKF::update_mag(Vector3D_F m)
 	q3 = q3 / quat_length;
 
 	// Update covariance
-	Matrix_F<4, 4> eye;
-	P = (eye - K_m * C_m) * P;
+	P = (eye_4x4 - K_m * C_m) * P;
 
 	// Force symmetric covariance
 	P = (P + P.transpose()) / 2;

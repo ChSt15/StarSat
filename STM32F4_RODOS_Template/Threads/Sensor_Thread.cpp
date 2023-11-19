@@ -19,9 +19,9 @@ void SensorThread::run()
 	{
 
 		TimestampedData<IMUData> imudata_dummy;
-		imudata_dummy.data.angularVelocity = Vector3D(0, 0, 0);
+		imudata_dummy.data.angularVelocity = Vector3D(0.0001, -0.0001, 0.001);
 		imudata_dummy.data.acceleration = Vector3D(0, 0, -1);
-		imudata_dummy.data.magneticField = Vector3D(0, -1, 0);
+		imudata_dummy.data.magneticField = Vector3D(0, 1, 0);
 		imudata_dummy.data.temperature = 42;
 		IMUDataTopic.publish(imudata_dummy);
 
