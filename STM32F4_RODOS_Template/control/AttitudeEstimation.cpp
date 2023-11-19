@@ -25,7 +25,7 @@ QEKF::QEKF()
 	R_a.r[1][1] = sigma_accel.y * sigma_accel.y;
 	R_a.r[2][2] = sigma_accel.z * sigma_accel.z;
 
-	R_m.r[0][0] = sigma_yaw;
+	R_m.r[0][0] = sigma_yaw * sigma_yaw;
 
 	eye_4x4.r[0][0] = 1;
 	eye_4x4.r[1][1] = 1;
