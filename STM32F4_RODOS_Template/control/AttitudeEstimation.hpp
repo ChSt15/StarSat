@@ -25,22 +25,22 @@ public:
 private:
 
 	// State
-	Vector_F<4> X;
+	Vector_F<10> X;
 	// Covariance of state
-	Matrix_F<4, 4> P;
+	Matrix_F<10, 10> P;
 
 	//-------- Prediction ----------//
 	// Jakobians of prediction
-	Matrix_F<4, 4> A;
-	Matrix_F<4, 3> G;
+	Matrix_F<10, 10> A;
+	Matrix_F<10, 6> G;
 	// Covariance of process noise
-	Matrix_F<3, 3> Q;
+	Matrix_F<6, 6> Q;
 
 	//-------- Correction (accel) ----------//
 	// Gain
-	Matrix_F<4, 3> K_a;
+	Matrix_F<10, 3> K_a;
 	// Jakobian of mesurment prediction
-	Matrix_F<3, 4> C_a;
+	Matrix_F<3, 10> C_a;
 	// Covariance innovation
 	Matrix_F<3, 3> S_a;
 	// Covariance of measurment noise
@@ -52,9 +52,9 @@ private:
 
 	//-------- Correction (mag) ----------//
 	// Gain
-	Matrix_F<4, 1> K_m;
+	Matrix_F<10, 1> K_m;
 	// Jakobian of mesurment prediction
-	Matrix_F<1, 4> C_m;
+	Matrix_F<1, 10> C_m;
 	// Covariance innovation
 	Matrix_F<1, 1> S_m;
 	// Covariance of measurment noise
@@ -69,8 +69,8 @@ private:
 	Matrix_F<3, 3> body2nav;
 	Matrix_F<3, 3> nav2body;
 
-	// Helper identity 4x4
-	Matrix_F<4, 4> eye_4x4;
+	// Helper identity 10x10
+	Matrix_F<10, 10> eye_10x10;
 
 	// Last timestamp
 	float last_t;
@@ -82,6 +82,7 @@ private:
 	Vector3D_F sigma_gyro = Vector3D_F(1, 1, 1);
 	Vector3D_F sigma_accel = Vector3D_F(1, 1, 1);
 	float sigma_yaw = 1;
+	float sigma_gyro_drift = 0.001;
 
 public:
 
