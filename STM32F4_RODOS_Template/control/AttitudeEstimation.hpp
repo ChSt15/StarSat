@@ -78,7 +78,7 @@ private:
 	// Attitude data
 	TimestampedData <Attitude_Data> data;
 
-	// std of sensors
+	// std of sensors (not final, duh)
 	Vector3D_F sigma_gyro = Vector3D_F(1, 1, 1);
 	Vector3D_F sigma_accel = Vector3D_F(1, 1, 1);
 	float sigma_yaw = 1;
