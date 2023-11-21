@@ -16,13 +16,16 @@ private:
 	float auxCurrent;
 	float reactionWheelCurrent;
 
-	RODOS::HAL_GPIO extPower;
+	RODOS::GPIO_PIN extPowerPin_;
+	RODOS::ADC_CHANNEL adcVBATPin_;
+	RODOS::ADC_CHANNEL adcShuntPin_;
+	RODOS::ADC_CHANNEL adcWheelPin_;
+	RODOS::PWM_IDX beeperIDX_;
 
+	RODOS::HAL_GPIO extPower;
 	RODOS::HAL_ADC adcVBAT;
 	RODOS::HAL_ADC adcShunt;
 	RODOS::HAL_ADC adcWheel;
-
-	RODOS::PWM_IDX beeperIDX;
 	RODOS::HAL_PWM beeper;
 
 public:
@@ -34,7 +37,7 @@ public:
 	 * @param adcShunt ADC channel connected directly after the shunt resistor
 	 * @param adcWheel ADC channel connected to the reaction wheel driver current output
 	*/
-	ElectricalMonitoring(RODOS::GPIO_PIN powerOffPin, RODOS::ADC_IDX adcVBATPin, RODOS::ADC_IDX adcShuntPin, RODOS::ADC_IDX adcWheelPin, RODOS::PWM_IDX beeperPin);
+	ElectricalMonitoring(RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcVBATPin, RODOS::ADC_CHANNEL adcShuntPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin);
 
 	/**
 	 * Call once quickly after system startup.
@@ -42,7 +45,7 @@ public:
 	void initialize();
 
 	/**
-	 * @brief This function is to be called at 10 Hz
+	 * @brief This function is to be called at 10 Hz.
 	 * 
 	*/
 	void update();
