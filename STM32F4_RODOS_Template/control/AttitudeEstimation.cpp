@@ -155,18 +155,10 @@ void QEKF::propagate(Vector3D_F w)
 	A.r[8][8] = 1;
 	A.r[9][9] = 1;
 
-	// Jakobian of state prediction (with respect to (w, drift))
-	//G.r[0][0] = -0.5 * old_q1 * dt;		G.r[0][1] = -0.5 * old_q2 * dt;		G.r[0][2] = -0.5 * old_q3 * dt;	
-	//G.r[1][0] =  0.5 * old_q0 * dt;		G.r[1][1] = -0.5 * old_q3 * dt;		G.r[1][2] =  0.5 * old_q2 * dt;
-	//G.r[2][0] =  0.5 * old_q3 * dt;		G.r[2][1] =  0.5 * old_q0 * dt;		G.r[2][2] = -0.5 * old_q1 * dt;
-	//G.r[3][0] = -0.5 * old_q2 * dt;		G.r[3][1] =  0.5 * old_q1 * dt;		G.r[3][2] =  0.5 * old_q0 * dt;
-
+	// Jakobian of state prediction (with respect to input (w))
 	G.r[4][0] = 1;
 	G.r[5][1] = 1;
 	G.r[6][2] = 1;
-	G.r[7][3] = 1;
-	G.r[8][4] = 1;
-	G.r[9][5] = 1;
 
 	// Covariance prediction
 	P = A * P * A.transpose() + G * Q * G.transpose();
