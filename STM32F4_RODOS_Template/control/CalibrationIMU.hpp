@@ -5,7 +5,7 @@
 #include "matlib.h"
 
 #include "../timestamp.hpp"
-#include "imu.hpp"
+#include "../hardware/imu.hpp"
 
 
 

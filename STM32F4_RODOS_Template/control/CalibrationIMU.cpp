@@ -22,17 +22,23 @@ void CalibrationIMU::run(){
         switch (this->calibMode)
         {
         case CalibAccel:
+        {
             const IMUCalib calibDataAccel = calibrateAccel();
             imu.setAccelCalib(calibDataAccel);
             break;
+        }
         case CalibGyro:
+        {
             const IMUCalib calibDataGyro = calibrateGyro();
             imu.setGyroCalib(calibDataGyro);
             break;
+        }
         case CalibMag:
+        {
             const IMUCalib calibDataMag = calibrateMag();
             imu.setMagCalib(calibDataMag);
             break;
+        }
         case DoNothing:
             break;
         }

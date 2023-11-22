@@ -52,13 +52,13 @@ QEKF::QEKF()
 void QEKF::init(IMUData& imudata)
 {
 	// Calc roll, pitch from accelerometer
-	double roll  = -atan2(imudata.acceleration.x, sqrt(pow(imudata.acceleration.y, 2) + pow(imudata.acceleration.z, 2)));
-	double pitch =  atan2(imudata.acceleration.y, sqrt(pow(imudata.acceleration.x, 2) + pow(imudata.acceleration.z, 2)));
+	double roll  =  atan2(-imudata.acceleration.y, sqrt(pow(imudata.acceleration.x, 2) + pow(imudata.acceleration.z, 2)));
+	double pitch = -atan2(-imudata.acceleration.x, sqrt(pow(imudata.acceleration.y, 2) + pow(imudata.acceleration.z, 2)));
 
 	// Calc yaw from magnetometer
-	double magx_h = imudata.magneticField.x * cos(pitch) + imudata.magneticField.z * sin(roll);
-	double magy_h = imudata.magneticField.x * sin(roll) * sin(pitch) + imudata.magneticField.y * cos(roll) - imudata.magneticField.z * sin(roll) * cos(pitch);
-	double yaw = atan2(magy_h, magx_h);
+	double magx_h = imudata.magneticField.x * cos(pitch)			 + imudata.magneticField.y * sin(pitch);
+	double magy_h = imudata.magneticField.x	* sin(pitch) * sin(roll) + imudata.magneticField.y * cos(roll) - imudata.magneticField.z * sin(roll) * cos(pitch);
+	double yaw = atan2(-magy_h, magx_h);
 
 	// Convert to quaternion
 	Quaternion_F quat = Quaternion_F(YPR_F(yaw, pitch, roll));
@@ -66,10 +66,6 @@ void QEKF::init(IMUData& imudata)
 	this->X.r[1][0] = quat.q.x;
 	this->X.r[2][0] = quat.q.y;
 	this->X.r[3][0] = quat.q.z;
-
-	this->X.r[4][0] = imudata.angularVelocity.x;
-	this->X.r[5][0] = imudata.angularVelocity.y;
-	this->X.r[6][0] = imudata.angularVelocity.z;
 
 	last_t = SECONDS_NOW();
 
@@ -95,7 +91,7 @@ TimestampedData<Attitude_Data>& QEKF::estimate(TimestampedData<IMUData>& imudata
 	this->propagate(Vector3D_F(imudata.data.angularVelocity.x, imudata.data.angularVelocity.y, imudata.data.angularVelocity.z));
 
 	this->update_accel(Vector3D_F(imudata.data.acceleration.x, imudata.data.acceleration.y, imudata.data.acceleration.z));
-	//this->update_mag(Vector3D_F(imudata.data.magneticField.x, imudata.data.magneticField.y, imudata.data.magneticField.z));
+	this->update_mag(Vector3D_F(imudata.data.magneticField.x, imudata.data.magneticField.y, imudata.data.magneticField.z));
 
 	data.timestamp = NOW();
 	data.data.attitude = Quaternion(q0, q1, q2, q3);
@@ -155,10 +151,13 @@ void QEKF::propagate(Vector3D_F w)
 	A.r[8][8] = 1;
 	A.r[9][9] = 1;
 
-	// Jakobian of state prediction (with respect to input (w))
+	// Jakobian of state prediction (with respect to input w)
 	G.r[4][0] = 1;
 	G.r[5][1] = 1;
 	G.r[6][2] = 1;
+	G.r[7][3] = 1;
+	G.r[8][4] = 1;
+	G.r[9][5] = 1;
 
 	// Covariance prediction
 	P = A * P * A.transpose() + G * Q * G.transpose();
@@ -170,21 +169,17 @@ void QEKF::propagate(Vector3D_F w)
 void QEKF::update_accel(Vector3D_F a)
 {
 	// Measurment prediction
-	z_a.r[0][0] = 2 * (q1*q3 - q0*q2);
-	z_a.r[1][0] = 2 * (q2*q3 + q0*q1);
-	z_a.r[2][0] = (q0*q0 - q1*q1 - q2*q2 + q3*q3);
+	z_a.r[0][0] = -2 * (q1*q3 - q0*q2);
+	z_a.r[1][0] = -2 * (q2*q3 + q0*q1);
+	z_a.r[2][0] = -(q0*q0 - q1*q1 - q2*q2 + q3*q3);
 
 	// Jakobian of mesurment prediction (with respect to X)
-	C_a.r[0][0] = -2 * q2;	C_a.r[0][1] =  2 * q3;	C_a.r[0][2] = -2 * q0;	C_a.r[0][3] =  2 * q1;
-	C_a.r[1][0] =  2 * q1;	C_a.r[1][1] =  2 * q0;	C_a.r[1][2] =  2 * q3;	C_a.r[1][3] =  2 * q2;
-	C_a.r[2][0] =  2 * q0;	C_a.r[2][1] = -2 * q1;	C_a.r[2][2] = -2 * q2;	C_a.r[2][3] =  2 * q3;
+	C_a.r[0][0] =  2 * q2;	C_a.r[0][1] = -2 * q3;	C_a.r[0][2] =  2 * q0;	C_a.r[0][3] = -2 * q1;
+	C_a.r[1][0] = -2 * q1;	C_a.r[1][1] = -2 * q0;	C_a.r[1][2] = -2 * q3;	C_a.r[1][3] = -2 * q2;
+	C_a.r[2][0] = -2 * q0;	C_a.r[2][1] =  2 * q1;	C_a.r[2][2] =  2 * q2;	C_a.r[2][3] = -2 * q3;
 
 	// Measurment innovation
 	v_a = a.normalize() - z_a;
-
-	//v_a.print();
-	//a.normalize().print();
-	//z_a.print();
 
 	// Covariance innovation
 	S_a = C_a * P * C_a.transpose() + R_a;
@@ -212,18 +207,16 @@ void QEKF::update_accel(Vector3D_F a)
 void QEKF::update_mag(Vector3D_F m)
 {
 	// Rotations
-	nav2body.r[0][0] = q0*q0 + q1*q1 - q2*q2 - q3*q3;	nav2body.r[0][1] = 2*(q1 * q2 + q0 * q3);			nav2body.r[0][2] = 2*(q0 * q2 - q1 * q3);
-	nav2body.r[1][0] = 2*(q1 * q2 - q0 * q3);			nav2body.r[1][1] = q0*q0 - q1*q1 + q2*q2 - q3*q3;	nav2body.r[1][2] = 2*(q2 * q3 + q0 * q1);
-	nav2body.r[2][0] = 2*(q1 * q3 + q0 * q2);			nav2body.r[2][1] = 2*(q0 * q1 - q2 * q3);			nav2body.r[2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3;
+	nav2body = Matrix3D_F(Quaternion_F(q0, q1, q2, q3));
 	body2nav = nav2body.transpose();
 
 	// Correct tilt
-	Vector3D_F mn = body2nav * m;
-	Vector3D_F mnh = {mn.x, mn.y, 0};
-	Vector3D_F mb = nav2body * mnh;
+	Vector3D_F mn = m.matVecMult(body2nav);
+	Vector3D_F mnh = Vector3D_F(mn.x, mn.y, 0);
+	Vector3D_F mb = mnh.matVecMult(nav2body);
 
 	// Yaw measurment 
-	y_yaw = atan2(mb.y, mb.x);
+	y_yaw = atan2(-mb.y, mb.x);
 
 	// Measurment prediction
 	z_yaw = atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
@@ -236,8 +229,6 @@ void QEKF::update_mag(Vector3D_F m)
 
 	// Measurment innovation
 	v_yaw = y_yaw - z_yaw;
-	
-	//PRINTF("%f, %f\n", y_yaw, z_yaw );
 
 	// Covariance innovation
 	S_m = C_m * P * C_m.transpose() + R_m;
