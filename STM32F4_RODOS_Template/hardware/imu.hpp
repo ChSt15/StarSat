@@ -3,7 +3,6 @@
 
 #include "rodos.h"
 #include "matlib.h"
-
 #include "../timestamp.hpp"
 
 
@@ -40,8 +39,39 @@ private:
     IMUCalib gyroCalib;
     IMUCalib accelCalib;
     IMUCalib magCalib;
+    Vector3D magCalibMin;
+    Vector3D magCalibMax;
+
 
     HAL_I2C i2c;
+
+    /// @brief Scale factor to convert data of sensors in corresponding units; depends on the initialized range
+    const float gyroScale = 70 / 1000.0;            // +-2000dps -> 70, +-500dps -> 17.50, +-245dps -> 8.75
+    const float accelScale = 0.061 / 1000.0;        // +-2g -> 0.061, +-4g -> 0.122, +-8g -> 0.244, +-16g -> 0.732
+    const float magScale = 0.14 / 1000.0;           // +-4gauss -> 0.14, +-8gauss -> 0.29, +-12gauss -> 0.43, +-16gauss -> 0.58
+
+    /// @brief define adresses of registers for reading data
+    /// Gyroscope
+    const uint8_t LSM9DS1_G_OUT_X[2] = { 0x18 };
+    const uint8_t LSM9DS1_G_OUT_Y[2] = { 0x1A };
+    const uint8_t LSM9DS1_G_OUT_Z[2] = { 0x1C };
+    /// Accelerometer
+    const uint8_t LSM9DS1_XL_OUT_X[2] = { 0x28 };
+    const uint8_t LSM9DS1_XL_OUT_Y[2] = { 0x2A };
+    const uint8_t LSM9DS1_XL_OUT_Z[2] = { 0x2C };
+    /// Magnetometer
+    const uint8_t LSM9DS1_M_OUT_X[2] = { 0x28 };
+    const uint8_t LSM9DS1_M_OUT_Y[2] = { 0x2A };
+    const uint8_t LSM9DS1_M_OUT_Z[2] = { 0x2C };
+    // Temperature
+    const uint8_t LSM9DS1_OUT_TEMP[2] = { 0x15 };
+
+    /**
+     * ------- ONLY FOR TESTING -------
+    */
+   bool calibRunning = false;       // for pausing the IMU Thread
+   bool calibDone = false;          // for indicating whether calibration values are determined and can be applied to raw data
+
 
 public:
 
@@ -81,12 +111,34 @@ public:
     /// @brief Get the Mag calibration values
     const IMUCalib& getMagCalib();
 
-private:
-
     /// @brief Checks I2C Enable Pins (if connected), just for initial Testing/Debugging
     void Check_I2C_Enable();
     /// @brief Checks the WHO_AM_I registers to confirm sensor adress is correct, just for initial Testing/Debugging
     void Check_WHOAMI();
+
+    /// @brief Calls subroutines and initialize the IMU
+    void initialization();
+
+    /// @brief Calls subroutines and reads raw data of IMU and saves it into this->dataRaw
+    /// @return saved this->dataRaw
+    TimestampedData<IMUData>& readRawData();
+
+    /// @brief Calibrate current raw data (this->dataRaw) by applying current calibration values and saves to this->dataCalibrated
+    void calibrateData();
+
+   void setMagCalibMin(Vector3D min);
+   void setMagCalibMax(Vector3D min);
+
+    /**
+     * ------- ONLY FOR TESTING -------
+    */
+    bool isCalibRunning();
+    void setCalibRunning(bool status);
+
+    bool isCalibDone();
+    void setCalibDone(bool status);
+
+private:
 
     /// @brief Initializes gyro
     void gyroInit();
@@ -104,7 +156,10 @@ private:
     void magRead();
 
     /// @brief Reads Gyro and saves to class varriable "data" (we can make it return the date aswell)
-    void TempRead();
+    void tempRead();
+
+    /// @brief Converts read data to float
+    static float bytes_to_float(uint8_t* data);
 
 };
 
