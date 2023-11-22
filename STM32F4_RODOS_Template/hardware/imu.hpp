@@ -25,6 +25,8 @@ struct IMUCalib
 };
 
 
+extern Topic<TimestampedData<IMUData>> IMUDataTopic;
+
 class IMU
 {
 private:

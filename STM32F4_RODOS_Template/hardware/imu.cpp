@@ -6,6 +6,8 @@ Define addresses of sensors
 #define LSM9DS1_M_ADDR 0x1E                 // address of magnetometer of IMU
 #define LSM9DS1_AG_ADDR 0x6B                // address of accelerometer + gyroscope of IMU
 
+Topic<TimestampedData<IMUData>> IMUDataTopic(-1, "IMUData");
+
 
 IMU::IMU(RODOS::I2C_IDX i2c):
 	i2c(i2c)
