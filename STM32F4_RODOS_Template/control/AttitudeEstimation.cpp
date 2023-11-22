@@ -95,7 +95,7 @@ TimestampedData<Attitude_Data>& QEKF::estimate(TimestampedData<IMUData>& imudata
 	this->propagate(Vector3D_F(imudata.data.angularVelocity.x, imudata.data.angularVelocity.y, imudata.data.angularVelocity.z));
 
 	this->update_accel(Vector3D_F(imudata.data.acceleration.x, imudata.data.acceleration.y, imudata.data.acceleration.z));
-	this->update_mag(Vector3D_F(imudata.data.magneticField.x, imudata.data.magneticField.y, imudata.data.magneticField.z));
+	//this->update_mag(Vector3D_F(imudata.data.magneticField.x, imudata.data.magneticField.y, imudata.data.magneticField.z));
 
 	data.timestamp = NOW();
 	data.data.attitude = Quaternion(q0, q1, q2, q3);
@@ -177,18 +177,22 @@ void QEKF::propagate(Vector3D_F w)
 
 void QEKF::update_accel(Vector3D_F a)
 {
-	// Measurment predection
-	z_a.r[0][0] = -2 * (q1*q3 - q0*q2);
-	z_a.r[1][0] = -2 * (q2*q3 + q0*q1);
-	z_a.r[2][0] = -(q0*q0 - q1*q1 - q2*q2 + q3*q3);
+	// Measurment prediction
+	z_a.r[0][0] = 2 * (q1*q3 - q0*q2);
+	z_a.r[1][0] = 2 * (q2*q3 + q0*q1);
+	z_a.r[2][0] = (q0*q0 - q1*q1 - q2*q2 + q3*q3);
 
 	// Jakobian of mesurment prediction (with respect to X)
-	C_a.r[0][0] =  2 * q2;	C_a.r[0][1] = -2 * q3;	C_a.r[0][2] =  2 * q0;	C_a.r[0][3] = -2 * q1;
-	C_a.r[1][0] = -2 * q1;	C_a.r[1][1] = -2 * q0;	C_a.r[1][2] = -2 * q3;	C_a.r[1][3] = -2 * q2;
-	C_a.r[2][0] = -2 * q0;	C_a.r[2][1] =  2 * q1;	C_a.r[2][2] =  2 * q2;	C_a.r[2][3] = -2 * q3;
+	C_a.r[0][0] = -2 * q2;	C_a.r[0][1] =  2 * q3;	C_a.r[0][2] = -2 * q0;	C_a.r[0][3] =  2 * q1;
+	C_a.r[1][0] =  2 * q1;	C_a.r[1][1] =  2 * q0;	C_a.r[1][2] =  2 * q3;	C_a.r[1][3] =  2 * q2;
+	C_a.r[2][0] =  2 * q0;	C_a.r[2][1] = -2 * q1;	C_a.r[2][2] = -2 * q2;	C_a.r[2][3] =  2 * q3;
 
 	// Measurment innovation
 	v_a = a.normalize() - z_a;
+
+	//v_a.print();
+	//a.normalize().print();
+	//z_a.print();
 
 	// Covariance innovation
 	S_a = C_a * P * C_a.transpose() + R_a;
@@ -233,14 +237,16 @@ void QEKF::update_mag(Vector3D_F m)
 	z_yaw = atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
 
 	// Jakobian of mesurment prediction (with respect to X)
-	C_m.r[0][0] = (2 * q3 * (1 - 2 * (q3 * q3 + q2 * q2))) / (4 * pow((q3 * q0 + q1 * q2), 2) + (1 - 2 * pow((q3 * q3 + q2 * q2), 2)));
-	C_m.r[0][1] = (2 * q2 * (1 - 2 * (q3 * q3 + q2 * q2))) / (4 * pow((q2 * q1 + q3 * q0), 2) + (1 - 2 * pow((q3 * q3 + q2 * q2), 2)));
-	C_m.r[0][2] = (2 * (2 * q1 * q2 * q2 + 4 * q3 * q0 * q2 - 2 * q1 * q3 * q3 + q1)) / (4 * (q0 * q0 - 1) * q3 * q3 + 8 * q0 * q1 * q2 * q3 + 4 * q2 * q2 * (q1 * q1 + 2 * q3 * q3 - 1) + 4 * q2 * q2 * q2 * q2 + 4 * q3 * q3 * q3 * q3 + 1);
-	C_m.r[0][3] = (q0 * (-4 * q2 * q2 + 4 * q3 * q3 + 2) + 8 * q1 * q2 * q3) / (4 * (q0 * q0 - 1) * q3 * q3 + 8 * q0 * q1 * q2 * q3 + 4 * q2 * q2 * (q1 * q1 + 2 * q3 * q3 - 1) + 4 * q2 * q2 * q2 * q2 + 4 * q3 * q3 * q3 * q3 + 1);
+	C_m.r[0][0] = (2 * q3 * (1 - 2 * (q3 * q3 + q2 * q2))) / (4 * pow((q3 * q0 + q1 * q2), 2) + pow(1 - 2 * (q3 * q3 + q2 * q2), 2));
+	C_m.r[0][1] = (2 * q2 * (1 - 2 * (q3 * q3 + q2 * q2))) / (4 * pow((q2 * q1 + q3 * q0), 2) + pow(1 - 2 * (q3 * q3 + q2 * q2), 2));
+	C_m.r[0][2] = (2 * (q1 + 2 * q1 * q2 * q2 + 4 * q0 * q2 * q3 - 2 * q1 *q3 * q3)) / (1 + 4 * (q2 * q2 * q2 * q2 + 2 * q0 * q1 * q2 * q3 + q3 * q3 * (-1 + q0 * q0 + q3 * q3) + q2 * q2 * (-1 + q1 * q1 + 2 * q3 * q3)));
+	C_m.r[0][3] = (q0 * (-4 * q2 * q2 + 4 * q3 * q3 + 2) + 8 * q1 * q2 * q3) / (4 * (q0 * q0 - 1) * q3 * q3 + 8 * q0 * q1 * q2 * q3 + 4 * q2 * q2 * (q1 * q1 + 2 * q3 * q3 - 1) + 4 * q2 * q2 * q2 *q2 + 4 * q3 * q3 * q3 * q3 + 1);
 
 	// Measurment innovation
 	v_yaw = y_yaw - z_yaw;
 	
+	//PRINTF("%f, %f\n", y_yaw, z_yaw );
+
 	// Covariance innovation
 	S_m = C_m * P * C_m.transpose() + R_m;
 

@@ -33,8 +33,8 @@ void DebugThread::run()
 
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		YPR ypr = AttitudeDataReceiver.data.attitude.toYPR();
-		PRINTF("Yaw: %f, Pitch: %f, Roll: %f\n\n", rad2Grad(ypr.yaw), rad2Grad(ypr.pitch), rad2Grad(ypr.roll));
-		PRINTF("w: %f, %f, %f\n", AttitudeDataReceiver.data.angularVelocity.x, AttitudeDataReceiver.data.angularVelocity.y, AttitudeDataReceiver.data.angularVelocity.z);
+		PRINTF("Yaw: %f, Pitch: %f, Roll: %f\n", rad2Grad(ypr.yaw), rad2Grad(ypr.pitch), rad2Grad(ypr.roll));
+		PRINTF("w: %f, %f, %f\n\n", AttitudeDataReceiver.data.angularVelocity.x, AttitudeDataReceiver.data.angularVelocity.y, AttitudeDataReceiver.data.angularVelocity.z);
 		
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}

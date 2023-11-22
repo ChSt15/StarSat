@@ -25,12 +25,12 @@ void CalibrationIMU::run(){
 
     blue_led.setPins(1);
 
-    IMUCalib gyroCalib = calibrateGyro();
-    IMUCalib accelCalib = calibrateAccel();
+    // IMUCalib gyroCalib = calibrateGyro();
+    // IMUCalib accelCalib = calibrateAccel();
     IMUCalib magCalib = calibrateMag();
 
-    imu.setAccelCalib(accelCalib);
-    imu.setGyroCalib(gyroCalib);
+    // imu.setAccelCalib(accelCalib);
+    // imu.setGyroCalib(gyroCalib);
     imu.setMagCalib(magCalib);
     
     blue_led.setPins(0);
@@ -203,4 +203,4 @@ IMUCalib CalibrationIMU::calibrateGyro(){
 }
 
 
-CalibrationIMU calibration("Calibration", 1000, 100, 10);
+CalibrationIMU calibration("Calibration", 2000, 100, 10);

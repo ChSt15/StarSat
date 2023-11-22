@@ -20,8 +20,9 @@ public:
 	void run();
 
 private:
-
+	TimestampedData<IMUData> imuRawData;
 	const int period = 100;		// [ms]
+
 };
 
 

@@ -83,11 +83,12 @@ void IMU::initialization()
 	accelInit();
 }
 
-TimestampedData<IMUData> IMU::readRawData()
+TimestampedData<IMUData>& IMU::readRawData()
 {
 	magRead();
 	accelRead();
 	gyroRead();
+	tempRead();
 	return this->dataRaw;
 }
 
@@ -104,13 +105,13 @@ void IMU::gyroRead()
 	uint8_t data[2];
 
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_G_OUT_X, 1, data, 2);
-	this->dataRaw.data.angularVelocity.x = bytes_to_float(data) * gyroScale;
+	this->dataRaw.data.angularVelocity.x = - grad2Rad(bytes_to_float(data) * gyroScale);
 
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_G_OUT_Y, 1, data, 2);
-	this->dataRaw.data.angularVelocity.y = bytes_to_float(data) * gyroScale;
+	this->dataRaw.data.angularVelocity.y = grad2Rad(bytes_to_float(data) * gyroScale);
 
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_G_OUT_Z, 1, data, 2);
-	this->dataRaw.data.angularVelocity.z = bytes_to_float(data) * gyroScale;
+	this->dataRaw.data.angularVelocity.z = grad2Rad(bytes_to_float(data) * gyroScale);
 
 	this->dataRaw.timestamp = NOW();
 }
@@ -129,7 +130,7 @@ void IMU::accelRead()
 	uint8_t data[2];
 	// x-axis
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_XL_OUT_X, 1, data, 2);
-	this->dataRaw.data.acceleration.x = bytes_to_float(data) * accelScale;
+	this->dataRaw.data.acceleration.x = - bytes_to_float(data) * accelScale;
 	// y-axis
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_XL_OUT_Y, 1, data, 2);
 	this->dataRaw.data.acceleration.y = bytes_to_float(data) * accelScale;
@@ -177,7 +178,7 @@ void IMU::tempRead()
 	uint8_t data[2];
 
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_OUT_TEMP, 1, data, 2);
-	this->dataRaw.data.temperature = (int16_t) (2047 & ((data[1] << 8 | data[0])));
+	this->dataRaw.data.temperature = (int16_t) ((data[1] << 8 | data[0]));
 	this->dataRaw.timestamp = NOW();
 }
 
@@ -190,11 +191,26 @@ float IMU::bytes_to_float(uint8_t* data)
 
 void IMU::calibrateData()
 {
-	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity.vecSub(gyroCalib.bias).matVecMult(gyroCalib.scale);
+	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity.vecSub(gyroCalib.bias).matVecMult(gyroCalib.scale);;
 	dataCalibrated.data.acceleration = dataRaw.data.acceleration.vecSub(accelCalib.bias).matVecMult(accelCalib.scale);
-	dataCalibrated.data.magneticField = dataRaw.data.magneticField.vecSub(magCalib.bias).matVecMult(this->magCalib.scale);
-	dataCalibrated.data.temperature = ((dataRaw.data.temperature - 2048) / 16.0) + 25.0;
-	dataCalibrated.timestamp = dataRaw.timestamp;
+
+	dataCalibrated.data.magneticField.x = (((dataRaw.data.magneticField.x - magCalibMin.x) * 2) / (magCalibMax.x - magCalibMin.x) ) - 1;
+	dataCalibrated.data.magneticField.y = (((dataRaw.data.magneticField.y - magCalibMin.y) * 2) / (magCalibMax.y - magCalibMin.y) ) - 1;
+	dataCalibrated.data.magneticField.z = (((dataRaw.data.magneticField.z - magCalibMin.z) * 2) / (magCalibMax.z - magCalibMin.z) ) - 1;
+
+	dataCalibrated.data.temperature = (dataRaw.data.temperature / 16.0) + 25.0;
+	dataCalibrated.timestamp = NOW();
+}
+
+
+void IMU::setMagCalibMin(Vector3D min)
+{
+	this->magCalibMin = min;
+}
+
+void IMU::setMagCalibMax(Vector3D max)
+{
+	this->magCalibMax = max;
 }
 
 
