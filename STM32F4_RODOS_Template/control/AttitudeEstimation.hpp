@@ -79,10 +79,10 @@ private:
 	TimestampedData <Attitude_Data> data;
 
 	// std of sensors (not final, duh)
-	Vector3D_F sigma_gyro = Vector3D_F(0.002197, 0.002345, 0.001947);
-	Vector3D_F sigma_accel = Vector3D_F(0.002548, 0.002338, 0.001035);
-	float sigma_yaw = 0.008266;
-	float sigma_gyro_drift = 1.0 * pow(10, -6);
+	Vector3D_F sigma_gyro = Vector3D_F(0.0027728, 0.0023483, 0.0018954);
+	Vector3D_F sigma_accel = Vector3D_F(0.0014530, 0.0017393, 0.0044343);
+	float sigma_yaw = 0.018469;
+	float sigma_gyro_drift = 1.0f * pow(10, -6);
 
 public:
 

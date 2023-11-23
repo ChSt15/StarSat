@@ -206,6 +206,7 @@ void QEKF::update_accel(Vector3D_F a)
 
 void QEKF::update_mag(Vector3D_F m)
 {
+	
 	// Rotations
 	nav2body = Matrix3D_F(Quaternion_F(q0, q1, q2, q3));
 	body2nav = nav2body.transpose();
@@ -214,10 +215,10 @@ void QEKF::update_mag(Vector3D_F m)
 	Vector3D_F mn = m.matVecMult(body2nav);
 	Vector3D_F mnh = Vector3D_F(mn.x, mn.y, 0);
 	Vector3D_F mb = mnh.matVecMult(nav2body);
-
+	
 	// Yaw measurment 
 	y_yaw = atan2(-mb.y, mb.x);
-
+	
 	// Measurment prediction
 	z_yaw = atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
 

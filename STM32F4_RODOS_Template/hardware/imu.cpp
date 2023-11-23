@@ -191,31 +191,22 @@ float IMU::bytes_to_float(uint8_t* data)
 
 void IMU::calibrateData()
 {
-	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity.vecSub(gyroCalib.bias).matVecMult(gyroCalib.scale);
+	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity;
 	dataCalibrated.data.angularVelocity.z = -dataCalibrated.data.angularVelocity.z;
-	dataCalibrated.data.acceleration = dataRaw.data.acceleration.vecSub(accelCalib.bias).matVecMult(accelCalib.scale);
-	dataCalibrated.data.acceleration.z = -dataCalibrated.data.acceleration.z;
+	dataCalibrated.data.angularVelocity = dataCalibrated.data.angularVelocity.vecSub(gyroCalib.bias).matVecMult(gyroCalib.scale);
 
-	dataCalibrated.data.magneticField.x = -dataRaw.data.magneticField.x;// (((dataRaw.data.magneticField.x - magCalibMin.x) * 2) / (magCalibMax.x - magCalibMin.x)) - 1;
-	dataCalibrated.data.magneticField.y = dataRaw.data.magneticField.y;// (((dataRaw.data.magneticField.y - magCalibMin.y) * 2) / (magCalibMax.y - magCalibMin.y)) - 1;
-	dataCalibrated.data.magneticField.z = -dataRaw.data.magneticField.z;// (((dataRaw.data.magneticField.z - magCalibMin.z) * 2) / (magCalibMax.z - magCalibMin.z)) - 1;
+	dataCalibrated.data.acceleration = dataRaw.data.acceleration;
+	dataCalibrated.data.acceleration.z = -dataCalibrated.data.acceleration.z;
+	dataCalibrated.data.acceleration = dataCalibrated.data.acceleration.vecSub(accelCalib.bias).matVecMult(accelCalib.scale);
+
+	dataCalibrated.data.magneticField = dataRaw.data.magneticField;
+	dataCalibrated.data.magneticField.x = -dataRaw.data.magneticField.x;
+	dataCalibrated.data.magneticField.z = -dataRaw.data.magneticField.z;
+	dataCalibrated.data.magneticField = dataCalibrated.data.magneticField.vecSub(magCalib.bias).matVecMult(magCalib.scale);
 
 	dataCalibrated.data.temperature = (dataRaw.data.temperature / 16.0) + 25.0;
 	dataCalibrated.timestamp = NOW();
 }
-
-
-void IMU::setMagCalibMin(Vector3D min)
-{
-	this->magCalibMin = min;
-}
-
-void IMU::setMagCalibMax(Vector3D max)
-{
-	this->magCalibMax = max;
-}
-
-
 
 
 /**

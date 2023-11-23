@@ -39,9 +39,6 @@ private:
     IMUCalib gyroCalib;
     IMUCalib accelCalib;
     IMUCalib magCalib;
-    Vector3D magCalibMin;
-    Vector3D magCalibMax;
-
 
     HAL_I2C i2c;
 
@@ -125,9 +122,6 @@ public:
 
     /// @brief Calibrate current raw data (this->dataRaw) by applying current calibration values and saves to this->dataCalibrated
     void calibrateData();
-
-   void setMagCalibMin(Vector3D min);
-   void setMagCalibMax(Vector3D min);
 
     /**
      * ------- ONLY FOR TESTING -------
