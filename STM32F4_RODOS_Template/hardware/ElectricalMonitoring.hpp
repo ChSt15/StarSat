@@ -12,6 +12,37 @@ class ElectricalMonitoring
 {
 private:
 
+	static constexpr float DIVIDER_SCALE = 1;
+	static constexpr float SHUNT_RESISTOR = 0.22f;
+
+	/**
+	 * @brief A simple thread to control beeper timing.
+	*/
+	class BeeperThread : public RODOS::Thread
+	{
+	private:
+
+		RODOS::HAL_PWM beeper;
+
+		int64_t beepTime_ns;
+
+	public:
+
+		BeeperThread(RODOS::PWM_IDX beeper);
+
+		void beepForTime_ns(int64_t time_ns);
+
+		void init();
+
+		void run();
+
+	};
+
+
+	bool firstRun = true;
+
+	BeeperThread beeperThread;
+
 	float batteryVoltage;
 	float auxCurrent;
 	float reactionWheelCurrent;
@@ -27,6 +58,10 @@ private:
 	RODOS::HAL_ADC adcShunt;
 	RODOS::HAL_ADC adcWheel;
 	RODOS::HAL_PWM beeper;
+
+	float adcVBat_Calib = 1.0f;
+	float adcShunt_Calib = 1.0f;
+	float adcWheel_Calib = 1.0f;
 
 public:
 
@@ -51,12 +86,12 @@ public:
 	void update();
 
 	/**
-	 * @returns the battery voltage in Volts
+	 * @returns the battery voltage in Volts.
 	*/
 	float getBatteryVoltage();
 
 	/**
-	 * @returns the current drawn by everything except the reaction wheels in Ampere
+	 * @returns the current drawn by everything except the reaction wheels in Ampere.
 	*/
 	float getAuxCurrent();
 
