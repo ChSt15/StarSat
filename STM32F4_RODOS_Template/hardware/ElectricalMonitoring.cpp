@@ -1,6 +1,6 @@
 #include "ElectricalMonitoring.hpp"
 
-
+/*
 ElectricalMonitoring::ElectricalMonitoring()
 {
 
@@ -8,3 +8,4 @@ ElectricalMonitoring::ElectricalMonitoring()
 
 
 ElectricalMonitoring electricalMonitor;
+*/

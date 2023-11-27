@@ -15,7 +15,7 @@ class ControlThread : public Thread
 public:
 
 	// Set name, prio and stack size
-	SensorThread() : Thread("Sensor Thread", 100, 20000) {}
+	ControlThread() : Thread("Control Thread", 100, 20000) {}
 
 	void init();
 	void run();
