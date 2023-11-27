@@ -81,11 +81,11 @@ public:
 
     /// @brief Get IMU data. Used by the attitude estimation.
     /// @return Timestamped IMU data struct defined in imu.hpp. Timestamp is of time of reading.
-    TimestampedData<IMUData> getData();
+    TimestampedData<IMUData>& getData();
 
     /// @brief Gets the uncalibrated IMU data. Used by the calibration routine.
     /// @return Timestamped IMU data struct defined in imu.hpp. Timestamp is of time of reading.
-    TimestampedData<IMUData> getDataRaw();
+    TimestampedData<IMUData>& getDataRaw();
 
     /// @brief Set the Gyro calibration values
     /// @param calib 

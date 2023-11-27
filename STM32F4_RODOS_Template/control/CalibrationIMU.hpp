@@ -8,57 +8,35 @@
 #include "../hardware/imu.hpp"
 
 
-
-extern IMU imu;
-
-
-/// @brief Possible calibration modes.
-enum CalibrationMode {
-    DoNothing,
-    CalibAccel,
-    CalibGyro,
-    CalibMag
-};
-
-
-class CalibrationIMU : public Thread
+class CalibrationIMU
 {
 private:
 
-    /// @brief Indicates the mode of the calibration thread.
-    CalibrationMode calibMode;
+    int gyro_maxsamples = 200;
+    int accel_maxsamples = 200;
+    int mag_maxsamples = 500;
 
-	/// @brief Number of samples that should be used for determining the calibration data.
-	int numberOfSamples;
+    int gyro_samples = 0;
+    int accel_samples = 0;
+    int mag_samples = 0;
 
-    /// @brief Period of checking the calibMode in milliseconds.
-    int modePeriod;
+    Vector3D gyro_sum = Vector3D(0, 0, 0);
+    Vector3D accel_sum = Vector3D(0, 0, 0);
 
-    /// @brief Period of getting IMU Data during calibration routine in milliseconds
-    int calibPeriod;
-
+    float mag_minx, mag_miny =  42000.0f;
+    float mag_maxx, mag_maxy = -42000.0f;
 
 public:
 
-    void init() override;
+    bool calibrateGyro(TimestampedData<IMUData> imurawdata);
 
-    /// @brief Checks cyclically the current calibration mode and calls respective function
-    /// First idea of structure in CalibrationIMU.cpp
-    void run() override;
+    bool calibrateAccel(TimestampedData<IMUData> imurawdata);
 
-    /// @brief Get gyroscope data of extern defined IMU using getDataRaw() with this->calibPeriod and determines calibration values for gyroscope
-    /// @return IMUCalib: Calibration values for gyroscope
-    IMUCalib calibrateGyro();
-
-    /// @brief Get accelerometer data of extern defined IMU using getDataRaw() with this->calibPeriod and determines calibration values for accelerometer
-    /// @return IMUCalib: Calibration values for accelerometer
-    IMUCalib calibrateAccel();
-
-    /// @brief Get magnetometer data of extern defined IMU using getDataRaw() with this->calibPeriod and determines calibration values for magnetometer
-    /// @return IMUCalib: Calibration values for magnetometer
-    IMUCalib calibrateMag();
+    bool calibrateMag(TimestampedData<IMUData> imurawdata);
 
 };
 
+
+extern CalibrationIMU imucalib;
 
 #endif

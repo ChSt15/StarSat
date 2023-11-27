@@ -2,11 +2,14 @@
 #define FLOATSAT_HARDWARE_REACTIONWHEELENCODER_HPP_
 
 #include "rodos.h"
+#include "../timestamp.hpp"
 
 /**
  * @notes!!!!!!!!!!!!!!!!!1 
  * - Check the class consts. They are only temporary values!
 */
+
+extern Topic<TimestampedData<float>> EncoderDataTopic;
 
 class ReactionwheelEncoder
 {
@@ -19,10 +22,11 @@ public:
 
 	// @brief Gets speed of reactionwheel
 	// @return reactionwheel speed RAD/s
-	float getSpeed();
+	TimestampedData<float>& getSpeed();
 
 private:
 
+	TimestampedData<float> Speed;
 };
 
 

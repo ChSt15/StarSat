@@ -6,6 +6,7 @@
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/imu.hpp"
 #include "../timestamp.hpp"
+#include "Debug_Thread.hpp"
 
 
 class SensorThread : public Thread
@@ -20,9 +21,8 @@ public:
 	void run();
 
 private:
-	TimestampedData<IMUData> imuRawData;
-	const int period = 100;		// [ms]
 
+	const int period = 100;		// [ms]
 };
 
 

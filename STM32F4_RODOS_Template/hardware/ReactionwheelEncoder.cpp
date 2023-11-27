@@ -5,6 +5,9 @@
 #include "stdint.h"
 #include "stm32f4xx_conf.h"
 
+
+Topic<TimestampedData<float>> EncoderDataTopic(-1, "EncoderData");
+
 ReactionwheelEncoder::ReactionwheelEncoder()
 {
 
@@ -132,7 +135,7 @@ extern "C"
 }
 
 
-float ReactionwheelEncoder::getSpeed()
+TimestampedData<float>& ReactionwheelEncoder::getSpeed()
 {
     double SensorTime = ((NOW() - CaptureTime) / (double)MILLISECONDS);
     if (SensorTime > 250) //minimum measured speed is 2 RPS(120 RPM). This can give us 250ms of minimum interval between interrupts (2 interrupts every one revolution).
@@ -140,11 +143,14 @@ float ReactionwheelEncoder::getSpeed()
         TIM2Freq = 0;
     }
 
+    Speed.timestamp = NOW();
     if (EncoderB)
     {
-        return -1 * ((float)TIM2Freq / 16) * 60;  //CCW
+        Speed.data -1 * ((float)TIM2Freq / 16) * 60;  //CCW
     }
-    else { return ((float)TIM2Freq / 16) * 60; }  //CW
+    else { Speed.data = ((float)TIM2Freq / 16) * 60; }  //CW
+
+    return Speed;
 }
 
 

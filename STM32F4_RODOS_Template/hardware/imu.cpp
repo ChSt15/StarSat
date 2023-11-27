@@ -16,13 +16,13 @@ IMU::IMU(RODOS::I2C_IDX i2c):
 }
 
 
-TimestampedData<IMUData> IMU::getData()
+TimestampedData<IMUData>& IMU::getData()
 {
 	return this->dataCalibrated;
 }
 
 
-TimestampedData<IMUData> IMU::getDataRaw()
+TimestampedData<IMUData>& IMU::getDataRaw()
 {
 	return this->dataRaw;
 }
