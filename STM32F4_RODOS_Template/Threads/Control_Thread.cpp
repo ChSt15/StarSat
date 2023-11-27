@@ -6,6 +6,7 @@
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/ReactionwheelEncoder.hpp"
 #include "Debug_Thread.hpp"
+#include "../hardware/hbridge.hpp"
 
 static CommBuffer<TimestampedData<Attitude_Data>> AttitudeDataBuffer;
 static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer);
@@ -29,6 +30,7 @@ void ControlThread::run()
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		EncoderDataBuffer.get(EncoderDataReceiver);
 
+		hbridge.setVoltage(0.05);
 
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
