@@ -218,7 +218,7 @@ void QEKF::update_mag(Vector3D_F m)
 	
 	// Yaw measurment 
 	y_yaw = atan2(-mb.y, mb.x);
-	
+	PRINTF("%f\n\n", rad2Grad(y_yaw));
 	// Measurment prediction
 	z_yaw = atan2(2 * (q0 * q3 + q1 * q2), 1 - 2 * (q2 * q2 + q3 * q3));
 

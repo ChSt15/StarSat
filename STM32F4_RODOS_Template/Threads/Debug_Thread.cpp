@@ -23,14 +23,17 @@ void DebugThread::run()
 	TimestampedData<IMUData> IMUDataReceiver;
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 
-	bool visual = true;
-	bool calib = false;
+	bool visual = false;
+	bool calib = true;
 
 	while (true)
 	{
 
 		IMUDataBuffer.get(IMUDataReceiver);
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
+
+		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
+
 		if (!calib)
 		{
 			if (!visual)
@@ -53,7 +56,7 @@ void DebugThread::run()
 		{
 			//PRINTF("%f, %f, %f\n", IMUDataReceiver.data.angularVelocity.x, IMUDataReceiver.data.angularVelocity.y, IMUDataReceiver.data.angularVelocity.z);
 			//PRINTF("%f, %f, %f\n", IMUDataReceiver.data.acceleration.x, IMUDataReceiver.data.acceleration.y, IMUDataReceiver.data.acceleration.z);
-			PRINTF("%f, %f, %f\n", IMUDataReceiver.data.magneticField.x, IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.z);
+			//PRINTF("%f, %f, %f\n", IMUDataReceiver.data.magneticField.x, IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.z);
 		}
 
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
