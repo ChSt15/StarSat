@@ -72,5 +72,3 @@ void DebugThread::run()
 
 
 DebugThread debugthread;
-Semaphore mode_protec;
-modes mode = Idle;

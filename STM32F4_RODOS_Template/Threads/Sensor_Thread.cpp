@@ -58,27 +58,21 @@ void SensorThread::run()
 
 			if(!imucalib.calibrateGyro(imu.getDataRaw())) break;
 
-			mode_protec.enter();
-			mode = Idle;
-			mode_protec.leave();
+			setMode(Idle);
 			break;
 
 		case Calib_Accel:
 
 			if (!imucalib.calibrateAccel(imu.getDataRaw())) break;
 
-			mode_protec.enter();
-			mode = Idle;
-			mode_protec.leave();
+			setMode(Idle);
 			break;
 
 		case Calib_Mag:
 			
 			if (!imucalib.calibrateMag(imu.getDataRaw())) break;
 
-			mode_protec.enter();
-			mode = Idle;
-			mode_protec.leave();
+			setMode(Idle);
 			break;
 
 		default:
