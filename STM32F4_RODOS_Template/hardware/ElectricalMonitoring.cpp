@@ -73,8 +73,8 @@ void ElectricalMonitoring::update()
     }
 
     // Read ADCs
-    float adcVBAT_raw = adcVBAT.read()
-    float adcShunt_raw = adcShunt.read();
+    //float adcVBAT_raw = adcVBAT.read();
+    //float adcShunt_raw = adcShunt.read();
     
 
 }	
