@@ -3,8 +3,6 @@
 
 #include "rodos.h"
 
-#define MAX_OUTPUT_PERCENTAGE 1.0
-
 
 class HBridge
 {
@@ -21,7 +19,10 @@ private:
 	 * @note For high frequencies (20kHz), we might need to modell non-linearities with sqrt(voltagePercentage) in setVoltage()
 	*/
 	int pwmFrequency = 2000;
-	int pwmIncrements = 4000;
+	int pwmIncrements = 500;
+
+	// @brief Maximum output voltage percentage of HBridge output.
+	float MAX_OUTPUT_PERCENTAGE = 1.0f;
 	
 	/**
 	 * @brief Check if desired percentage of max. voltage exceeds limits and if so, adjust
