@@ -113,6 +113,6 @@ private:
 };
 
 
-extern ElectricalMonitoring electricalMonitor;
+//extern ElectricalMonitoring electricalMonitor;
 
 #endif

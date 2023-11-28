@@ -79,6 +79,23 @@ void ElectricalMonitoring::update()
 
 }	
 
+float ElectricalMonitoring::getBatteryVoltage() {
+    return 0;
+}
+
+float ElectricalMonitoring::getAuxCurrent() {
+    return 0;
+}
+
+float ElectricalMonitoring::getReactionWheelCurrent() {
+    return 0;
+}
+
+void ElectricalMonitoring::powerOff() {
+    
+}
 
 
-ElectricalMonitoring electricalMonitor;
+
+
+//ElectricalMonitoring electricalMonitor;
