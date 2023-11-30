@@ -4,6 +4,7 @@
 #include "rodos.h"
 
 #include "../Communication/Telemetry.hpp"
+#include "../Communication/Telecomand.hpp"
 
 
 class CommunicationThread : public Thread

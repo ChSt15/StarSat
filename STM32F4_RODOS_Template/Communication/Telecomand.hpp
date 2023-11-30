@@ -3,13 +3,20 @@
 
 #include "rodos.h"
 
+#include "Gateway.hpp"
+
 
 class Telecomand
 {
 private:
 
+	TopicListReport topics;
+
 public:
 
+	Telecomand();
+
+	void process();
 };
 
 

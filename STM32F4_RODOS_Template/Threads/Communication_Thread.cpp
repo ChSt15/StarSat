@@ -11,9 +11,10 @@ void CommunicationThread::run()
 	while (true)
 	{
 		
+		telecomand.process();
+
 		telemetry.send_Continuous();
-
-
+	
 		suspendCallerUntil(NOW() + this->period * MILLISECONDS);
 	}
 }

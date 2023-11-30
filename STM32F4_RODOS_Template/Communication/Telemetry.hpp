@@ -4,6 +4,7 @@
 #include "rodos.h"
 
 #include "../hardware/imu.hpp"
+#include "Gateway.hpp"
 
 class Telemety
 {
