@@ -3,31 +3,43 @@
 
 #include "rodos.h"
 
+#include "TelemetryList.hpp"
 #include "../hardware/imu.hpp"
-#include "Gateway.hpp"
+#include "../control/AttitudeEstimation.hpp"
+#include "../hardware/ReactionwheelEncoder.hpp"
 
-class Telemety
+
+class Telemetry
 {
-private:
-
-	TopicListReport topics;
-
 public:
 
-	Telemety();
-
-	// Continuous Telemetry
+	// @brief Sends telemetry
 	void send_Continuous();
+
+	// @brief Sends extended telemetry (only the extended)
 	void send_ContinuousExtended();
 
-	// Onetime Telemetry
-	void send_CalibGyro();
-	void send_CalibAccel();
-	void send_CalibMag();
-	// ...
+	// @brief Sends IMU calib telemetry
+	void send_CalibIMU();
+
+	// @brief Sends control params telemetry
+	void send_ControlParams();
 };
 
+// @brief Global telemetry object
+extern Telemetry telemetry;
 
-extern Telemety telemetry;
+// @brief Global countinuos telemetry topic
+extern Topic<TelemetryContinuous> telemetryContinuousTopic;
+
+// @brief Global extended countinuos telemetry topic
+extern Topic<TelemetryContinuousExtended> telemetryExtendedContinuousTopic;
+
+// @brief Global IMU calib telemetry topic
+extern Topic<TelemetryCalibIMU> telemetryCalibIMUTopic;
+
+// @brief Global control params telemetry topic
+extern Topic<TelemetryControlParams> telemetryControlParamsTopic;
+
 
 #endif

@@ -11,7 +11,7 @@ void CommunicationThread::run()
 	while (true)
 	{
 		
-		telecomand.process();
+		telecommand.processNewCommand();
 
 		telemetry.send_Continuous();
 	

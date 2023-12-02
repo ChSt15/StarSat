@@ -3,23 +3,28 @@
 
 #include "rodos.h"
 
-#include "Gateway.hpp"
+#include "TelecommandList.hpp"
 
 
-class Telecomand
+class Telecommand
 {
 private:
 
-	TopicListReport topics;
+	int commandCnt = 0;
 
 public:
 
-	Telecomand();
+	// @brief Processes the last new command received (if there is one)
+	void processNewCommand();
 
-	void process();
+	// @brief Returns number of successfully received commands
+	int getCommandCounter();
 };
 
+// @brief Global telecommand object
+extern Telecommand telecommand;
 
-extern Telecomand telecomand;
+// @brief Global telecommand topic
+extern Topic<Command> telecommandTopic;
 
 #endif

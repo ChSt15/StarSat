@@ -1,26 +1,37 @@
 #include "Telecomand.hpp"
 
-// Dummy topic + sub
-Topic<int> DummyTopic(40, "IMU_Telemetry");
-static CommBuffer<int> DummyBuffer;
-static Subscriber DummyDataSubsciber(DummyTopic, DummyBuffer);
-int DummyReceiver;
+
+// Telecomand topic
+Topic<Command> telecommandTopic(TelecommandTopicId, "Telecomand Topic");
+
+// Telecomand topic subscriber setup
+static CommBuffer<Command> commandBuffer;
+static Subscriber telecommandSubsciber(telecommandTopic, commandBuffer);
+Command commandReceiver;
 
 
-Telecomand::Telecomand()
+void Telecommand::processNewCommand()
 {
-	// topics to forward
-	topics.add(DummyTopic.topicId);
-	//..
-	uart_gateway.setTopicsToForward(&(this->topics));
+	// Only get new Command
+	if (commandBuffer.getOnlyIfNewData(commandReceiver))
+	{
+		switch ((CommandIds) commandReceiver.id)
+		{
+		case ChangeMode:
+			break;
+
+		default:
+			return;
+		}
+
+		this->commandCnt++;
+	}
+}
+
+int Telecommand::getCommandCounter()
+{
+	return this->commandCnt;
 }
 
 
-void Telecomand::process()
-{
-	DummyBuffer.get(DummyReceiver);
-}
-
-
-
-Telecomand telecomand;
+Telecommand telecommand;
