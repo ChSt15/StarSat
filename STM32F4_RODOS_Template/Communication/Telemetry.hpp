@@ -11,13 +11,16 @@
 
 class Telemetry
 {
+private:
+
+	bool enable_extendedtelem = false;
+
+	void send_ContinuousExtended();
+
 public:
 
-	// @brief Sends telemetry
+	// @brief Sends telemetry 
 	void send_Continuous();
-
-	// @brief Sends extended telemetry (only the extended)
-	void send_ContinuousExtended();
 
 	// @brief Sends IMU calib telemetry
 	void send_CalibIMU();

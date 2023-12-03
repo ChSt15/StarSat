@@ -29,7 +29,13 @@ Topic<TelemetryControlParams> telemetryControlParamsTopic(TelemetryControlParams
 
 void Telemetry::send_Continuous()
 {
+	// Collect data
+	IMUDataBuffer.get(IMUDataReceiver);
+	AttitudeDataBuffer.get(AttitudeDataReceiver);
+	EncoderDataBuffer.get(EncoderDataReceiver);
+
 	
+	if (this->enable_extendedtelem) send_ContinuousExtended();
 }
 
 void Telemetry::send_ContinuousExtended()

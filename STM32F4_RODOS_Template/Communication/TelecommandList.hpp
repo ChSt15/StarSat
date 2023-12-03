@@ -1,7 +1,7 @@
 #ifndef FLOATSAT_COMMUNICATION_TELECOMANDLIST_HPP_
 #define FLOATSAT_COMMUNICATION_TELECOMANDLIST_HPP_
 
-#define TelecommandTopicId 40
+#define TelecommandTopicId 50
 
 // @brief Structure of a Telecommand
 struct Command
