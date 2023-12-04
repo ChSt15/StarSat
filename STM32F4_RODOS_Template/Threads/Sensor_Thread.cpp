@@ -35,9 +35,9 @@ void SensorThread::init()
 	imu.setAccelCalib(accelCalib);
 
 	IMUCalib magCalib;
-	magCalib.bias.x = 0.068;
-	magCalib.bias.y = 0.129;
-	magCalib.bias.z = -0.0945;
+	magCalib.bias.x = -0.025;//0.068;
+	magCalib.bias.y = 0.2625;//0.129;
+	magCalib.bias.z = -0.0495;//-0.0945;
 	magCalib.scale = Matrix3D();
 	magCalib.scale.r[0][0] = 1.0;
 	magCalib.scale.r[1][1] = 1.0;

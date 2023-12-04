@@ -94,8 +94,8 @@ TimestampedData<IMUData>& IMU::readRawData()
 
 void IMU::gyroInit()
 {
-	// lsm9ds1.pdf: p.45 (current configuration: output data rate: 238 Hz; scale: 2000 dps)
-    uint8_t LSM9DS1_CTRL_REG1_G[2] = { 0x10, 0b10011000 };
+	// lsm9ds1.pdf: p.45 (current configuration: output data rate: 952 Hz; scale: 245 dps)
+    uint8_t LSM9DS1_CTRL_REG1_G[2] = { 0x10, 0b11000000 };
 	this->i2c.write(LSM9DS1_AG_ADDR, LSM9DS1_CTRL_REG1_G, 2);
 }
 
@@ -119,8 +119,8 @@ void IMU::gyroRead()
 
 void IMU::accelInit()
 {
-	// lsm9ds1.pdf: p.51 (current configuration: output data rate 238 Hz; scale: 2g; anti-aliasing filter bandwidth: 50 Hz)
-	uint8_t LSM9DS1_CTRL_REG6_XL[2] = { 0x20, 0b10000011 };
+	// lsm9ds1.pdf: p.51 (current configuration: output data rate 952 Hz; scale: 2g; anti-aliasing filter bandwidth: 50 Hz)
+	uint8_t LSM9DS1_CTRL_REG6_XL[2] = { 0x20, 0b11000011 };
 	this->i2c.write(LSM9DS1_AG_ADDR, LSM9DS1_CTRL_REG6_XL, 2);
 }
 

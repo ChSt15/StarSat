@@ -43,7 +43,7 @@ private:
     HAL_I2C i2c;
 
     /// @brief Scale factor to convert data of sensors in corresponding units; depends on the initialized range
-    const float gyroScale = 70 / 1000.0;            // +-2000dps -> 70, +-500dps -> 17.50, +-245dps -> 8.75
+    const float gyroScale = 8.75 / 1000.0;            // +-2000dps -> 70, +-500dps -> 17.50, +-245dps -> 8.75
     const float accelScale = 0.061 / 1000.0;        // +-2g -> 0.061, +-4g -> 0.122, +-8g -> 0.244, +-16g -> 0.732
     const float magScale = 0.14 / 1000.0;           // +-4gauss -> 0.14, +-8gauss -> 0.29, +-12gauss -> 0.43, +-16gauss -> 0.58
 

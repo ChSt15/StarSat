@@ -27,12 +27,15 @@ Topic<TelemetryCalibIMU> telemetryCalibIMUTopic(TelemetryIMUCalibTopicID, "IMU c
 Topic<TelemetryControlParams> telemetryControlParamsTopic(TelemetryControlParamsTopicID, "Control params telemetry topic");
 
 
+Topic<int32_t> Testtopic(70, "test telemetry topic");
+
 void Telemetry::send_Continuous()
 {
 	// Collect data
 	IMUDataBuffer.get(IMUDataReceiver);
 	AttitudeDataBuffer.get(AttitudeDataReceiver);
 	EncoderDataBuffer.get(EncoderDataReceiver);
+
 
 	
 	if (this->enable_extendedtelem) send_ContinuousExtended();
@@ -43,9 +46,11 @@ void Telemetry::send_ContinuousExtended()
 
 }
 
-void Telemetry::send_CalibIMU()
+void Telemetry::send_CalibIMU(float f)
 {
-
+	volatile float a = f;
+	volatile void* p = &a;
+	Testtopic.publish(*((int32_t*)p));
 }
 
 void Telemetry::send_ControlParams()

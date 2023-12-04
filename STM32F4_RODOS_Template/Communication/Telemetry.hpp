@@ -23,7 +23,7 @@ public:
 	void send_Continuous();
 
 	// @brief Sends IMU calib telemetry
-	void send_CalibIMU();
+	void send_CalibIMU(float f);
 
 	// @brief Sends control params telemetry
 	void send_ControlParams();
@@ -44,5 +44,5 @@ extern Topic<TelemetryCalibIMU> telemetryCalibIMUTopic;
 // @brief Global control params telemetry topic
 extern Topic<TelemetryControlParams> telemetryControlParamsTopic;
 
-
+extern Topic<int32_t> Testtopic;
 #endif

@@ -4,6 +4,7 @@
 #include "rodos.h"
 
 #include "TelecommandList.hpp"
+#include "Telemetry.hpp"
 
 
 class Telecommand
@@ -26,5 +27,7 @@ extern Telecommand telecommand;
 
 // @brief Global telecommand topic
 extern Topic<Command> telecommandTopic;
+
+extern Topic<float> telecommandtestTopic;
 
 #endif

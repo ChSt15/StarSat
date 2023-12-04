@@ -9,16 +9,25 @@ static CommBuffer<Command> commandBuffer;
 static Subscriber telecommandSubsciber(telecommandTopic, commandBuffer);
 Command commandReceiver;
 
+Topic<float> telecommandtestTopic(80, "Telecomand Test Topic");
+static CommBuffer<float> TestcommandBuffer;
+static Subscriber testtelecommandSubsciber(telecommandtestTopic, TestcommandBuffer);
+float  testcommandReceiver;
+
 
 void Telecommand::processNewCommand()
 {
+
+
+TestcommandBuffer.get(testcommandReceiver);
+telemetry.send_CalibIMU(testcommandReceiver);
+
+
 	// Only get new Command
 	if (commandBuffer.getOnlyIfNewData(commandReceiver))
 	{
 		switch ((CommandIds) commandReceiver.id)
 		{
-		case ChangeMode:
-			break;
 
 		default:
 			return;
