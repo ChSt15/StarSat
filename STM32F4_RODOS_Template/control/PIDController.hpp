@@ -57,6 +57,7 @@ class PID {
 
         /**
          * @brief Calculate new control output based on current setpoint and current measurement
+         * @return Control output within minLimit to maxLimit
         */
         float calculate(float measurement, int64_t dt);
 
@@ -83,7 +84,6 @@ class PID {
          * @brief Set max. and min. limit of control signal
         */
         void setLimits(float maxLimit, float minLimit);
-
 
 };
 

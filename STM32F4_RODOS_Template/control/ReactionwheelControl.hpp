@@ -10,9 +10,9 @@ class ReactionwheelControl
 {
 private:
 
-	// TimestampedData<float> Speed;
 	PID controller;
-	float maxVoltage;
+	float maxVoltage;					// max. voltage that can be applied by HBridge -> to limit the control input [V]
+	float maxDesiredSpeed;				// max. speed the reactionwheel can reach in both directions -> to limit the setpoint [rad/s]
 
 public:
 
@@ -21,7 +21,7 @@ public:
 	/**
 	 * @brief Initialize PID controller
 	*/
-	void init(const PIDParams& params, float maxLimit, float minLimit, float maxVoltage);
+	void init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed);
 
 
 	/**
@@ -55,11 +55,23 @@ public:
 
 
 	/**
+	 * @brief Set max. speed that can the reactionwheel can reach [rad/s]
+	*/
+	void setMaxDesiredSpeed(float maxDesiredSpeed);
+
+
+	/**
+	 * @brief Get max. speed that can the reactionwheel can reach [rad/s]
+	*/
+	float getMaxDesiredSpeed();
+
+
+	/**
 	 * @brief Determine output of reactionwheel controller / input of HBridge
-	 * @param speed: measurement of current speed of reaction wheel measured by Encoder in [rad/s]
+	 * @param speed_measured: measurement of current speed of reaction wheel measured by Encoder in [rad/s]
 	 * @return Percentage of max. voltage that needs to be applied by HBridge; range of -1 to 1
 	*/
-	float update(TimestampedData<float> speed);
+	float update(TimestampedData<float> speed_measured);
 
 };
 

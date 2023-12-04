@@ -2,44 +2,76 @@
 #define FLOATSAT_CONTROL_ANGULARVELOCITYCONTROL_HPP_
 
 #include "rodos.h"
-
-struct VelocityControlParams
-{
-	float P = 0;
-	float I = 0;
-	float D = 0;
-	float limit = 12000; /// @brief limit for output in range -limit to limit in RPM
-};
+#include "PIDController.hpp"
+#include "timestamp.hpp"
 
 
 class AngularVelocityControl
 {
 private:
 
-	float desiredAngluarVelocity;
-
-	VelocityControlParams controlParams;
+	PID controller;
+	float maxSpeed;						// max. speed the reaction wheel can reach -> to limit the control output [rad/s]
+	float maxDesiredVelocity;			// max. angular velocity the satellite can reach in both directions -> to limit the setpoint [rad/s]
 
 public:
 
 	AngularVelocityControl();
 
-	// @brief Sets Controlparameters
-	// @params Controlparameter defined in AngularVelocityControl.hpp
-	void setParams(const VelocityControlParams& params);
+	/**
+	 * @brief Initialize PID controller
+	*/
+	void init(const PIDParams& params, float maxSpeed, float maxDesiredVelocity);
 
-	// @brief Gets Controlparameters
-	// @return Controlparameter defined in AngularVelocityControl.hpp
-	const VelocityControlParams& getParams();
 
-	// @brief Sets desired angularvelocity of satellite (Controler Input)
-	// @param w_set -> disired angularvelocity [rad/s]
+	/**
+	 * @brief Set control parameters of PID controller
+	*/
+	void setParams(const PIDParams& params);
+
+
+	/**
+	 * @brief Get control parameters of PID controller
+	*/
+	const PIDParams& getParams();
+
+
+	/**
+	 * @brief Set desired angular velocity of satellite in [rad/s]
+	*/
 	void setDesiredAngularVelocity(float w_set);
 
-	// @brief Gets the Speed for reactionwheel (Controler Output)
-	// @param w_mes -> measured angularvelocity of satellite [rad/s]
-	// @return reactionwheel speed [RPM]
-	float getSpeed(float w_mes);
+
+	/**
+	 * @brief Set max. speed that can be reached by reactionwheel [rad/s]
+	*/
+	void setMaxSpeed(float maxSpeed);
+
+
+	/**
+	 * @brief Get max. speed that can be reached by reactionwheel [rad/s]
+	*/
+	float getMaxSpeed();
+
+
+	/**
+	 * @brief Set max. angular velocity that can be reached by satellite [rad/s]
+	*/
+	void setMaxDesiredVelocity(float maxDesiredVelocity);
+
+
+	/**
+	 * @brief Get max. angular velocity that can be reached by satellite [rad/s]
+	*/
+	float getMaxDesiredVelocity();
+
+
+	/**
+	 * @brief Determine output of satellite velocity controller / input of reactionwheel controller
+	 * @param velocity_measured: measurement of current angular velocity (about z-axis) of satellite measured by Gyroscope in [rad/s]
+	 * @return Desired speed of reactionwheel that needs to be reached; range of -maxSpeed to +maxSpeed
+	*/
+	float update(TimestampedData<float> velocity_measured);
 
 };
 

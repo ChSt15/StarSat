@@ -10,10 +10,11 @@ ReactionwheelControl::ReactionwheelControl()
 
 
 
-void ReactionwheelControl::init(const PIDParams& params, float maxLimit, float minLimit, float maxVoltage)
+void ReactionwheelControl::init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed)
 {
-    this->controller.init(params, maxLimit, minLimit);
+    this->controller.init(params, maxVoltage, -maxVoltage);
     this->maxVoltage = maxVoltage;
+    this->maxDesiredSpeed = maxDesiredSpeed;
 }
 
 
@@ -31,17 +32,56 @@ const PIDParams& ReactionwheelControl::getParams()
 }
 
 
+
 void ReactionwheelControl::setDesiredSpeed(float w_set)
-{
-    this->controller.setSetpoint(w_set);
+{   
+    if(abs(w_set) >= this->maxDesiredSpeed) 
+    {
+        this->controller.setSetpoint(maxDesiredSpeed);
+    } else {
+        this->controller.setSetpoint(w_set);
+    }
 }
 
 
 
-float ReactionwheelControl::update(TimestampedData<float> speed)
+float ReactionwheelControl::getMaxVoltage()
 {
-    float controlSignal = this->controller.calculate(speed.data, speed.timestamp);
+    return this->maxVoltage;
+}
+
+
+
+void ReactionwheelControl::setMaxVoltage(float maxVoltage)
+{
+    this->controller.setLimits(maxVoltage, -maxVoltage);
+    this->maxVoltage = maxVoltage;
+}
+
+
+
+void ReactionwheelControl::setMaxDesiredSpeed(float maxDesiredSpeed)
+{
+    this->maxDesiredSpeed = maxDesiredSpeed;
+}
+
+
+
+float ReactionwheelControl::getMaxDesiredSpeed()
+{
+    return this->maxDesiredSpeed;
+}
+
+
+
+float ReactionwheelControl::update(TimestampedData<float> speed_measured)
+{
+    float controlSignal = this->controller.calculate(speed_measured.data, speed_measured.timestamp);
     controlSignal = controlSignal / maxVoltage;
+
+    /**
+     * If necessary, add/adjust things like integral windup, etc.
+    */
 }
 
 ReactionwheelControl reactionwheelControl;
