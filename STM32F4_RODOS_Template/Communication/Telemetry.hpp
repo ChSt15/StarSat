@@ -6,16 +6,25 @@
 #include "TelemetryList.hpp"
 #include "../hardware/imu.hpp"
 #include "../control/AttitudeEstimation.hpp"
+#include "../control/ReactionwheelControl.hpp"
+#include "../control/AngularPositionControl.hpp"
+#include "../control/AngularVelocityControl.hpp"
+#include "../control/PIDController.hpp"
 #include "../hardware/ReactionwheelEncoder.hpp"
+#include "../Threads/Modes.hpp"
+#include "Telecomand.hpp"
 
 
 class Telemetry
 {
 private:
 
-	bool enable_extendedtelem = false;
+	TelemetryContinuous telemetry_continuous;
+	TelemetryCalibIMU telemetry_calib;
+	TelemetryControlParams telemetry_control;
+	TelemetryContinuousExtended telemetry_extended;
 
-	void send_ContinuousExtended();
+	bool enable_extendedtelem = false;
 
 public:
 
@@ -23,10 +32,12 @@ public:
 	void send_Continuous();
 
 	// @brief Sends IMU calib telemetry
-	void send_CalibIMU(float f);
+	void send_CalibIMU();
 
 	// @brief Sends control params telemetry
 	void send_ControlParams();
+
+	void enable_ExtendedTelemetry(bool enable);
 };
 
 // @brief Global telemetry object
@@ -44,5 +55,5 @@ extern Topic<TelemetryCalibIMU> telemetryCalibIMUTopic;
 // @brief Global control params telemetry topic
 extern Topic<TelemetryControlParams> telemetryControlParamsTopic;
 
-extern Topic<int32_t> Testtopic;
+
 #endif

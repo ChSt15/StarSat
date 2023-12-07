@@ -12,25 +12,30 @@ ReactionwheelControl::ReactionwheelControl()
 
 void ReactionwheelControl::init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed)
 {
-    this->controller.init(params, maxVoltage, -maxVoltage);
+    this->controller.init(params, maxVoltage);
     this->maxVoltage = maxVoltage;
     this->maxDesiredSpeed = maxDesiredSpeed;
 }
 
 
 
-void ReactionwheelControl::setParams(const PIDParams& params)
+void ReactionwheelControl::setParams(PIDParams params)
 {
     this->controller.setParams(params);
 }
 
 
 
-const PIDParams& ReactionwheelControl::getParams()
+PIDParams ReactionwheelControl::getParams()
 {
     return this->controller.getParams();
 }
 
+
+float ReactionwheelControl::getLimits()
+{
+    return this->controller.getLimits();
+}
 
 
 void ReactionwheelControl::setDesiredSpeed(float w_set)
@@ -54,7 +59,7 @@ float ReactionwheelControl::getMaxVoltage()
 
 void ReactionwheelControl::setMaxVoltage(float maxVoltage)
 {
-    this->controller.setLimits(maxVoltage, -maxVoltage);
+    this->controller.setLimits(maxVoltage);
     this->maxVoltage = maxVoltage;
 }
 

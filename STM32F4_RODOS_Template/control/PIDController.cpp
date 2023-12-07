@@ -10,25 +10,27 @@ PID::PID()
 
 
 
-void PID::init(const PIDParams &params, float maxLimit, float minLimit)
+void PID::init(const PIDParams &params, float limit)
 {
     this->parameters = params;
     this->setpoint = 0.0;
     this->lastError = 0.0;
     this->integError = 0.0;
-    this->maxLimit = maxLimit;
-    this->minLimit = minLimit;
+    this->Limit = limit;
 }
 
 
 
 float PID::calculate(float measurement, int64_t timestamp)
 {   
+    // Save locally to avoid changes during calculations
+    PIDParams params = parameters.get();
+
     // Error
-    float error = this->setpoint - measurement;
+    float error = this->setpoint.get() - measurement;
 
     // Proportional term
-    float propTerm = parameters.kp * error;
+    float propTerm = params.kp * error;
 
     if(flagInitialized)
     {
@@ -37,10 +39,10 @@ float PID::calculate(float measurement, int64_t timestamp)
 
         // Integral term
         this->integError += error * dt;
-        float integTerm = parameters.ki * this->integError;
+        float integTerm = params.ki * this->integError;
 
         // Derivation term
-        float derivTerm = parameters.kd * (error - this->lastError) / dt;
+        float derivTerm = params.kd * (error - this->lastError) / dt;
 
         // Determine output signal
         float controlSignal = propTerm + integTerm + derivTerm;
@@ -50,8 +52,8 @@ float PID::calculate(float measurement, int64_t timestamp)
         this->lastTimestamp = timestamp;
 
         // Limit control signal
-        if(controlSignal > this->maxLimit) controlSignal = this->maxLimit;
-        else if (controlSignal < this->minLimit) controlSignal = this->minLimit;
+        if(controlSignal > this->Limit) controlSignal = this->Limit;
+        else if (controlSignal < -this->Limit) controlSignal = -this->Limit;
         
         return controlSignal;
     } else {
@@ -69,27 +71,31 @@ float PID::calculate(float measurement, int64_t timestamp)
 
 void PID::setParams(const PIDParams &params)
 {
-    this->parameters = params;
+    this->parameters.set(params);
 }
 
 
 
-PIDParams& PID::getParams()
+PIDParams PID::getParams()
 {
-    return this->parameters;
+    return this->parameters.get();
 }
 
 
 
 void PID::setSetpoint(float setpoint)
 {
-    this->setpoint = setpoint;
+    this->setpoint.set(setpoint);
 }
 
 
 
-void PID::setLimits(float maxLimit, float minLimit)
+void PID::setLimits(float limit)
 {
-    this->maxLimit = maxLimit;
-    this->minLimit = minLimit;
+    this->Limit.set(limit);
+}
+
+float PID::getLimits()
+{
+    return this->Limit.get();
 }

@@ -12,25 +12,30 @@ AngularVelocityControl::AngularVelocityControl()
 
 void AngularVelocityControl::init(const PIDParams& params, float maxSpeed, float maxDesiredVelocity)
 {
-    this->controller.init(params, maxSpeed, -maxSpeed);
+    this->controller.init(params, maxSpeed);
     this->maxSpeed = maxSpeed;
     this->maxDesiredVelocity = maxDesiredVelocity;
 }
 
 
 
-void AngularVelocityControl::setParams(const PIDParams& params)
+void AngularVelocityControl::setParams(PIDParams params)
 {
     this->controller.setParams(params);
 }
 
 
 
-const PIDParams& AngularVelocityControl::getParams()
+PIDParams AngularVelocityControl::getParams()
 {
     return this->controller.getParams();
 }
 
+
+float AngularVelocityControl::getLimits()
+{
+    return this->controller.getLimits();
+}
 
 
 void AngularVelocityControl::setDesiredAngularVelocity(float w_set)
@@ -54,7 +59,7 @@ float AngularVelocityControl::getMaxSpeed()
 
 void AngularVelocityControl::setMaxSpeed(float maxSpeed)
 {
-    this->controller.setLimits(maxSpeed, -maxSpeed);
+    this->controller.setLimits(maxSpeed);
     this->maxSpeed = maxSpeed;
 }
 

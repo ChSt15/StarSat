@@ -5,6 +5,12 @@
 
 #include "TelecommandList.hpp"
 #include "Telemetry.hpp"
+#include "../Threads/Modes.hpp"
+#include "../hardware/imu.hpp"
+#include "../control/PIDController.hpp"
+#include "../control/ReactionwheelControl.hpp"
+#include "../control/AngularPositionControl.hpp"
+#include "../control/AngularVelocityControl.hpp"
 
 
 class Telecommand
@@ -28,6 +34,5 @@ extern Telecommand telecommand;
 // @brief Global telecommand topic
 extern Topic<Command> telecommandTopic;
 
-extern Topic<float> telecommandtestTopic;
 
 #endif

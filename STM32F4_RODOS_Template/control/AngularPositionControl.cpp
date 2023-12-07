@@ -12,24 +12,29 @@ AngularPositionControl::AngularPositionControl()
 
 void AngularPositionControl::init(const PIDParams& params, float maxAngularVelocity)
 {
-    this->controller.init(params, maxAngularVelocity, -maxAngularVelocity);
+    this->controller.init(params, maxAngularVelocity);
     this->maxAngularVelocity = maxAngularVelocity;
 }
 
 
 
-void AngularPositionControl::setParams(const PIDParams& params)
+void AngularPositionControl::setParams(PIDParams params)
 {
     this->controller.setParams(params);
 }
 
 
 
-const PIDParams& AngularPositionControl::getParams()
+PIDParams AngularPositionControl::getParams()
 {
     return this->controller.getParams();
 }
 
+
+float AngularPositionControl::getLimits()
+{
+    return this->controller.getLimits();
+}
 
 
 void AngularPositionControl::setDesiredAngle(float angle_set)
@@ -63,7 +68,7 @@ float AngularPositionControl::getMaxAngularVelocity()
 
 void AngularPositionControl::setMaxAngularVelocity(float maxAngularVelocity)
 {
-    this->controller.setLimits(maxAngularVelocity, -maxAngularVelocity);
+    this->controller.setLimits(maxAngularVelocity);
     this->maxAngularVelocity = maxAngularVelocity;
 }
 

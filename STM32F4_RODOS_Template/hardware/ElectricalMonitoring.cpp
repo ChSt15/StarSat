@@ -134,7 +134,7 @@ bool ElectricalMonitoring::powerGood() {
 }
 
 bool ElectricalMonitoring::rpiRunning() {
-    return rpiRunning_:
+    return rpiRunning_;
 }
 
 

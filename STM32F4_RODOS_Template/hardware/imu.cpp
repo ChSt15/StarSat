@@ -28,39 +28,39 @@ TimestampedData<IMUData>& IMU::getDataRaw()
 }
 
 
-void IMU::setGyroCalib(const IMUCalib& calib)
+void IMU::setGyroCalib(IMUCalib calib)
 {
-	this->gyroCalib = calib;
+	this->gyroCalib.set(calib);
 }
 
 
-const IMUCalib& IMU::getGyroCalib()
+IMUCalib IMU::getGyroCalib()
 {
-	return this->gyroCalib;
+	return this->gyroCalib.get();
 }
 
 
-void IMU::setAccelCalib(const IMUCalib& calib)
+void IMU::setAccelCalib(IMUCalib calib)
 {
-	this->accelCalib = calib;
+	this->accelCalib.set(calib);
 }
 
 
-const IMUCalib& IMU::getAccelCalib()
+IMUCalib IMU::getAccelCalib()
 {
-	return this->accelCalib;
+	return this->accelCalib.get();
 }
 
 
-void IMU::setMagCalib(const IMUCalib& calib)
+void IMU::setMagCalib(IMUCalib calib)
 {
-	this->magCalib = calib;
+	this->magCalib.set(calib);
 }
 
 
-const IMUCalib& IMU::getMagCalib()
+IMUCalib IMU::getMagCalib()
 {
-	return this->magCalib;
+	return this->magCalib.get();
 }
 
 
@@ -191,18 +191,21 @@ float IMU::bytes_to_float(uint8_t* data)
 
 void IMU::calibrateData()
 {
+	IMUCalib gyro_calib = this->getGyroCalib();
 	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity;
 	dataCalibrated.data.angularVelocity.z = -dataCalibrated.data.angularVelocity.z;
-	dataCalibrated.data.angularVelocity = dataCalibrated.data.angularVelocity.vecSub(gyroCalib.bias).matVecMult(gyroCalib.scale);
+	dataCalibrated.data.angularVelocity = dataCalibrated.data.angularVelocity.vecSub(gyro_calib.bias).matVecMult(gyro_calib.scale);
 
+	IMUCalib accel_calib = this->getAccelCalib();
 	dataCalibrated.data.acceleration = dataRaw.data.acceleration;
 	dataCalibrated.data.acceleration.z = -dataCalibrated.data.acceleration.z;
-	dataCalibrated.data.acceleration = dataCalibrated.data.acceleration.vecSub(accelCalib.bias).matVecMult(accelCalib.scale);
+	dataCalibrated.data.acceleration = dataCalibrated.data.acceleration.vecSub(accel_calib.bias).matVecMult(accel_calib.scale);
 
+	IMUCalib mag_calib = this->getMagCalib();
 	dataCalibrated.data.magneticField = dataRaw.data.magneticField;
 	dataCalibrated.data.magneticField.x = -dataRaw.data.magneticField.x;
 	dataCalibrated.data.magneticField.z = -dataRaw.data.magneticField.z;
-	dataCalibrated.data.magneticField = dataCalibrated.data.magneticField.vecSub(magCalib.bias).matVecMult(magCalib.scale);
+	dataCalibrated.data.magneticField = dataCalibrated.data.magneticField.vecSub(mag_calib.bias).matVecMult(mag_calib.scale);
 
 	dataCalibrated.data.temperature = (dataRaw.data.temperature / 16.0) + 25.0;
 	dataCalibrated.timestamp = NOW();

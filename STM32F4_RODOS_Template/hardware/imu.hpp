@@ -4,6 +4,7 @@
 #include "rodos.h"
 #include "matlib.h"
 #include "../timestamp.hpp"
+#include "../threadsafe.hpp"
 
 
 struct IMUData 
@@ -36,9 +37,9 @@ private:
     /// @brief Data from IMU without calibration
     TimestampedData<IMUData> dataRaw;
 
-    IMUCalib gyroCalib;
-    IMUCalib accelCalib;
-    IMUCalib magCalib;
+    Threadsafe<IMUCalib> gyroCalib;
+    Threadsafe<IMUCalib> accelCalib;
+    Threadsafe<IMUCalib> magCalib;
 
     HAL_I2C i2c;
 
@@ -89,24 +90,24 @@ public:
 
     /// @brief Set the Gyro calibration values
     /// @param calib 
-    void setGyroCalib(const IMUCalib& calib);
+    void setGyroCalib(IMUCalib calib);
 
     /// @brief Get the Gyro calibration values
-    const IMUCalib& getGyroCalib();
+    IMUCalib getGyroCalib();
 
     /// @brief Set the Accel calibration values
     /// @param calib
-    void setAccelCalib(const IMUCalib& calib);
+    void setAccelCalib(IMUCalib calib);
 
     /// @brief Get the Accel calibration values
-    const IMUCalib& getAccelCalib();
+    IMUCalib getAccelCalib();
 
     /// @brief Set the Mag calibration values
     /// @param calib
-    void setMagCalib(const IMUCalib& calib);
+    void setMagCalib(IMUCalib calib);
 
     /// @brief Get the Mag calibration values
-    const IMUCalib& getMagCalib();
+    IMUCalib getMagCalib();
 
     /// @brief Checks I2C Enable Pins (if connected), just for initial Testing/Debugging
     void Check_I2C_Enable();

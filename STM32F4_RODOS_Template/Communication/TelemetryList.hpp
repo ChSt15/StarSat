@@ -10,6 +10,7 @@
 // @brief Structure countinuos telemetry
 struct TelemetryContinuous
 {
+    // Status
     int modeid;
     int cmdCnt;
     float time;             // [sec]
@@ -17,6 +18,7 @@ struct TelemetryContinuous
     float wx, wy, wz;       // [rad/s]
     float ax, ay, az;       // [g]
     float mx, my, mz;       // [gauss]
+    float temp;             // [°C]
     // Attitude Quaternion
     float q0, q1, q2, q3;
     // Encoder
@@ -46,7 +48,6 @@ struct TelemetryCalibIMU
     float gyro_offx, gyro_offy, gyro_offz;          // [rad/s]
     float accel_offx, accel_offy, accel_offz;       // [g]
     float mag_offx, mag_offy, mag_offz;             // [gauss]
-    float temp;                                     // [°C]
 };
 
 

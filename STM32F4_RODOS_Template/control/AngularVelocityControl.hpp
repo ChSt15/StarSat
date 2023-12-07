@@ -3,7 +3,7 @@
 
 #include "rodos.h"
 #include "PIDController.hpp"
-#include "timestamp.hpp"
+#include "../timestamp.hpp"
 
 
 class AngularVelocityControl
@@ -27,14 +27,16 @@ public:
 	/**
 	 * @brief Set control parameters of PID controller
 	*/
-	void setParams(const PIDParams& params);
+	void setParams(PIDParams params);
 
 
 	/**
 	 * @brief Get control parameters of PID controller
 	*/
-	const PIDParams& getParams();
+	PIDParams getParams();
 
+
+	float getLimits();
 
 	/**
 	 * @brief Set desired angular velocity of satellite in [rad/s]
