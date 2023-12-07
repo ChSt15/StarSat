@@ -2,44 +2,76 @@
 #define FLOATSAT_CONTROL_REACTIONWHEELCONTROL_HPP_
 
 #include "rodos.h"
-
-struct ReactionwheelControlParams
-{
-	float P = 0;
-	float I = 0;
-	float D = 0;
-	float limit = 1; /// @brief limit for output in range -limit to limit
-};
+#include "PIDController.hpp"
+#include "timestamp.hpp"
 
 
 class ReactionwheelControl
 {
 private:
 
-	float desiredSpeed;
-
-	ReactionwheelControlParams controlParams;
+	PID controller;
+	float maxVoltage;					// max. voltage that can be applied by HBridge -> to limit the control input [V]
+	float maxDesiredSpeed;				// max. speed the reactionwheel can reach in both directions -> to limit the setpoint [rad/s]
 
 public:
 
 	ReactionwheelControl();
 
-	// @brief Sets Controlparameters
-	// @params Controlparameter defined in ReactionwheelControl.hpp
-	void setParams(const ReactionwheelControlParams& params);
+	/**
+	 * @brief Initialize PID controller
+	*/
+	void init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed);
 
-	// @brief Gets Controlparameters
-	// @return Controlparameter defined in ReactionwheelControl.hpp
-	const ReactionwheelControlParams& getParams();
 
-	// @brief Sets desired Speed for reactionwheel (Controler Input)
-	// @param w_set -> disired reactionwheel speed [RPM]
+	/**
+	 * @brief Set control parameters of PID controller
+	*/
+	void setParams(const PIDParams& params);
+
+
+	/**
+	 * @brief Get control parameters of PID controller
+	*/
+	const PIDParams& getParams();
+
+
+	/**
+	 * @brief Set desired speed for reaction wheel in [rad/s]
+	*/
 	void setDesiredSpeed(float w_set);
 
-	// @brief Calculates the Power output for reactionwheel (Controller Output)
-	// @param rpmMeas -> measured reactionwheel speed [RPM]
-	// @return output for power in range of -1 to 1
-	float update(float w_mes);
+
+	/**
+	 * @brief Set max. voltage that can be applied by HBridge [V]
+	*/
+	void setMaxVoltage(float maxVoltage);
+
+
+	/**
+	 * @brief Get max. voltage that can be applied by HBridge [V]
+	*/
+	float getMaxVoltage();
+
+
+	/**
+	 * @brief Set max. speed that can the reactionwheel can reach [rad/s]
+	*/
+	void setMaxDesiredSpeed(float maxDesiredSpeed);
+
+
+	/**
+	 * @brief Get max. speed that can the reactionwheel can reach [rad/s]
+	*/
+	float getMaxDesiredSpeed();
+
+
+	/**
+	 * @brief Determine output of reactionwheel controller / input of HBridge
+	 * @param speed_measured: measurement of current speed of reaction wheel measured by Encoder in [rad/s]
+	 * @return Percentage of max. voltage that needs to be applied by HBridge; range of -1 to 1
+	*/
+	float update(TimestampedData<float> speed_measured);
 
 };
 

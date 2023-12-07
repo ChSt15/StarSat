@@ -2,44 +2,64 @@
 #define FLOATSAT_CONTROL_ANGULARPOSITIONCONTROL_HPP_
 
 #include "rodos.h"
-
-struct PositionControlParams
-{
-	float P = 0;
-	float I = 0;
-	float D = 0;
-	float limit = 2*3.14; /// @brief limit for output in range -limit to limit in rad
-};
+#include "PIDController.hpp"
+#include "timestamp.hpp"
 
 
 class AngularPositionControl
 {
 private:
 
-	float desiredAngle;
-
-	PositionControlParams controlParams;
+	PID controller;
+	float maxAngularVelocity;					// max. angular velocity that can be reached by the satellite -> to limit the control input [rad/s]
+	float maxDesiredAngle = 2 * M_PI;			// max. angle the satellite can reach in both directions -> to limit the setpoint [rad]
 
 public:
 
 	AngularPositionControl();
 
-	// @brief Sets Controlparameters
-	// @params Controlparameter defined in AngularPositionControl.hpp
-	void setParams(const PositionControlParams& params);
+	/**
+	 * @brief Initialize PID controller
+	*/
+	void init(const PIDParams& params, float maxAngularVelocity);
 
-	// @brief Gets Controlparameters
-	// @return Controlparameter defined in AngularPositionControl.hpp
-	const PositionControlParams& getParams();
 
-	// @brief Sets desired angle of satellite (Controler Input)
-	// @param angle_set -> disired angle [rad]
+	/**
+	 * @brief Set control parameters of PID controller
+	*/
+	void setParams(const PIDParams& params);
+
+
+	/**
+	 * @brief Get control parameters of PID controller
+	*/
+	const PIDParams& getParams();
+
+
+	/**
+	 * @brief Set desired yaw angle/orientation of satellite in [rad]
+	*/
 	void setDesiredAngle(float angle_set);
 
-	// @brief Gets the Speed for reactionwheel (Controler Output)
-	// @param angle_mes -> measured angle of satellite [rad]
-	// @return reactionwheel speed [RPM]
-	float getSpeed(float angle_mes);
+
+	/**
+	 * @brief Set max. angular velocity that can be reached by the satellite [rad/s]
+	*/
+	void setMaxAngularVelocity(float maxAngularVelocity);
+
+
+	/**
+	 * @brief Get max. angular velocity that can be reached by the satellite [rad/s]
+	*/
+	float getMaxAngularVelocity();
+
+
+	/**
+	 * @brief Determine output of angular position controller / input of angular velocity controller
+	 * @param angle_measured: measurement/estimationn of current yaw angle estimated by Kalman filter in [rad]
+	 * @return Desired angular velocity of satellite that needs to be reached; range of -maxAngularVelocity to +maxAngularVelocity
+	*/
+	float update(TimestampedData<float> angle_measured);
 
 };
 
