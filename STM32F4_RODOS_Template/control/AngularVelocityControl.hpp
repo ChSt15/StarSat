@@ -3,7 +3,10 @@
 
 #include "rodos.h"
 #include "PIDController.hpp"
+#include "AttitudeEstimation.hpp"
+
 #include "../timestamp.hpp"
+#include "../threadsafe.hpp"
 
 
 class AngularVelocityControl
@@ -11,8 +14,7 @@ class AngularVelocityControl
 private:
 
 	PID controller;
-	float maxSpeed;						// max. speed the reaction wheel can reach -> to limit the control output [rad/s]
-	float maxDesiredVelocity;			// max. angular velocity the satellite can reach in both directions -> to limit the setpoint [rad/s]
+	Threadsafe<float> maxDesiredVelocity;			// max. angular velocity the satellite can reach in both directions -> to limit the setpoint [rad/s]
 
 public:
 
@@ -35,8 +37,6 @@ public:
 	*/
 	PIDParams getParams();
 
-
-	float getLimits();
 
 	/**
 	 * @brief Set desired angular velocity of satellite in [rad/s]
@@ -70,10 +70,10 @@ public:
 
 	/**
 	 * @brief Determine output of satellite velocity controller / input of reactionwheel controller
-	 * @param velocity_measured: measurement of current angular velocity (about z-axis) of satellite measured by Gyroscope in [rad/s]
+	 * @param attitude_measured: measurement/estimationn of current attitude estimated by Kalman filter
 	 * @return Desired speed of reactionwheel that needs to be reached; range of -maxSpeed to +maxSpeed
 	*/
-	float update(TimestampedData<float> velocity_measured);
+	float update(TimestampedData<Attitude_Data> attitude_measured);
 
 };
 

@@ -49,7 +49,7 @@ public:
         newData = false;
         dataRet = data;
         sem.leave();
-        return data;
+        return dataRet;
     }
 
     bool isNew() {

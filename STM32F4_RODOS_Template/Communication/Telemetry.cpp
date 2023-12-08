@@ -104,21 +104,21 @@ void Telemetry::send_ControlParams()
 	telemetry_control.speed_P = params.kp;
 	telemetry_control.speed_I = params.ki;
 	telemetry_control.speed_D = params.kd;
-	telemetry_control.speed_lim = reactionwheelControl.getLimits();
+	telemetry_control.speed_lim = reactionwheelControl.getMaxVoltage();
 
 	// Position control
 	params = positionControl.getParams();
 	telemetry_control.pos_P = params.kp;
 	telemetry_control.pos_I = params.ki;
 	telemetry_control.pos_D = params.kd;
-	telemetry_control.pos_lim = positionControl.getLimits();
+	telemetry_control.pos_lim = positionControl.getMaxAngularVelocity();
 
 	// Velocity control
 	params = velocitycontrol.getParams();
 	telemetry_control.vel_P = params.kp;
 	telemetry_control.vel_I = params.ki;
 	telemetry_control.vel_D = params.kd;
-	telemetry_control.vel_lim = velocitycontrol.getLimits();
+	telemetry_control.vel_lim = velocitycontrol.getMaxSpeed();
 
 	telemetryControlParamsTopic.publish(telemetry_control);
 }

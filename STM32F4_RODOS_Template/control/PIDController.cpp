@@ -16,7 +16,7 @@ void PID::init(const PIDParams &params, float limit)
     this->setpoint = 0.0;
     this->lastError = 0.0;
     this->integError = 0.0;
-    this->Limit = limit;
+    this->limit = limit;
 }
 
 
@@ -52,8 +52,8 @@ float PID::calculate(float measurement, int64_t timestamp)
         this->lastTimestamp = timestamp;
 
         // Limit control signal
-        if(controlSignal > this->Limit) controlSignal = this->Limit;
-        else if (controlSignal < -this->Limit) controlSignal = -this->Limit;
+        if(controlSignal > this->limit) controlSignal = this->limit;
+        else if (controlSignal < -this->limit) controlSignal = -this->limit;
         
         return controlSignal;
     } else {
@@ -92,10 +92,12 @@ void PID::setSetpoint(float setpoint)
 
 void PID::setLimits(float limit)
 {
-    this->Limit.set(limit);
+    this->limit.set(limit);
 }
+
+
 
 float PID::getLimits()
 {
-    return this->Limit.get();
+    return this->limit.get();
 }

@@ -13,7 +13,6 @@ AngularPositionControl::AngularPositionControl()
 void AngularPositionControl::init(const PIDParams& params, float maxAngularVelocity)
 {
     this->controller.init(params, maxAngularVelocity);
-    this->maxAngularVelocity = maxAngularVelocity;
 }
 
 
@@ -30,11 +29,6 @@ PIDParams AngularPositionControl::getParams()
     return this->controller.getParams();
 }
 
-
-float AngularPositionControl::getLimits()
-{
-    return this->controller.getLimits();
-}
 
 
 void AngularPositionControl::setDesiredAngle(float angle_set)
@@ -61,7 +55,7 @@ void AngularPositionControl::setDesiredAngle(float angle_set)
 
 float AngularPositionControl::getMaxAngularVelocity()
 {
-    return this->maxAngularVelocity;
+    return this->controller.getLimits();
 }
 
 
@@ -69,14 +63,13 @@ float AngularPositionControl::getMaxAngularVelocity()
 void AngularPositionControl::setMaxAngularVelocity(float maxAngularVelocity)
 {
     this->controller.setLimits(maxAngularVelocity);
-    this->maxAngularVelocity = maxAngularVelocity;
 }
 
 
 
-float AngularPositionControl::update(TimestampedData<float> angle_measured)
+float AngularPositionControl::update(TimestampedData<Attitude_Data> attitude_measured)
 {
-    float controlSignal = this->controller.calculate(angle_measured.data, angle_measured.timestamp);
+    float controlSignal = this->controller.calculate(attitude_measured.data.attitude.toYPR().yaw, attitude_measured.timestamp);
     /**
      * If necessary, add/adjust things like integral windup, etc.
     */
