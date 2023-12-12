@@ -5,15 +5,24 @@
 
 
 /**
- * @brief This class monitors the electrical system of the satellite and does some protection logic.
+ * @brief 	This class monitors the electrical system of the satellite and does some protection logic.
+ * @note 	The INA3221 is used to measure most electrical parameters. 
+ * 			The INA3221 channels are connected in the following:
+ * 				-0: RPI zero 2
+ * 				-1: STM32 and other small devices (LSM9DS1, switches etc.)
+ * 				-2: TMC2209 Stepper driver on input side. (This also gives us the Battery voltage)
+ * 			The Reaction wheel current is measured using the H-Bridge current output pin connected to an ADC pin directly.
+ * 				
  * 
 */
 class ElectricalMonitoring
 {
 private:
 
-	static constexpr float DIVIDER_SCALE = 1;
-	static constexpr float SHUNT_RESISTOR = 0.22f;
+	/// @brief Shunt resistor used by board in mOhms.
+	static constexpr float SHUNT_RESISTOR = 100;
+	/// @brief Factor used to convert H-Bridge current output to amps in Volts per Amp
+	static constexpr float HBRIDGE_I_FACTOR = 0.5f;
 
 	/**
 	 * @brief A simple thread to control beeper timing.
@@ -38,41 +47,57 @@ private:
 
 	};
 
-
-	bool firstRun = true;
-
 	BeeperThread beeperThread;
 
-	float batteryVoltage;
-	float auxCurrent;
-	float reactionWheelCurrent;
+	float voltageBattery_;
+	float voltage5VBus_;
+
+	float currentStepper_;
+	float currentAux_;
+	float currentReactionWheel_;
+	float currentRPI_;
+
+	bool powerGood_ = false;
+	bool rpiRunning_ = false;
+
+	RODOS::HAL_I2C i2cBus_;
 
 	RODOS::GPIO_PIN extPowerPin_;
-	RODOS::ADC_CHANNEL adcVBATPin_;
-	RODOS::ADC_CHANNEL adcShuntPin_;
 	RODOS::ADC_CHANNEL adcWheelPin_;
 	RODOS::PWM_IDX beeperIDX_;
 
-	RODOS::HAL_GPIO extPower;
-	RODOS::HAL_ADC adcVBAT;
-	RODOS::HAL_ADC adcShunt;
-	RODOS::HAL_ADC adcWheel;
-	RODOS::HAL_PWM beeper;
+	RODOS::HAL_GPIO extPower_;
+	RODOS::HAL_ADC adcWheel_;
+	RODOS::HAL_PWM beeper_;
 
-	float adcVBat_Calib = 1.0f;
-	float adcShunt_Calib = 1.0f;
-	float adcWheel_Calib = 1.0f;
+	enum class SystemState_t {
+		INIT,
+		CONV_INIT,
+		CONV_WAIT,
+		POWERDOWN_INIT,
+		POWERDOWN_WAIT,
+		POWERDOWN_COMPLETE
+	};
+
+	SystemState_t state_ = SystemState_t::INIT;
 
 public:
 
+	/// @brief The maximum voltage the battery should have.
+	static constexpr float batteryMaxVoltage = 3.6*4;
+	/// @brief The minimum operating voltage the battery should reach. After this point the RPI will be shutdown.
+	static constexpr float batteryWarningVoltage = 3.2*4;
+	/// @brief The voltage at which the system will power down.
+	static constexpr float batteryCutoffVoltage = 2.8*4; 
+
 	/**
 	 * @brief Constructs the electrical monitoring object.
-	 * @param powerOff   GPIO connected to the external power off switch
-	 * @param adcVBAT  ADC channel connected to the battery voltage directly before the shunt resistor
-	 * @param adcShunt ADC channel connected directly after the shunt resistor
-	 * @param adcWheel ADC channel connected to the reaction wheel driver current output
+	 * @param powerOff GPIO connected to the external power off switch.
+	 * @param adcWheel ADC channel connected to the reaction wheel driver current output.
+	 * @param beeperPin PWM pin connected to the warning beeper.
+	 * @param ina3221_i2cBus I2C bus connected to the INA3221 chip.
 	*/
-	ElectricalMonitoring(RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcVBATPin, RODOS::ADC_CHANNEL adcShuntPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin);
+	ElectricalMonitoring(RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus);
 
 	/**
 	 * Call once quickly after system startup.
@@ -86,29 +111,68 @@ public:
 	void update();
 
 	/**
-	 * @returns the battery voltage in Volts.
+	 * @brief Gets the battery voltage.
+	 * @note  This is also the Stepper driver and reaction wheel operating voltage.
 	*/
 	float getBatteryVoltage();
 
 	/**
-	 * @returns the current drawn by everything except the reaction wheels in Ampere.
+	 * @brief Gets the voltage of the 5V bus.
+	 * @note  The RPI, STM32 operating voltage.
+	*/
+	float get5VBusVoltage();
+
+	/**
+	 * @brief Gets the current used by the RPI in Amps.
+	 * @note  The RPI is connected to the 5V Bus.
+	*/
+	float getRPICurrent();
+
+	/**
+	 * @brief Gets the current used by the Stepper driver (And therefore the Stepper motor) in Amps.
+	 * @note  This is the sum of the Stepper motor and stepper driver current usage.
+	*/
+	float getStepperCurrent();
+
+	/**
+	 * @brief Gets the current used by all other systems, e.g. STM32, LSM9DS1, switches etc
 	*/
 	float getAuxCurrent();
 
 	/**
-	 * @returns the current drawn by the reaction wheels in Ampere.
+	 * @returns the current drawn by the reaction wheels in Amps.
 	*/
 	float getReactionWheelCurrent();
 
 	/**
-	 * @brief Will switch off external power switch.
-	 * @note This function does not return! But preemtive multitasking may cause other tasks to continue running until system is powered off.
+	 * @returns true if battery and 5V Bus voltages are good and the RPI has been turned on. 
+	*/
+	bool powerGood();
+
+	/**
+	 * @returns true if the RPI has powered on and gave the signal its ready.
+	*/
+	bool rpiRunning();
+
+	/**
+	 * @brief Will begin the proccess of turning off the system.
+	 * @note Will first command the RPI to power down, once finished will disconnect RPI power and then call openExtSwitch() to power down.
+	*/
+	void powerDown();
+
+	/**
+	 * @brief Will forcefully power off everything immediately
 	 * 
 	*/
-	void powerOff();
-
+	void openExtSwitch();
 
 private:
+
+	/**
+	 * @brief Reads all values off the INA3221 chip.
+	 * @param setValue If true, then no low pass filter will be used and read values used directly.
+	*/
+	void readValues(bool setValue = false);
 
 };
 

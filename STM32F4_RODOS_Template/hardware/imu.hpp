@@ -4,6 +4,7 @@
 #include "rodos.h"
 #include "matlib.h"
 #include "../timestamp.hpp"
+#include "../threadsafe.hpp"
 
 
 struct IMUData 
@@ -36,14 +37,14 @@ private:
     /// @brief Data from IMU without calibration
     TimestampedData<IMUData> dataRaw;
 
-    IMUCalib gyroCalib;
-    IMUCalib accelCalib;
-    IMUCalib magCalib;
+    Threadsafe<IMUCalib> gyroCalib;
+    Threadsafe<IMUCalib> accelCalib;
+    Threadsafe<IMUCalib> magCalib;
 
     HAL_I2C i2c;
 
     /// @brief Scale factor to convert data of sensors in corresponding units; depends on the initialized range
-    const float gyroScale = 70 / 1000.0;            // +-2000dps -> 70, +-500dps -> 17.50, +-245dps -> 8.75
+    const float gyroScale = 8.75 / 1000.0;            // +-2000dps -> 70, +-500dps -> 17.50, +-245dps -> 8.75
     const float accelScale = 0.061 / 1000.0;        // +-2g -> 0.061, +-4g -> 0.122, +-8g -> 0.244, +-16g -> 0.732
     const float magScale = 0.14 / 1000.0;           // +-4gauss -> 0.14, +-8gauss -> 0.29, +-12gauss -> 0.43, +-16gauss -> 0.58
 
@@ -89,24 +90,24 @@ public:
 
     /// @brief Set the Gyro calibration values
     /// @param calib 
-    void setGyroCalib(const IMUCalib& calib);
+    void setGyroCalib(IMUCalib calib);
 
     /// @brief Get the Gyro calibration values
-    const IMUCalib& getGyroCalib();
+    IMUCalib getGyroCalib();
 
     /// @brief Set the Accel calibration values
     /// @param calib
-    void setAccelCalib(const IMUCalib& calib);
+    void setAccelCalib(IMUCalib calib);
 
     /// @brief Get the Accel calibration values
-    const IMUCalib& getAccelCalib();
+    IMUCalib getAccelCalib();
 
     /// @brief Set the Mag calibration values
     /// @param calib
-    void setMagCalib(const IMUCalib& calib);
+    void setMagCalib(IMUCalib calib);
 
     /// @brief Get the Mag calibration values
-    const IMUCalib& getMagCalib();
+    IMUCalib getMagCalib();
 
     /// @brief Checks I2C Enable Pins (if connected), just for initial Testing/Debugging
     void Check_I2C_Enable();

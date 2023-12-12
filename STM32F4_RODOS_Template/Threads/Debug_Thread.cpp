@@ -28,7 +28,7 @@ void DebugThread::run()
 	TimestampedData<float> EncoderDataReceiver;
 
 	bool visual = false;
-	bool calib = true;
+	bool calib = false;
 
 	while (true)
 	{
