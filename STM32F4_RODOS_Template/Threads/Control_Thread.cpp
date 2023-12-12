@@ -46,6 +46,7 @@ void ControlThread::run()
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 	TimestampedData<float> EncoderDataReceiver;
 
+	// Helper var
 	float desiredVelocity;
 	float desiredSpeed;
 	float desiredVoltage;
