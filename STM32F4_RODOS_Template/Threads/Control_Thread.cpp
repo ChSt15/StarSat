@@ -46,6 +46,10 @@ void ControlThread::run()
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 	TimestampedData<float> EncoderDataReceiver;
 
+	float desiredVoltage;
+	float desiredSpeed;
+	float desiredVelocity;
+
 	while (true)
 	{
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
@@ -57,30 +61,30 @@ void ControlThread::run()
 		{
 
 		case Control_Speed:
-			float desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 
 			hbridge.setVoltage(desiredVoltage);
 
 			break;
 
 		case Control_Vel:
-			float desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
+			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
 
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			float desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 
 			hbridge.setVoltage(desiredVoltage);
 
 			break;
 
 		case Control_Pos:
-			float desiredVelocity = positionControl.update(AttitudeDataReceiver);
+			desiredVelocity = positionControl.update(AttitudeDataReceiver);
 
 			velocitycontrol.setDesiredAngularVelocity(desiredVelocity);
-			float desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
+			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
 
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			float desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 
 			hbridge.setVoltage(desiredVoltage);
 			
