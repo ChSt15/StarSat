@@ -35,7 +35,7 @@ class PID {
         int64_t lastTimestamp;
 
         /// @brief Limits for control signal
-        Threadsafe<float> Limit;
+        Threadsafe<float> limit;
 
         /// @brief Indicates if derivation and integration term can be included -> after lastTimestamp is initialized
         bool flagInitialized = false;
@@ -85,7 +85,10 @@ class PID {
         */
         void setLimits(float Limit);
 
-       
+
+        /**
+         * @brief Get max. and min. limit of control signal
+        */
         float getLimits();
 };
 

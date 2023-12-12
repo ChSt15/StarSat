@@ -13,7 +13,6 @@ AngularVelocityControl::AngularVelocityControl()
 void AngularVelocityControl::init(const PIDParams& params, float maxSpeed, float maxDesiredVelocity)
 {
     this->controller.init(params, maxSpeed);
-    this->maxSpeed = maxSpeed;
     this->maxDesiredVelocity = maxDesiredVelocity;
 }
 
@@ -32,11 +31,6 @@ PIDParams AngularVelocityControl::getParams()
 }
 
 
-float AngularVelocityControl::getLimits()
-{
-    return this->controller.getLimits();
-}
-
 
 void AngularVelocityControl::setDesiredAngularVelocity(float w_set)
 {
@@ -52,7 +46,7 @@ void AngularVelocityControl::setDesiredAngularVelocity(float w_set)
 
 float AngularVelocityControl::getMaxSpeed()
 {
-    return this->maxSpeed;
+    return this->controller.getLimits();
 }
 
 
@@ -60,7 +54,6 @@ float AngularVelocityControl::getMaxSpeed()
 void AngularVelocityControl::setMaxSpeed(float maxSpeed)
 {
     this->controller.setLimits(maxSpeed);
-    this->maxSpeed = maxSpeed;
 }
 
 
@@ -79,9 +72,9 @@ float AngularVelocityControl::getMaxDesiredVelocity()
 
 
 
-float AngularVelocityControl::update(TimestampedData<float> velocity_measured)
+float AngularVelocityControl::update(TimestampedData<Attitude_Data> attitude_measured)
 {
-    float controlSignal = this->controller.calculate(velocity_measured.data, velocity_measured.timestamp);
+    float controlSignal = this->controller.calculate(attitude_measured.data.angularVelocity.z, attitude_measured.timestamp);
     /**
      * If necessary, add/adjust things like integral windup, etc.
     */

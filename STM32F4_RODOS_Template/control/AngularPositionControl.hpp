@@ -3,7 +3,10 @@
 
 #include "rodos.h"
 #include "PIDController.hpp"
+#include "AttitudeEstimation.hpp"
+
 #include "../timestamp.hpp"
+#include "../threadsafe.hpp"
 
 
 class AngularPositionControl
@@ -11,8 +14,7 @@ class AngularPositionControl
 private:
 
 	PID controller;
-	float maxAngularVelocity;					// max. angular velocity that can be reached by the satellite -> to limit the control input [rad/s]
-	float maxDesiredAngle = 2 * M_PI;			// max. angle the satellite can reach in both directions -> to limit the setpoint [rad]
+	Threadsafe<float> maxDesiredAngle = 2 * M_PI;			// max. angle the satellite can reach in both directions -> to limit the setpoint [rad]
 
 public:
 
@@ -36,8 +38,6 @@ public:
 	PIDParams getParams();
 
 
-	float getLimits();
-
 	/**
 	 * @brief Set desired yaw angle/orientation of satellite in [rad]
 	*/
@@ -58,10 +58,10 @@ public:
 
 	/**
 	 * @brief Determine output of angular position controller / input of angular velocity controller
-	 * @param angle_measured: measurement/estimationn of current yaw angle estimated by Kalman filter in [rad]
+	 * @param attitude_measured: measurement/estimationn of current attitude estimated by Kalman filter
 	 * @return Desired angular velocity of satellite that needs to be reached; range of -maxAngularVelocity to +maxAngularVelocity
 	*/
-	float update(TimestampedData<float> angle_measured);
+	float update(TimestampedData<Attitude_Data> attitude_measured);
 
 };
 
