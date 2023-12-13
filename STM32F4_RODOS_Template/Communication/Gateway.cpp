@@ -23,6 +23,8 @@ class GatewayInitiator : public Initiator
         uart_gateway.addTopicsToForward(&telemetryExtendedContinuousTopic);
         uart_gateway.addTopicsToForward(&telemetryCalibIMUTopic);
         uart_gateway.addTopicsToForward(&telemetryControlParamsTopic);
+        uart_gateway.addTopicsToForward(&cameraDataTopic);
+
     }
 };
 

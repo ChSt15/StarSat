@@ -32,7 +32,6 @@ float maxVelocity = M_PI_2;  								// [rad/s]
 
 class ControlThread : public Thread
 {
-
 public:
 
 	// Set name, prio and stack size

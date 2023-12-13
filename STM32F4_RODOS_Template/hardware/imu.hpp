@@ -9,7 +9,7 @@
 
 struct IMUData 
 {
-    Vector3D angularVelocity;   // [rad/s]
+    Vector3D_F angularVelocity;   // [rad/s]
     Vector3D magneticField;     // [gauss]
     Vector3D acceleration;      // [g]
     float temperature;          // [�C]

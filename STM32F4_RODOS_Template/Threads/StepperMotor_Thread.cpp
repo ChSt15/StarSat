@@ -110,4 +110,4 @@ bool StepperMotorThread::getStatus()
 
 
 /// @todo UPDATE PINS !!!
-// StepperMotorThread steppermotorthread(RODOS::GPIO_000, RODOS::GPIO_001);
+StepperMotorThread steppermotorthread(RODOS::GPIO_000, RODOS::GPIO_001);

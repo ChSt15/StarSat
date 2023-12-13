@@ -71,12 +71,12 @@ private:
     Threadsafe<uint16_t> stepsToDo;                         // Indicates how many steps still needs to be executed
 
     /// @todo ADJUST VALUE
-    uint16_t max_steps = 10000;                             // Max. number of steps the motor can execute
+    const uint16_t max_steps = 10000;                             // Max. number of steps the motor can execute
 
 
 };
 
 
-extern StepperMotorThread sensorthread;
+extern StepperMotorThread steppermotorthread;
 
 #endif 
