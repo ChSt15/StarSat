@@ -1,6 +1,6 @@
 #include "ArmController.hpp"
 
-#define STEP2LENGTH 1; // [mm]
+#define STEP2LENGTH 1 // [mm]
 
 
 // Camera topic subscriber setup
@@ -20,7 +20,7 @@ bool ArmController::InitialExtension()
 		CameraDataBuffer.get(CameraDataReceiver);
 		this->distance = sqrt(pow(CameraDataReceiver.px, 2) + pow(CameraDataReceiver.py, 2) + pow(CameraDataReceiver.pz, 2));
 
-		steppermotorthread.setPeriond((int)0.1 * max_vel);
+		steppermotorthread.setPeriond((int) (0.1 * max_vel));
 		steppermotorthread.setStepsToDo((int)(0.9f * distance / STEP2LENGTH));
 		timestamp = SECONDS_NOW();
 		inital = false;
@@ -30,20 +30,20 @@ bool ArmController::InitialExtension()
 	else
 	{
 		// schon da ?
-		if ()
+		if (true)
 		{
 			return true;
 		}
 
 		// Abbremsen ? 
-		if ()
+		if (true)
 		{
 
 		}
 		else
 		{
 			// schon auf max vel ?
-			if ()
+			if (true)
 			{
 
 			}

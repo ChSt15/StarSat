@@ -1,6 +1,8 @@
 #ifndef FLOATSAT_COMMUNICATION_CAMERA_HPP_
 #define FLOATSAT_COMMUNICATION_CAMERA_HPP_
 
+#include "rodos.h"
+
 
 struct TelemetryCamera
 {
@@ -13,4 +15,4 @@ struct TelemetryCamera
 extern Topic<TelemetryCamera> cameraDataTopic;
 
 
-endif;
+#endif

@@ -53,21 +53,21 @@ void Telecommand::processNewCommand()
 			calib.bias.x = commandReceiver.fval_1; 
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D();
+			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
 		case SetCalibParams_accel:
 			calib.bias.x = commandReceiver.fval_1;
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D();
+			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
 		case SetCalibParams_mag:
 			calib.bias.x = commandReceiver.fval_1;
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D();
+			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
 		/*-------------------------Control Parms------------------------*/

@@ -10,8 +10,8 @@
 struct IMUData 
 {
     Vector3D_F angularVelocity;   // [rad/s]
-    Vector3D magneticField;     // [gauss]
-    Vector3D acceleration;      // [g]
+    Vector3D_F magneticField;     // [gauss]
+    Vector3D_F acceleration;      // [g]
     float temperature;          // [�C]
 };
 
@@ -21,8 +21,8 @@ struct IMUData
 */
 struct IMUCalib
 {
-    Vector3D bias;       // Bias of sensor. E.g. for magnetometer this is the soft iron offset.
-    Matrix3D scale;      // Scale of sensor. E.g. for magnetometer this is the hard iron offset. Also deals with non-orthogonality.
+    Vector3D_F bias;       // Bias of sensor. E.g. for magnetometer this is the soft iron offset.
+    Matrix3D_F scale;      // Scale of sensor. E.g. for magnetometer this is the hard iron offset. Also deals with non-orthogonality.
 };
 
 

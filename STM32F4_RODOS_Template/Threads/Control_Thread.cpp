@@ -22,6 +22,15 @@ static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
 static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer);
 
 
+/**
+ * @todo NEEDS TO BE SPECIFIED
+*/
+PIDParams paramsReactionWheelControl{ 1.0f, 1.0f, 1.0f };
+PIDParams paramsVelocityControl{ 1.0f, 1.0f, 1.0f };
+PIDParams paramsPositionControl{ 1.0f, 1.0f, 1.0f };
+float maxVoltage = 10.0f;									// [V]
+float maxSpeed = (10000.0f * 2 * M_PI) / 60.0f;				// [rad/s]
+float maxVelocity = M_PI_2;  								// [rad/s]
 
 void ControlThread::init()
 {

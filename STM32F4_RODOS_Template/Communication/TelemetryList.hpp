@@ -59,13 +59,5 @@ struct TelemetryControlParams
     float vel_P, vel_I, vel_D, vel_lim;
 };
 
-// not used in STM
-struct TelemetryCamera
-{
-    float rx, ry, rz;       // [Rodriguez Rot]
-    float px, py, pz;       // [mm]
-    uint32_t MeasurmentCnt;
-};
-
 
 #endif

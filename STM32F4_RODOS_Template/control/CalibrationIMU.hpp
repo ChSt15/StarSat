@@ -20,8 +20,8 @@ private:
     int accel_samples = 0;
     int mag_samples = 0;
 
-    Vector3D gyro_sum = Vector3D(0, 0, 0);
-    Vector3D accel_sum = Vector3D(0, 0, 0);
+    Vector3D_F gyro_sum = Vector3D_F(0, 0, 0);
+    Vector3D_F accel_sum = Vector3D_F(0, 0, 0);
 
     float mag_minx, mag_miny =  42000.0f;
     float mag_maxx, mag_maxy = -42000.0f;

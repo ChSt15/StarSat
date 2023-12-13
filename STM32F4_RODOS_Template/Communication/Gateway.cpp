@@ -2,6 +2,7 @@
 
 #include "Telecomand.hpp"
 #include "Telemetry.hpp"
+#include "Camera.hpp"
 
 // UART setup
 static HAL_UART uart(UART_IDX3);
