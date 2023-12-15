@@ -3,7 +3,7 @@
 #include "Telecomand.hpp"
 #include "Telemetry.hpp"
 #include "Camera.hpp"
-
+/*
 // UART setup
 static HAL_UART uart(UART_IDX3);
 static int init_dummy = uart.init(115200);
@@ -30,3 +30,4 @@ class GatewayInitiator : public Initiator
 };
 
 GatewayInitiator gatewayinitiator;
+*/

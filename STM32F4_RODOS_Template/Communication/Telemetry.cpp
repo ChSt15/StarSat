@@ -64,6 +64,9 @@ void Telemetry::send_Continuous()
 	// Electrical
 	// TODO
 
+	telemetryContinuousTopic.publish(telemetry_continuous);
+
+
 	if (this->enable_extendedtelem)
 	{
 		// TODO

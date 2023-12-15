@@ -109,4 +109,4 @@ void ControlThread::run()
 }
 
 
-ControlThread controlthread;
+//ControlThread controlthread;
