@@ -289,7 +289,7 @@
                     					
                     <sourceEntries>
                         						
-                        <entry excluding="hardware/ina3221|testing|Exe4_IMU/IMU_solution.cpp|Template3.cpp|Template2.cpp|task2.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+                        <entry excluding="control/ArmController.cpp|hardware/ReactionwheelEncoder.cpp|control/ReactionwheelControl.cpp|hardware/imu.cpp|control/AttitudeEstimation.cpp|Threads/Debug_Thread.cpp|control/CalibrationIMU.cpp|control/AngularVelocityControl.cpp|control/AngularPositionControl.cpp|Threads/Control_Thread.cpp|Threads/Sensor_Thread.cpp|hardware/ina3221|testing|Exe4_IMU/IMU_solution.cpp|Template3.cpp|Template2.cpp|task2.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
                         					
                     </sourceEntries>
                     				

@@ -9,6 +9,8 @@ static Fifo<Command, 10> commandFIFO;
 static Subscriber telecommandSubsciber(telecommandTopic, commandFIFO);
 Command commandReceiver;
 
+// Telecomand topic
+Topic<Command> EchoTopic(60, "Echo Topic");
 
 void Telecommand::processNewCommand()
 {
@@ -18,6 +20,7 @@ void Telecommand::processNewCommand()
 	// Work through FIFO queue
 	while (commandFIFO.get(commandReceiver))
 	{
+		EchoTopic.publish(commandReceiver);
 		switch ((CommandIds) commandReceiver.id)
 		{
 		/*-----------------------------Modes----------------------------*/
@@ -48,7 +51,9 @@ void Telecommand::processNewCommand()
 		case SetMode_Mission:
 			setMode(Mission_Locate);
 			break;
+			/*
 		/*--------------------------Calib Parms-------------------------*/
+			/*
 		case SetCalibParams_gyro:
 			calib.bias.x = commandReceiver.fval_1; 
 			calib.bias.y = commandReceiver.fval_2;
@@ -70,7 +75,9 @@ void Telecommand::processNewCommand()
 			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
+			*/
 		/*-------------------------Control Parms------------------------*/
+			/*
 		case SetControlParams_speed:
 			params.kp = commandReceiver.fval_1;
 			params.ki = commandReceiver.fval_2;
@@ -91,24 +98,28 @@ void Telecommand::processNewCommand()
 			params.kd = commandReceiver.fval_3;
 			velocitycontrol.setParams(params);
 		case SetControlLimit_vel:
+			*/
 			// TODO
 		/*-----------------------Control Setpoint----------------------*/
+			/*
 		case SetControlDesired_speed:
 			reactionwheelControl.setDesiredSpeed(commandReceiver.fval_1);
 		case SetControlDesired_pos:
 			positionControl.setDesiredAngle(commandReceiver.fval_1);
 		case SetControlDesired_vel:
 			velocitycontrol.setDesiredAngularVelocity(commandReceiver.fval_1);
+			*/
 		/*----------------------------Telemtry--------------------------*/
+			/*
 		case SendCalibTelemetry:
 			telemetry.send_CalibIMU();
 		case SendControlTelemetry:
 			telemetry.send_ControlParams();
 		case ToggleExtendedTelemetry:
 			telemetry.enable_ExtendedTelemetry(commandReceiver.fval_1 > 0 ? true: false);
+			*/
 		/*-----------------------------Camera---------------------------*/
 		// TODO
-
 		default:
 			// Skip incrementing commandCnt
 			goto skipCnt;

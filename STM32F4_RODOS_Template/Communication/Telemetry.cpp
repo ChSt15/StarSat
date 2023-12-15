@@ -1,5 +1,5 @@
 #include "Telemetry.hpp"
-
+/*
 
 // IMU topic subscriber setup
 static CommBuffer<TimestampedData<IMUData>> IMUDataBuffer;
@@ -15,7 +15,7 @@ TimestampedData<Attitude_Data> AttitudeDataReceiver;
 static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
 static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer);
 TimestampedData<float> EncoderDataReceiver;
-
+*/
 
 // Countinuos telemetry topic
 Topic<TelemetryContinuous> telemetryContinuousTopic(TelemetryContinuousTopicID, "Continuous telemetry topic");
@@ -33,7 +33,7 @@ void Telemetry::send_Continuous()
 	telemetry_continuous.modeid = getMode();
 	telemetry_continuous.cmdCnt = telecommand.getCommandCounter();
 	telemetry_continuous.time = SECONDS_NOW();
-
+/*
 	// IMU
 	IMUDataBuffer.get(IMUDataReceiver);
 	telemetry_continuous.wx = IMUDataReceiver.data.angularVelocity.x;
@@ -64,6 +64,7 @@ void Telemetry::send_Continuous()
 	// Electrical
 	// TODO
 
+*/
 	telemetryContinuousTopic.publish(telemetry_continuous);
 
 
@@ -75,6 +76,7 @@ void Telemetry::send_Continuous()
 
 void Telemetry::send_CalibIMU()
 {
+	/*
 	IMUCalib calib;
 
 	// Gyro
@@ -96,10 +98,12 @@ void Telemetry::send_CalibIMU()
 	telemetry_calib.mag_offz = calib.bias.z;
 
 	telemetryCalibIMUTopic.publish(telemetry_calib);
+	*/
 }
 
 void Telemetry::send_ControlParams()
 {
+	/*
 	PIDParams params;
 
 	// Speed control
@@ -124,6 +128,7 @@ void Telemetry::send_ControlParams()
 	telemetry_control.vel_lim = velocitycontrol.getMaxSpeed();
 
 	telemetryControlParamsTopic.publish(telemetry_control);
+	*/
 }
 
 void Telemetry::enable_ExtendedTelemetry(bool enable)

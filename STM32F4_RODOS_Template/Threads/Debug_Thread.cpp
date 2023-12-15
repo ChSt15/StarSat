@@ -71,4 +71,4 @@ void DebugThread::run()
 }
 
 
-//DebugThread debugthread;
+DebugThread debugthread;

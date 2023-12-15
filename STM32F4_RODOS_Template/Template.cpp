@@ -11,7 +11,7 @@
 #include "hal.h"
 #include "math.h"
 
-static Application module01("Template", 2001);
+static Application module01("Test", 2001);
 
 #define LED_GREEN GPIO_060
 #define LED_ORANGE GPIO_061
@@ -25,15 +25,6 @@ static Application module01("Template", 2001);
 
 HAL_GPIO ledg(LED_GREEN);
 HAL_GPIO ledr(LED_RED);
-
-struct SensorData{
-
-};
-
-Topic<SensorData> SensorDataTopic(-1, "Sensor Data");
-CommBuffer<SensorData> SensorDataBuffer;
-Subscriber SensorDataSubscriber(SensorDataTopic, SensorDataBuffer);
-
 
 class Telemetry: public Thread {
 
@@ -55,12 +46,12 @@ public:
 
 			ledg.setPins(~ledg.readPins());
 			ledr.setPins(~ledr.readPins());
-			PRINTF("Hello Rodos, the time now is %f \r\n",SECONDS_NOW());
+			//PRINTF("Hello Rodos, the time now is %f \r\n",SECONDS_NOW());
 
             suspendCallerUntil(NOW()+1000*MILLISECONDS);
 		}
 	}
 };
-Telemetry Telemetry("Telemetry");
+Telemetry Telemetry("Test");
 
 /***********************************************************************/

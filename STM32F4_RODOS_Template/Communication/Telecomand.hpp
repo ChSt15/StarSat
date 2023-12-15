@@ -34,5 +34,6 @@ extern Telecommand telecommand;
 // @brief Global telecommand topic
 extern Topic<Command> telecommandTopic;
 
+extern Topic<Command> EchoTopic;
 
 #endif
