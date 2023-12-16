@@ -6,6 +6,7 @@
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/imu.hpp"
 #include "../hardware/ReactionwheelEncoder.hpp"
+#include "Modes.hpp"
 
 static CommBuffer<TimestampedData<IMUData>> IMUDataBuffer;
 static Subscriber IMUDataSubsciber(IMUDataTopic, IMUDataBuffer, "Debug Thread");
@@ -33,14 +34,17 @@ void DebugThread::run()
 	bool visual = false;
 	bool calib = false;
 
+	PRINTF("%d\n", getMode());
+	setMode(Mission_Point);
+	PRINTF("%d\n", getMode());
+
 	while (true)
 	{
-
 		IMUDataBuffer.get(IMUDataReceiver);
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		EncoderDataBuffer.get(EncoderDataReceiver);
 
-		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
+		//PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
 
 		if (!calib)
 		{
@@ -69,7 +73,7 @@ void DebugThread::run()
 			//PRINTF("%f, %f, %f\n", IMUDataReceiver.data.magneticField.x, IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.z);
 		}
 
-		ledblue.setPins(1);
+		ledblue.setPins(~ledblue.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }

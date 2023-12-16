@@ -5,7 +5,6 @@
 #include "matlib.h"
 #include "../timestamp.hpp"
 
-
 struct IMUData 
 {
     Vector3D_F angularVelocity;   // [rad/s]

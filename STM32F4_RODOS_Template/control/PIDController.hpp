@@ -81,6 +81,8 @@ class PID {
         void setSetpoint(float setpoint);
 
 
+        float getSetpoint();
+
         /**
          * @brief Set max. and min. limit of control signal
         */

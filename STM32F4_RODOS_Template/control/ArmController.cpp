@@ -66,9 +66,7 @@ bool ArmController::CalcAngularVelocity()
 float ArmController::getAngularvelocityMockup()
 {
 	float w;
-	sem.enter();
-	w = this->w_Mockup;
-	sem.leave();
+	PROTECT_WITH_SEMAPHORE(sem) w = this->w_Mockup;
 	return w;
 }
 

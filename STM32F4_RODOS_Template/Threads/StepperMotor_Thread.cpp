@@ -17,64 +17,58 @@ void StepperMotorThread::run()
   
         while (stepsToDo > 0 and period != 0)
         {
-            // temporary
-            sem.enter();
-
-
-            // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
-            // If not, then break inner while loop and indicate status as ready
-            if(currentDirection)                    // Positive direction
+            PROTECT_WITH_SEMAPHORE(sem)
             {
-                if(stepCounter < max_steps)         // Check limit
+                // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
+                // If not, then break inner while loop and indicate status as ready
+                if (currentDirection)                    // Positive direction
                 {
-                    DirectionPin.setPins(1);
-                } else {
-                    stepsToDo = 0;
-                    break;
+                    if (stepCounter < max_steps)         // Check limit
+                    {
+                        DirectionPin.setPins(1);
+                    }
+                    else {
+                        stepsToDo = 0;
+                        break;
+                    }
                 }
-            } else {                                // Negative direction
-                if(stepCounter > 0)                 // Check limit
+                else {                                // Negative direction
+                    if (stepCounter > 0)                 // Check limit
+                    {
+                        DirectionPin.setPins(0);
+                    }
+                    else {
+                        stepsToDo = 0;
+                        break;
+                    }
+                }
+
+                // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
+                StepPin.setPins(0);
+                suspendCallerUntil(NOW() + 100 * MICROSECONDS);
+
+                // Create Rising Edge
+                StepPin.setPins(1);
+
+                // Update current position
+                if (currentDirection)
                 {
-                    DirectionPin.setPins(0);
-                } else {
-                    stepsToDo = 0;
-                    break;
+                    this->stepCounter = +1;
                 }
+                else {
+                    this->stepCounter = -1;
+                }
+
+                // Update steps to be performed
+                this->stepsToDo = -1;
             }
-
-            // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
-            StepPin.setPins(0);
-            suspendCallerUntil(NOW() + 100 * MICROSECONDS);
-            
-            // Create Rising Edge
-            StepPin.setPins(1);
-
-            // Update current position
-            if(currentDirection)
-            {
-                this->stepCounter =+ 1;
-            } else {
-                this->stepCounter =- 1;
-            }
-
-            // Update steps to be performed
-            this->stepsToDo =- 1;
-
-            // temporary
-            sem.leave();
 
             // Wait for current this->period of time
             suspendCallerUntil(NOW() + period * MICROSECONDS);
         }
 
-        // temporary
-        sem.enter();
-
         // Update status after execution of all commaned steps
-        this->status_ready = true;
-
-        // temporary
-        sem.leave();
+        PROTECT_WITH_SEMAPHORE(sem) this->status_ready = true;
 
         // Wait for new commands setting this->stepsToDo
         suspendCallerUntil(NOW() + 1 * SECONDS);
@@ -85,9 +79,7 @@ void StepperMotorThread::run()
 uint16_t StepperMotorThread::getStepCounter()
 {
     uint16_t cnt;
-    sem.enter();
-    cnt = this->stepCounter;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) cnt = this->stepCounter;
     return cnt;
 }
 
@@ -95,28 +87,25 @@ uint16_t StepperMotorThread::getStepCounter()
 
 void StepperMotorThread::setDirection(bool direction)
 {
-    sem.enter();
-    this->currentDirection = direction;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) this->currentDirection = direction;
 }
 
 
 
 void StepperMotorThread::setPeriond(uint16_t period)
 {
-    sem.enter();
-    this->period = period;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) this->period = period;
 }
 
 
 
 void StepperMotorThread::setStepsToDo(uint16_t steps)
 {
-    sem.enter();
-    this->stepsToDo = steps;
-    this->status_ready = false;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem)
+    {
+        this->stepsToDo = steps;
+        this->status_ready = false;
+    }
 }
 
 
@@ -124,9 +113,7 @@ void StepperMotorThread::setStepsToDo(uint16_t steps)
 bool StepperMotorThread::getStatus()
 {
     bool status;
-    sem.enter();
-    status = this->status_ready;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) status = this->status_ready;
     return status;
 }
 

@@ -14,6 +14,11 @@ HAL_GPIO ledred(GPIO_062);
 
 void SensorThread::init()
 {
+	ledred.init(true, 1, 0);
+}
+
+void SensorThread::run()
+{
 	imu.initialization();
 
 	IMUCalib gyroCalib;
@@ -46,11 +51,7 @@ void SensorThread::init()
 	magCalib.scale.r[2][2] = 1.0;
 	imu.setMagCalib(magCalib);
 
-	ledred.init(true, 1, 0);
-}
 
-void SensorThread::run()
-{
 	while (true)
 	{
 		imu.readRawData();
@@ -93,8 +94,7 @@ void SensorThread::run()
 		// Encoder
 		EncoderDataTopic.publish(encoder.getSpeed());
 
-		//ledred.setPins(~ledred.readPins());
-		ledred.setPins(1);
+		ledred.setPins(~ledred.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }

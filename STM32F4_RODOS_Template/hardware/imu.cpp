@@ -8,7 +8,6 @@ Define addresses of sensors
 
 Topic<TimestampedData<IMUData>> IMUDataTopic(-1, "IMUData");
 
-
 IMU::IMU(RODOS::I2C_IDX i2c):
 	i2c(i2c)
 {
@@ -30,56 +29,42 @@ TimestampedData<IMUData>& IMU::getDataRaw()
 
 void IMU::setGyroCalib(IMUCalib calib)
 {
-	calib.scale.print();
-	sem.enter();
-	PRINTF("in sema\n");
-	this->gyroCalib = calib;
-	sem.leave();
+	PROTECT_WITH_SEMAPHORE(sem) this->gyroCalib = calib;
 }
 
 
 IMUCalib IMU::getGyroCalib()
 {
 	IMUCalib calib; 
-	sem.enter();
-	calib = this->gyroCalib;
-	sem.leave();
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->gyroCalib;
 	return calib;
 }
 
 
 void IMU::setAccelCalib(IMUCalib calib)
 {
-	sem.enter();
-	this->accelCalib = calib;
-	sem.leave();
+	PROTECT_WITH_SEMAPHORE(sem) this->accelCalib = calib;
 }
 
 
 IMUCalib IMU::getAccelCalib()
 {
 	IMUCalib calib;
-	sem.enter();
-	calib = this->accelCalib;
-	sem.leave();
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->accelCalib;
 	return calib;
 }
 
 
 void IMU::setMagCalib(IMUCalib calib)
 {
-	sem.enter();
-	this->magCalib = calib;
-	sem.leave();
+	PROTECT_WITH_SEMAPHORE(sem) this->magCalib = calib;
 }
 
 
 IMUCalib IMU::getMagCalib()
 {
 	IMUCalib calib;
-	sem.enter();
-	calib = this->magCalib;
-	sem.leave();
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->magCalib;
 	return calib;
 }
 

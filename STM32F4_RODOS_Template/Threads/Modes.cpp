@@ -8,18 +8,14 @@ Semaphore semaphore;
 /// @brief Sets mode to newmode (protected by semaphore)
 void setMode(modes newmode)
 {
-	semaphore.enter();
-	mode = newmode;
-	semaphore.leave();
+	PROTECT_WITH_SEMAPHORE(semaphore) mode = newmode;
 }
 
 /// @brief Gets mode (protected by semaphore)
 modes getMode()
 {
-	semaphore.enter();
-	modes currentmode = mode;
-	semaphore.leave();
-	
+	modes currentmode;
+	PROTECT_WITH_SEMAPHORE(semaphore) currentmode = mode;
 	return currentmode;
 }
 

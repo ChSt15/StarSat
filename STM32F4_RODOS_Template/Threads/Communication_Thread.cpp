@@ -14,7 +14,7 @@ void CommunicationThread::run()
 		telecommand.processNewCommand();
 		//telemetry.send_Continuous();
 
-		ledgreen.setPins(1);
+		ledgreen.setPins(~ledgreen.readPins());
 		suspendCallerUntil(NOW() + this->period * MILLISECONDS);
 	}
 }

@@ -24,11 +24,9 @@ void PID::init(const PIDParams &params, float limit)
 float PID::calculate(float measurement, int64_t timestamp)
 {   
     // Save locally to avoid changes during calculations
-    sem.enter();
-    PIDParams params = this->parameters;
-    float lim = this->limit;
-    float setp = this->setpoint;
-    sem.leave();
+    PIDParams params = this->getParams();
+    float lim = this->getLimits();
+    float setp = this->getSetpoint();
 
     // Error
     float error = setp - measurement;
@@ -77,9 +75,7 @@ float PID::calculate(float measurement, int64_t timestamp)
 
 void PID::setParams(const PIDParams &params)
 {
-    sem.enter();
-    this->parameters = params;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) this->parameters = params;
 }
 
 
@@ -87,28 +83,28 @@ void PID::setParams(const PIDParams &params)
 PIDParams PID::getParams()
 {
     PIDParams params;
-    sem.enter();
-    params = this->parameters;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) params = this->parameters;
     return params;
 }
 
 
-
 void PID::setSetpoint(float setpoint)
 {
-    sem.enter();
-    this->setpoint = setpoint;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) this->setpoint = setpoint;
 }
 
+
+float PID::getSetpoint()
+{
+    float setp;
+    PROTECT_WITH_SEMAPHORE(sem) setp = this->setpoint;
+    return setp;
+}
 
 
 void PID::setLimits(float limit)
 {
-    sem.enter();
-    this->limit = limit;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) this->limit = limit;
 }
 
 
@@ -116,8 +112,6 @@ void PID::setLimits(float limit)
 float PID::getLimits()
 {
     float lim;
-    sem.enter();
-    lim = this->limit;
-    sem.leave();
+    PROTECT_WITH_SEMAPHORE(sem) lim = this->limit;
     return lim;
 }
