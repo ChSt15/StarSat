@@ -1,7 +1,4 @@
 #include "StepperMotor_Thread.hpp"
-#include "rodos.h"
-#include "../threadsafe.hpp"
-
 
 
 void StepperMotorThread::init()
@@ -9,7 +6,6 @@ void StepperMotorThread::init()
     DirectionPin.init(true, 1, 1);
     StepPin.init(true, 1, 0);
 }
-
 
 
 void StepperMotorThread::run()
@@ -72,7 +68,6 @@ void StepperMotorThread::run()
 }
 
 
-
 uint16_t StepperMotorThread::getStepCounter()
 {
     return this->stepCounter;
@@ -110,4 +105,4 @@ bool StepperMotorThread::getStatus()
 
 
 /// @todo UPDATE PINS !!!
-//StepperMotorThread steppermotorthread(RODOS::GPIO_000, RODOS::GPIO_001);
+StepperMotorThread steppermotorthread(RODOS::GPIO_000, RODOS::GPIO_001);

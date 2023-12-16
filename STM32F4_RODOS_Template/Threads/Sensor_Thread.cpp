@@ -9,6 +9,9 @@
 #include "../control/CalibrationIMU.hpp"
 #include "../hardware/ReactionwheelEncoder.hpp"
 
+
+HAL_GPIO ledred(GPIO_062);
+
 void SensorThread::init()
 {
 	imu.initialization();
@@ -43,6 +46,8 @@ void SensorThread::init()
 	magCalib.scale.r[1][1] = 1.0;
 	magCalib.scale.r[2][2] = 1.0;
 	imu.setMagCalib(magCalib);
+
+	ledred.init(true, 1, 0);
 }
 
 void SensorThread::run()
@@ -90,9 +95,10 @@ void SensorThread::run()
 		// Encoder
 		EncoderDataTopic.publish(encoder.getSpeed());
 
+		ledred.setPins(~ledred.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }
 
 
-//SensorThread sensorthread;
+SensorThread sensorthread;

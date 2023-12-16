@@ -22,7 +22,7 @@ public:
 
 private:
 
-	const int period = 10;		// [ms]
+	const int period = 50;		// [ms]
 };
 
 

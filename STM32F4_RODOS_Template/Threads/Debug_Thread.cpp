@@ -8,17 +8,20 @@
 #include "../hardware/ReactionwheelEncoder.hpp"
 
 static CommBuffer<TimestampedData<IMUData>> IMUDataBuffer;
-static Subscriber IMUDataSubsciber(IMUDataTopic, IMUDataBuffer);
+static Subscriber IMUDataSubsciber(IMUDataTopic, IMUDataBuffer, "Debug Thread");
 
 static CommBuffer<TimestampedData<Attitude_Data>> AttitudeDataBuffer;
-static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer);
+static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer, "Debug Thread");
 
 static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
-static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer);
+static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Debug Thread");
+
+HAL_GPIO ledblue(GPIO_063);
+
 
 void DebugThread::init()
 {
-
+	ledblue.init(true, 1, 0);
 }
 
 void DebugThread::run()
@@ -66,6 +69,7 @@ void DebugThread::run()
 			//PRINTF("%f, %f, %f\n", IMUDataReceiver.data.magneticField.x, IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.z);
 		}
 
+		ledblue.setPins(~ledblue.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }

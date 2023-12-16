@@ -24,7 +24,7 @@ public:
 	// @brief Processes the last new command received (if there is one)
 	void processNewCommand();
 
-	// @brief Returns number of successfully received commands
+	// @brief Returns number of successfully received commands (not thread safe)
 	int getCommandCounter();
 };
 

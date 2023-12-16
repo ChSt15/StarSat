@@ -5,7 +5,7 @@
 
 // Camera topic subscriber setup
 static CommBuffer<TelemetryCamera> CameraDataBuffer;
-static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer);
+static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Arm Controller Class");
 TelemetryCamera CameraDataReceiver;
 
 

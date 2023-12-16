@@ -6,7 +6,7 @@ Topic<Command> telecommandTopic(TelecommandTopicId, "Telecomand Topic");
 
 // Telecomand topic subscriber setup
 static Fifo<Command, 10> commandFIFO;
-static Subscriber telecommandSubsciber(telecommandTopic, commandFIFO);
+static Subscriber telecommandSubsciber(telecommandTopic, commandFIFO, "Telecommand Class");
 Command commandReceiver;
 
 // Telecomand topic
@@ -53,7 +53,6 @@ void Telecommand::processNewCommand()
 			break;
 			/*
 		/*--------------------------Calib Parms-------------------------*/
-			/*
 		case SetCalibParams_gyro:
 			calib.bias.x = commandReceiver.fval_1; 
 			calib.bias.y = commandReceiver.fval_2;
@@ -75,9 +74,7 @@ void Telecommand::processNewCommand()
 			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
-			*/
 		/*-------------------------Control Parms------------------------*/
-			/*
 		case SetControlParams_speed:
 			params.kp = commandReceiver.fval_1;
 			params.ki = commandReceiver.fval_2;
@@ -98,26 +95,21 @@ void Telecommand::processNewCommand()
 			params.kd = commandReceiver.fval_3;
 			velocitycontrol.setParams(params);
 		case SetControlLimit_vel:
-			*/
 			// TODO
 		/*-----------------------Control Setpoint----------------------*/
-			/*
 		case SetControlDesired_speed:
 			reactionwheelControl.setDesiredSpeed(commandReceiver.fval_1);
 		case SetControlDesired_pos:
 			positionControl.setDesiredAngle(commandReceiver.fval_1);
 		case SetControlDesired_vel:
 			velocitycontrol.setDesiredAngularVelocity(commandReceiver.fval_1);
-			*/
 		/*----------------------------Telemtry--------------------------*/
-			/*
 		case SendCalibTelemetry:
 			telemetry.send_CalibIMU();
 		case SendControlTelemetry:
 			telemetry.send_ControlParams();
 		case ToggleExtendedTelemetry:
-			telemetry.enable_ExtendedTelemetry(commandReceiver.fval_1 > 0 ? true: false);
-			*/
+			telemetry.enable_ExtendedTelemetry(commandReceiver.fval_1 > 0);
 		/*-----------------------------Camera---------------------------*/
 		// TODO
 		default:

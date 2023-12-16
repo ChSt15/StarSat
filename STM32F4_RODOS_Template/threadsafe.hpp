@@ -11,6 +11,7 @@
  */
 template <typename TYPE>
 struct Threadsafe {
+
 private:
     /// @brief Mutex to protect data
     RODOS::Semaphore sem;
@@ -25,7 +26,8 @@ public:
      * @brief Construct a new Threadsafe object
      * @param data Data to be protected
     */
-    Threadsafe(const TYPE& data = TYPE()) {
+    Threadsafe(const TYPE& data = TYPE()) 
+    {
         set(data);
     }
     
@@ -33,10 +35,10 @@ public:
      * @brief Copies the given data into the protected data
     */
     void set(const TYPE& dataToCopy) {
-        sem.enter();
+        //sem.enter();
         newData = true;
         data = dataToCopy;
-        sem.leave();
+        //sem.leave();
     }
 
     /**

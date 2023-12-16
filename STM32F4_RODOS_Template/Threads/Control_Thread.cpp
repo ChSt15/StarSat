@@ -16,10 +16,10 @@
 
 
 static CommBuffer<TimestampedData<Attitude_Data>> AttitudeDataBuffer;
-static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer);
+static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer, "Control Thread");
 
 static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
-static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer);
+static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Control Thread");
 
 
 /**
@@ -31,6 +31,9 @@ PIDParams paramsPositionControl{ 1.0f, 1.0f, 1.0f };
 float maxVoltage = 10.0f;									// [V]
 float maxSpeed = (10000.0f * 2 * M_PI) / 60.0f;				// [rad/s]
 float maxVelocity = M_PI_2;  								// [rad/s]
+
+
+HAL_GPIO ledorange(GPIO_061);
 
 void ControlThread::init()
 {
@@ -46,6 +49,8 @@ void ControlThread::init()
 	 * Initialize HBridge
 	*/
 	hbridge.initialization();
+
+	ledorange.init(true, 1, 0);
 }
 
 
@@ -103,10 +108,10 @@ void ControlThread::run()
 			break;
 		}
 
-
+		ledorange.setPins(~ledorange.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }
 
 
-//ControlThread controlthread;
+ControlThread controlthread;
