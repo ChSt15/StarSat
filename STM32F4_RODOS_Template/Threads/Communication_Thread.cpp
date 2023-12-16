@@ -12,9 +12,9 @@ void CommunicationThread::run()
 	while (true)
 	{
 		telecommand.processNewCommand();
-		telemetry.send_Continuous();
+		//telemetry.send_Continuous();
 
-		ledgreen.setPins(~ledgreen.readPins());
+		ledgreen.setPins(1);
 		suspendCallerUntil(NOW() + this->period * MILLISECONDS);
 	}
 }

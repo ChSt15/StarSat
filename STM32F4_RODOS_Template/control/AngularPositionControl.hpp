@@ -6,7 +6,6 @@
 #include "AttitudeEstimation.hpp"
 
 #include "../timestamp.hpp"
-#include "../threadsafe.hpp"
 
 
 class AngularPositionControl
@@ -14,7 +13,7 @@ class AngularPositionControl
 private:
 
 	PID controller;
-	Threadsafe<float> maxDesiredAngle = 2 * M_PI;			// max. angle the satellite can reach in both directions -> to limit the setpoint [rad]
+	float maxDesiredAngle = 2 * M_PI;			// max. angle the satellite can reach in both directions -> to limit the setpoint [rad]
 
 public:
 

@@ -3,7 +3,6 @@
 
 #include "rodos.h"
 #include "matlib.h"
-#include "../threadsafe.hpp"
 
 /**
  * @brief Struct for controller parameters 
@@ -19,11 +18,13 @@ class PID {
 
     private:
 
+        Semaphore sem;
+
         /// @brief Controller parameters
-        Threadsafe<PIDParams> parameters;
+        PIDParams parameters;
 
         /// @brief Desired value the controller should achieve
-        Threadsafe<float> setpoint;
+        float setpoint;
 
         /// @brief Error of last run for determining the derivation of the error
         float lastError;
@@ -35,7 +36,7 @@ class PID {
         int64_t lastTimestamp;
 
         /// @brief Limits for control signal
-        Threadsafe<float> limit;
+        float limit;
 
         /// @brief Indicates if derivation and integration term can be included -> after lastTimestamp is initialized
         bool flagInitialized = false;

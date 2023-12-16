@@ -13,9 +13,14 @@ void StepperMotorThread::run()
 
     while(true)
     {
+
+  
         while (stepsToDo > 0 and period != 0)
         {
-            
+            // temporary
+            sem.enter();
+
+
             // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
             // If not, then break inner while loop and indicate status as ready
             if(currentDirection)                    // Positive direction
@@ -55,12 +60,21 @@ void StepperMotorThread::run()
             // Update steps to be performed
             this->stepsToDo =- 1;
 
+            // temporary
+            sem.leave();
+
             // Wait for current this->period of time
             suspendCallerUntil(NOW() + period * MICROSECONDS);
         }
 
+        // temporary
+        sem.enter();
+
         // Update status after execution of all commaned steps
         this->status_ready = true;
+
+        // temporary
+        sem.leave();
 
         // Wait for new commands setting this->stepsToDo
         suspendCallerUntil(NOW() + 1 * SECONDS);
@@ -70,36 +84,50 @@ void StepperMotorThread::run()
 
 uint16_t StepperMotorThread::getStepCounter()
 {
-    return this->stepCounter;
+    uint16_t cnt;
+    sem.enter();
+    cnt = this->stepCounter;
+    sem.leave();
+    return cnt;
 }
 
 
 
 void StepperMotorThread::setDirection(bool direction)
 {
+    sem.enter();
     this->currentDirection = direction;
+    sem.leave();
 }
 
 
 
 void StepperMotorThread::setPeriond(uint16_t period)
 {
+    sem.enter();
     this->period = period;
+    sem.leave();
 }
 
 
 
 void StepperMotorThread::setStepsToDo(uint16_t steps)
 {
+    sem.enter();
     this->stepsToDo = steps;
     this->status_ready = false;
+    sem.leave();
 }
 
 
 
 bool StepperMotorThread::getStatus()
 {
-    return this->status_ready;
+    bool status;
+    sem.enter();
+    status = this->status_ready;
+    sem.leave();
+    return status;
 }
 
 

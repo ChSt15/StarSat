@@ -57,14 +57,6 @@ void AngularVelocityControl::setMaxSpeed(float maxSpeed)
 }
 
 
-
-void AngularVelocityControl::setMaxDesiredVelocity(float maxDesiredVelocity)
-{
-    this->maxDesiredVelocity = maxDesiredVelocity;
-}
-
-
-
 float AngularVelocityControl::getMaxDesiredVelocity()
 {
     return this->maxDesiredVelocity;

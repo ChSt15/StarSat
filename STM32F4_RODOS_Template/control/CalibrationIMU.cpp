@@ -21,7 +21,7 @@ bool CalibrationIMU::calibrateGyro(TimestampedData<IMUData> imurawdata)
 		gyro_calib.scale.r[2][2] = 1.0;
 		imu.setGyroCalib(gyro_calib);
 
-		gyro_sum = Vector3D(0, 0, 0);
+		gyro_sum = Vector3D_F(0, 0, 0);
 		gyro_samples = 0;
 		return true;
 	}
@@ -45,7 +45,7 @@ bool CalibrationIMU::calibrateAccel(TimestampedData<IMUData> imurawdata)
 		accel_calib.scale.r[2][2] = 1.0;
 		imu.setAccelCalib(accel_calib);
 
-		accel_sum = Vector3D(0, 0, 0);
+		accel_sum = Vector3D_F(0, 0, 0);
 		accel_samples = 0;
 		return true;
 	}

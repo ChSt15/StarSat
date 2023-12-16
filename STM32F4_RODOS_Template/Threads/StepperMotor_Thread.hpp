@@ -3,11 +3,12 @@
 
 #include "rodos.h"
 
-#include "../threadsafe.hpp"
-
 
 class StepperMotorThread : public Thread
 {
+private:
+
+    Semaphore sem;
 
 public:
 
@@ -66,11 +67,11 @@ private:
     HAL_GPIO StepPin;                                       // Rising Edge indicates steps
 
     
-    Threadsafe<uint16_t> stepCounter;                       // Indicates current position of arm
-    Threadsafe<bool> currentDirection;                      // True: positive direction, False: negative direction
-    Threadsafe<uint16_t> period;                            // Time period between two steps in microseconds
-    Threadsafe<bool> status_ready;                          // Indicates if all commanded steps are executed
-    Threadsafe<uint16_t> stepsToDo;                         // Indicates how many steps still needs to be executed#
+    uint16_t stepCounter;                       // Indicates current position of arm
+    bool currentDirection;                      // True: positive direction, False: negative direction
+    uint16_t period;                            // Time period between two steps in microseconds
+    bool status_ready;                          // Indicates if all commanded steps are executed
+    uint16_t stepsToDo;                         // Indicates how many steps still needs to be executed#
     
     /// @todo ADJUST VALUE
     const uint16_t max_steps = 10000;                             // Max. number of steps the motor can execute

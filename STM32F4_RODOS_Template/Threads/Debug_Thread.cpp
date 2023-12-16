@@ -69,7 +69,7 @@ void DebugThread::run()
 			//PRINTF("%f, %f, %f\n", IMUDataReceiver.data.magneticField.x, IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.z);
 		}
 
-		ledblue.setPins(~ledblue.readPins());
+		ledblue.setPins(1);
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }

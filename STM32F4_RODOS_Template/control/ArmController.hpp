@@ -4,7 +4,6 @@
 #include "rodos.h"
 #include "matlib.h"
 #include <math.h>
-#include "../threadsafe.hpp"
 #include "../Threads/StepperMotor_Thread.hpp"
 #include "../Communication/Camera.hpp"
 
@@ -13,7 +12,9 @@ class ArmController
 {
 private:
 	 
-	Threadsafe<float> w_Mockup;
+	Semaphore sem;
+
+	float w_Mockup;
 	float distance;
 
 	const int max_vel = 50;			// [step/s]

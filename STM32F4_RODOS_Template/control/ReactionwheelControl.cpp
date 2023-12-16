@@ -57,14 +57,6 @@ void ReactionwheelControl::setMaxVoltage(float maxVoltage)
 }
 
 
-
-void ReactionwheelControl::setMaxDesiredSpeed(float maxDesiredSpeed)
-{
-    this->maxDesiredSpeed = maxDesiredSpeed;
-}
-
-
-
 float ReactionwheelControl::getMaxDesiredSpeed()
 {
     return this->maxDesiredSpeed;

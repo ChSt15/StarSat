@@ -24,7 +24,6 @@ void SensorThread::init()
 	gyroCalib.scale.r[0][0] = 1.0;
 	gyroCalib.scale.r[1][1] = 1.0;
 	gyroCalib.scale.r[2][2] = 1.0;
-
 	imu.setGyroCalib(gyroCalib);
 
 	IMUCalib accelCalib;
@@ -54,7 +53,6 @@ void SensorThread::run()
 {
 	while (true)
 	{
-		
 		imu.readRawData();
 
 		switch (mode)
@@ -95,7 +93,8 @@ void SensorThread::run()
 		// Encoder
 		EncoderDataTopic.publish(encoder.getSpeed());
 
-		ledred.setPins(~ledred.readPins());
+		//ledred.setPins(~ledred.readPins());
+		ledred.setPins(1);
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }

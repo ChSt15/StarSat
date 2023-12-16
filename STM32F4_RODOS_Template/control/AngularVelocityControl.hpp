@@ -6,7 +6,6 @@
 #include "AttitudeEstimation.hpp"
 
 #include "../timestamp.hpp"
-#include "../threadsafe.hpp"
 
 
 class AngularVelocityControl
@@ -14,7 +13,7 @@ class AngularVelocityControl
 private:
 
 	PID controller;
-	Threadsafe<float> maxDesiredVelocity;			// max. angular velocity the satellite can reach in both directions -> to limit the setpoint [rad/s]
+	float maxDesiredVelocity;			// max. angular velocity the satellite can reach in both directions -> to limit the setpoint [rad/s]
 
 public:
 
@@ -54,12 +53,6 @@ public:
 	 * @brief Get max. speed that can be reached by reactionwheel [rad/s]
 	*/
 	float getMaxSpeed();
-
-
-	/**
-	 * @brief Set max. angular velocity that can be reached by satellite [rad/s]
-	*/
-	void setMaxDesiredVelocity(float maxDesiredVelocity);
 
 
 	/**

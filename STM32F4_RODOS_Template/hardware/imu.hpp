@@ -4,7 +4,6 @@
 #include "rodos.h"
 #include "matlib.h"
 #include "../timestamp.hpp"
-#include "../threadsafe.hpp"
 
 
 struct IMUData 
@@ -32,14 +31,16 @@ class IMU
 {
 private:
 
+    Semaphore sem;
+
     /// @brief Data from IMU with calibration
     TimestampedData<IMUData> dataCalibrated;
     /// @brief Data from IMU without calibration
     TimestampedData<IMUData> dataRaw;
 
-    Threadsafe<IMUCalib> gyroCalib;
-    Threadsafe<IMUCalib> accelCalib;
-    Threadsafe<IMUCalib> magCalib;
+    IMUCalib gyroCalib;
+    IMUCalib accelCalib;
+    IMUCalib magCalib;
 
     HAL_I2C i2c;
 

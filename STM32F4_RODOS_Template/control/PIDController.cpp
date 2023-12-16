@@ -24,10 +24,14 @@ void PID::init(const PIDParams &params, float limit)
 float PID::calculate(float measurement, int64_t timestamp)
 {   
     // Save locally to avoid changes during calculations
-    PIDParams params = parameters.get();
+    sem.enter();
+    PIDParams params = this->parameters;
+    float lim = this->limit;
+    float setp = this->setpoint;
+    sem.leave();
 
     // Error
-    float error = this->setpoint.get() - measurement;
+    float error = setp - measurement;
 
     // Proportional term
     float propTerm = params.kp * error;
@@ -52,11 +56,13 @@ float PID::calculate(float measurement, int64_t timestamp)
         this->lastTimestamp = timestamp;
 
         // Limit control signal
-        if(controlSignal > this->limit) controlSignal = this->limit;
-        else if (controlSignal < -this->limit) controlSignal = -this->limit;
+        if(controlSignal > lim) controlSignal = lim;
+        else if (controlSignal < -lim) controlSignal = -lim;
         
         return controlSignal;
-    } else {
+    } 
+    else 
+    {
         // Update state
         this->lastError = error;
         this->lastTimestamp = timestamp;
@@ -71,33 +77,47 @@ float PID::calculate(float measurement, int64_t timestamp)
 
 void PID::setParams(const PIDParams &params)
 {
-    this->parameters.set(params);
+    sem.enter();
+    this->parameters = params;
+    sem.leave();
 }
 
 
 
 PIDParams PID::getParams()
 {
-    return this->parameters.get();
+    PIDParams params;
+    sem.enter();
+    params = this->parameters;
+    sem.leave();
+    return params;
 }
 
 
 
 void PID::setSetpoint(float setpoint)
 {
-    this->setpoint.set(setpoint);
+    sem.enter();
+    this->setpoint = setpoint;
+    sem.leave();
 }
 
 
 
 void PID::setLimits(float limit)
 {
-    this->limit.set(limit);
+    sem.enter();
+    this->limit = limit;
+    sem.leave();
 }
 
 
 
 float PID::getLimits()
 {
-    return this->limit.get();
+    float lim;
+    sem.enter();
+    lim = this->limit;
+    sem.leave();
+    return lim;
 }

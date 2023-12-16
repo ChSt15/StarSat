@@ -65,7 +65,11 @@ bool ArmController::CalcAngularVelocity()
 
 float ArmController::getAngularvelocityMockup()
 {
-	return this->w_Mockup.get();
+	float w;
+	sem.enter();
+	w = this->w_Mockup;
+	sem.leave();
+	return w;
 }
 
 
