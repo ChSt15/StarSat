@@ -14,16 +14,18 @@ public:
 
 
 	// Set name, prio and stack size
-	StepperMotorThread(RODOS::GPIO_PIN dir_pin, RODOS::GPIO_PIN step_pin)  :
+	StepperMotorThread(RODOS::GPIO_PIN dir_pin, RODOS::GPIO_PIN step_pin, RODOS::GPIO_PIN calib_pin)  :
                 Thread("StepperMotor Thread", 100, 2000),
                 DirectionPin(dir_pin),
-                StepPin(step_pin)
+                StepPin(step_pin),
+                CalibPin(calib_pin)
                 {
                     stepCounter = 0;
                     currentDirection = true;
                     period = 0;
                     status_ready = true;
                     stepsToDo = 0;
+                    status_calib = false;
                 }
 
 
@@ -61,17 +63,25 @@ public:
     void setStepsToDo(uint16_t steps);
 
 
+    /**
+     * @brief Sets number of steps, which needs to be performed
+    */
+    bool calibrate();
+
+
 private:
 
     HAL_GPIO DirectionPin;                                  // High: positive direction, Low: negative direction
     HAL_GPIO StepPin;                                       // Rising Edge indicates steps
+    HAL_GPIO CalibPin;                                      // High if Arm is at limit (= calibrated)
 
     
     uint16_t stepCounter;                       // Indicates current position of arm
     bool currentDirection;                      // True: positive direction, False: negative direction
     uint16_t period;                            // Time period between two steps in microseconds
     bool status_ready;                          // Indicates if all commanded steps are executed
-    uint16_t stepsToDo;                         // Indicates how many steps still needs to be executed#
+    uint16_t stepsToDo;                         // Indicates how many steps still needs to be executed
+    bool status_calib;                          // Indicates if arm is calibrated
     
     /// @todo ADJUST VALUE
     const uint16_t max_steps = 10000;                             // Max. number of steps the motor can execute
