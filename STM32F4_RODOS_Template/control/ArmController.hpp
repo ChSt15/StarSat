@@ -18,7 +18,10 @@ private:
 	float distance;
 
 	const int max_vel = 50;			// [step/s]
+	const int min_vel = 1;			// [step/s]
 	const int max_accel = 5;		// [step/s^2]
+
+	bool moving = false;
 
 public:
 	bool InitialExtension();
@@ -28,6 +31,8 @@ public:
 	bool CalcAngularVelocity();
 
 	float getAngularvelocityMockup();
+
+	float getArmExtention();
 };
 
 

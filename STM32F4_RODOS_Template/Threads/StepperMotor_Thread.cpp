@@ -92,11 +92,18 @@ void StepperMotorThread::setDirection(bool direction)
 
 
 
-void StepperMotorThread::setPeriond(uint16_t period)
+void StepperMotorThread::setPeriod(uint16_t period)
 {
     PROTECT_WITH_SEMAPHORE(sem) this->period = period;
 }
 
+
+uint16_t StepperMotorThread::getPeriod()
+{
+    uint16_t t;
+    PROTECT_WITH_SEMAPHORE(sem) t = this->period;
+    return t;
+}
 
 
 void StepperMotorThread::setStepsToDo(uint16_t steps)
@@ -108,6 +115,12 @@ void StepperMotorThread::setStepsToDo(uint16_t steps)
     }
 }
 
+uint16_t StepperMotorThread::getStepsToDo()
+{
+    uint16_t steps;
+    PROTECT_WITH_SEMAPHORE(sem) steps = this->stepsToDo;
+    return steps;
+}
 
 
 bool StepperMotorThread::getStatus()

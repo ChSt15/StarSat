@@ -52,13 +52,19 @@ public:
     /**
      * @brief Set period to wait between two steps [us]
     */
-    void setPeriond(uint16_t period);
+    void setPeriod(uint16_t period);
+
+
+    uint16_t getPeriod();
 
 
    /**
      * @brief Sets number of steps, which needs to be performed
     */
     void setStepsToDo(uint16_t steps);
+
+
+    uint16_t getStepsToDo();
 
 
 private:

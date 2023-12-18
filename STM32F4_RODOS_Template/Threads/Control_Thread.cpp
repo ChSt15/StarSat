@@ -73,7 +73,7 @@ void ControlThread::run()
 
 		switch (current_mode)
 		{
-
+		/* ---------------------------- Controller ---------------------------- */
 		case Control_Speed:
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 
@@ -103,6 +103,8 @@ void ControlThread::run()
 			hbridge.setVoltage(desiredVoltage);
 			
 			break;
+
+		/* ---------------------------- Mission ----------------------------- */
 		
 		default:
 			break;
