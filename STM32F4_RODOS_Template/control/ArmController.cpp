@@ -30,7 +30,7 @@ bool ArmController::InitialExtension()
 		steppermotorthread.setPeriod((int) (1.f/ min_vel));
 		steppermotorthread.setStepsToDo((int)(0.9f * distance / STEP2LENGTH));
 		last_t = SECONDS_NOW();
-		inital = false;
+		moving = true;
 
 		return false;
 	}
