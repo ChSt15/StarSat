@@ -36,4 +36,6 @@ public:
 };
 
 
+extern ArmController armController;
+
 #endif

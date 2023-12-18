@@ -8,7 +8,7 @@
 #include "../control/ReactionwheelControl.hpp"
 #include "../control/AngularVelocityControl.hpp"
 #include "../control/AngularPositionControl.hpp"
-
+#include "../control/ArmController.hpp"
 #include "../hardware/ReactionwheelEncoder.hpp"
 #include "../hardware/hbridge.hpp"
 
@@ -105,7 +105,23 @@ void ControlThread::run()
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
-		
+		case Mission_Locate:
+			break;
+
+		case Mission_Point:
+			break;
+
+		case Mission_Dock_initial:
+			// not complete, just to show principle
+			if (armController.InitialExtension()) break;
+
+			setMode(Mission_Dock_final);
+			break;
+
+		case Mission_Dock_final:
+			break;
+
+
 		default:
 			break;
 		}
