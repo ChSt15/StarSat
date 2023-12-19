@@ -36,23 +36,23 @@
 
 #include "rodos.h"
 
-typedef enum {
+enum ina3221_addr_t {
     INA3221_ADDR40_GND = 0b1000000, // A0 pin -> GND
     INA3221_ADDR41_VCC = 0b1000001, // A0 pin -> VCC
     INA3221_ADDR42_SDA = 0b1000010, // A0 pin -> SDA
     INA3221_ADDR43_SCL = 0b1000011  // A0 pin -> SCL
-} ina3221_addr_t;
+};
 
 // Channels
-typedef enum {
+enum ina3221_ch_t {
     INA3221_CH1 = 0,
     INA3221_CH2,
     INA3221_CH3,
     INA3221_CH_NUM
-} ina3221_ch_t;
+};
 
 // Registers
-typedef enum {
+enum ina3221_reg_t {
     INA3221_REG_CONF = 0,
     INA3221_REG_CH1_SHUNTV,
     INA3221_REG_CH1_BUSV,
@@ -73,10 +73,10 @@ typedef enum {
     INA3221_REG_PWR_VALID_LO_LIM,
     INA3221_REG_MANUF_ID = 0xFE,
     INA3221_REG_DIE_ID = 0xFF
-} ina3221_reg_t;
+};
 
 // Conversion times
-typedef enum {
+enum ina3221_conv_time_t {
     INA3221_REG_CONF_CT_140US = 0,
     INA3221_REG_CONF_CT_204US,
     INA3221_REG_CONF_CT_332US,
@@ -85,10 +85,10 @@ typedef enum {
     INA3221_REG_CONF_CT_2116US,
     INA3221_REG_CONF_CT_4156US,
     INA3221_REG_CONF_CT_8244US
-} ina3221_conv_time_t;
+} ;
 
 // Averaging modes
-typedef enum {
+enum ina3221_avg_mode_t {
     INA3221_REG_CONF_AVG_1 = 0,
     INA3221_REG_CONF_AVG_4,
     INA3221_REG_CONF_AVG_16,
@@ -97,7 +97,7 @@ typedef enum {
     INA3221_REG_CONF_AVG_256,
     INA3221_REG_CONF_AVG_512,
     INA3221_REG_CONF_AVG_1024
-} ina3221_avg_mode_t;
+};
 
 class Beastdevices_INA3221 {
 
