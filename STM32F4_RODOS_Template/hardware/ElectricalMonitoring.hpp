@@ -3,6 +3,8 @@
 
 #include "rodos.h"
 
+#include "ina3221/Beastdevices_INA3221.h"
+
 
 /**
  * @brief 	This class monitors the electrical system of the satellite and does some protection logic.
@@ -19,10 +21,25 @@ class ElectricalMonitoring
 {
 private:
 
+    /// @brief The time between sensor reads in nanoseconds.
+    static constexpr int64_t sensorReadInterval_ns = 0.1*SECONDS; // 10 Hz
 	/// @brief Shunt resistor used by board in mOhms.
 	static constexpr float SHUNT_RESISTOR = 100;
 	/// @brief Factor used to convert H-Bridge current output to amps in Volts per Amp
 	static constexpr float HBRIDGE_I_FACTOR = 0.5f;
+    /// @brief Current threshold for the rpi to be considered running in Amps.
+    static constexpr float RPI_RUNNING_CURRENT = 0.1f;
+    /// @brief How much the 5V bus voltage can deviate from 5V before it is considered bad.
+    static constexpr float BUS_VOLTAGE_TOLERANCE = 0.5f;
+    /// @brief How long to wait after powering the chips off before powering them back on.
+    static constexpr int64_t CHIP_RESET_WAIT_TIME = 500*MILLISECONDS;
+
+    static constexpr ina3221_ch_t STM32I = INA3221_CH1;    // Channel with STM32 and other small devices (LSM9DS1, switches etc.) current measurement
+    static constexpr ina3221_ch_t RPII = INA3221_CH2;      // Channel with RPI zero 2 current measurement
+    static constexpr ina3221_ch_t STEPPERI = INA3221_CH3;  // Channel with TMC2209 Stepper driver on input side current measurement
+
+    static constexpr ina3221_ch_t BUS5VU = INA3221_CH1;    // Channel with 5V Bus voltage measurement
+    static constexpr ina3221_ch_t VBATU = INA3221_CH3;     // Channel with Battery voltage measurement
 
 	/**
 	 * @brief A simple thread to control beeper timing.
@@ -30,6 +47,8 @@ private:
 	class BeeperThread : public RODOS::Thread
 	{
 	private:
+
+        RODOS::Semaphore beepSem_;
 
 		RODOS::HAL_PWM beeper;
 
@@ -47,7 +66,9 @@ private:
 
 	};
 
-	BeeperThread beeperThread;
+    Beastdevices_INA3221 ina3221_;
+
+	BeeperThread beeperThread_;
 
 	float voltageBattery_;
 	float voltage5VBus_;
@@ -62,10 +83,12 @@ private:
 
 	RODOS::HAL_I2C i2cBus_;
 
+    RODOS::GPIO_PIN chipPowerPin_;
 	RODOS::GPIO_PIN extPowerPin_;
 	RODOS::ADC_CHANNEL adcWheelPin_;
 	RODOS::PWM_IDX beeperIDX_;
 
+    RODOS::HAL_GPIO chipPower_;
 	RODOS::HAL_GPIO extPower_;
 	RODOS::HAL_ADC adcWheel_;
 	RODOS::HAL_PWM beeper_;
@@ -79,7 +102,17 @@ private:
 		POWERDOWN_COMPLETE
 	};
 
+    enum class ChipResetState_t {
+		IDLE,
+        RESET_INIT,
+        CHIP_WAIT
+	};
+
 	SystemState_t state_ = SystemState_t::INIT;
+    int64_t convWaitBeginTime_ns_ = 0;
+
+    ChipResetState_t chipResetState_ = ChipResetState_t::IDLE;
+    int64_t chipResetStartTime_ns_ = 0;
 
 public:
 
@@ -97,7 +130,7 @@ public:
 	 * @param beeperPin PWM pin connected to the warning beeper.
 	 * @param ina3221_i2cBus I2C bus connected to the INA3221 chip.
 	*/
-	ElectricalMonitoring(RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus);
+	ElectricalMonitoring(RODOS::GPIO_PIN chipPowerPin, RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus);
 
 	/**
 	 * Call once quickly after system startup.
@@ -109,6 +142,17 @@ public:
 	 * 
 	*/
 	void update();
+
+    /**
+     * Will power off the IMU, INA3221 for 500ms and then power them back on.
+    */
+    void startChipReset();
+
+    /**
+     * @brief Get the current power state of the IMU and INA3221. Used to check if the reset is complete.
+     * @returns true if the IMU and INA3221 are powered on.
+    */
+    bool getChipPower();
 
 	/**
 	 * @brief Gets the battery voltage.
@@ -177,6 +221,6 @@ private:
 };
 
 
-//extern ElectricalMonitoring electricalMonitor;
+extern ElectricalMonitoring electricalMonitor;
 
 #endif
