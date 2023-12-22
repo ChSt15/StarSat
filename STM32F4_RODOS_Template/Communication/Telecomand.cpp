@@ -4,13 +4,13 @@
 // Telecomand topic
 Topic<Command> telecommandTopic(TelecommandTopicId, "Telecomand Topic");
 
+// Telecomand echo  topic
+Topic<Command> EchoTopic(TelecommandEchoTopicId, "Echo Topic");
+
 // Telecomand topic subscriber setup
 static Fifo<Command, 10> commandFIFO;
 static Subscriber telecommandSubsciber(telecommandTopic, commandFIFO, "Telecommand Class");
 Command commandReceiver;
-
-// Telecomand topic
-Topic<Command> EchoTopic(60, "Echo Topic");
 
 void Telecommand::processNewCommand()
 {

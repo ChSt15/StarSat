@@ -2,6 +2,7 @@
 #define FLOATSAT_COMMUNICATION_TELECOMANDLIST_HPP_
 
 #define TelecommandTopicId 50
+#define TelecommandEchoTopicId 60
 
 // @brief Structure of a Telecommand
 struct Command
