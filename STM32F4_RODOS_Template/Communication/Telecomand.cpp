@@ -131,7 +131,7 @@ int Telecommand::getCommandCounter()
 	return this->commandCnt;
 }
 
-int getLastCommand()
+int Telecommand::getLastCommand()
 {
 	return this->lastCmndID;
 }
