@@ -24,14 +24,14 @@ static const int  debug_thread_period = 500;       // [ms]
 /* ---------------------------------------- Hardware ---------------------------------------  */
 // IMU
 static const IMUCalib gyroCalib{ 
-    Vector3D_F(0,0,0),                                                          // [rad/s]
-    Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1))};       // 
+    Vector3D_F(0,0,0),                  // Offset [rad/s]
+    Matrix3D_F(YPR_F(0, 0, 0))};        // Yaw, Pitch, Roll [rad]
 static const IMUCalib accelCalib{ 
-    Vector3D_F(0,0,0),                                                          // [g]
-    Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1))};       // 
+    Vector3D_F(0,0,0),                  // Offset [g]
+    Matrix3D_F(YPR_F(0, 0, 0))};        // Yaw, Pitch, Roll [rad]
 static const IMUCalib magCalib{ 
-    Vector3D_F(0,0,0),                                                          // [gauss]
-    Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1))};       //
+    Vector3D_F(0,0,0),                  // Offset [gauss]
+    Matrix3D_F(YPR_F(0, 0, 0))};        // Yaw, Pitch, Roll [rad]
 
 // HBridge
 static const int pwmFrequency = 2000;       // [Hz]
@@ -39,13 +39,13 @@ static const int pwmIncrements = 500;
 
 /* ---------------------------------------- Control ----------------------------------------  */
 // Speed Controller
-static const float limitSpeedController = 1.f;                        // 
+static const float limitSpeedController = 1.f;                      // 
 static const PIDParams paramsSpeedControl{ 1.0f, 1.0f, 1.0f };      // P, I, D
 // Position Controller
-static const float limitPosController = 1.f;                          //
+static const float limitPosController = 1.f;                        //
 static const PIDParams paramsPosController{ 1.0f, 1.0f, 1.0f };     // P, I, D
 // Velocity Controller  
-static const float limitVelController = 1.f;                          // 
+static const float limitVelController = 1.f;                        // 
 static const PIDParams paramsVelController{ 1.0f, 1.0f, 1.0f };     // P, I, D
 
 // Arm Controller
