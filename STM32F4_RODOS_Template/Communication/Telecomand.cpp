@@ -117,6 +117,7 @@ void Telecommand::processNewCommand()
 			goto skipCnt;
 		}
 
+		lastCmndID = commandReceiver.id;
 		this->commandCnt++;
 
 		// marker to skip incrementing commandCnt
@@ -130,5 +131,9 @@ int Telecommand::getCommandCounter()
 	return this->commandCnt;
 }
 
+int getLastCommand()
+{
+	return this->lastCmndID;
+}
 
 Telecommand telecommand;

@@ -18,6 +18,7 @@ class Telecommand
 private:
 
 	int commandCnt = 0;
+	int lastCmndID = 0;
 
 public:
 
@@ -26,6 +27,8 @@ public:
 
 	// @brief Returns number of successfully received commands (not thread safe)
 	int getCommandCounter();
+
+	int getLastCommand();
 };
 
 // @brief Global telecommand object

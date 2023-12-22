@@ -32,6 +32,7 @@ void Telemetry::send_Continuous()
 	// Status
 	telemetry_continuous.modeid = getMode();
 	telemetry_continuous.cmdCnt = telecommand.getCommandCounter();
+	telemetry_continuous.lastcmdid = telecommand.getLastCommand();
 	telemetry_continuous.time = SECONDS_NOW();
 
 	// IMU
