@@ -52,10 +52,10 @@ public:
     /**
      * @brief Set period to wait between two steps [us]
     */
-    void setPeriod(uint16_t period);
+    void setPeriod(int period);
 
 
-    uint16_t getPeriod();
+    int getPeriod();
 
 
    /**
@@ -75,7 +75,7 @@ private:
     
     uint16_t stepCounter;                       // Indicates current position of arm
     bool currentDirection;                      // True: positive direction, False: negative direction
-    uint16_t period;                            // Time period between two steps in microseconds
+    int period;                            // Time period between two steps in microseconds
     bool status_ready;                          // Indicates if all commanded steps are executed
     uint16_t stepsToDo;                         // Indicates how many steps still needs to be executed#
     

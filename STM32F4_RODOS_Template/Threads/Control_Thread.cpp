@@ -113,7 +113,7 @@ void ControlThread::run()
 
 		case Mission_Dock_initial:
 			// not complete, just to show principle
-			if (armController.InitialExtension()) break;
+			if (!armController.InitialExtension()) break;
 
 			setMode(Mission_Dock_final);
 			break;

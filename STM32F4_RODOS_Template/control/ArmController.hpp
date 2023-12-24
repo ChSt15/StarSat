@@ -17,11 +17,12 @@ private:
 	float w_Mockup;
 	float distance;
 
-	const int max_vel = 50;			// [step/s]
-	const int min_vel = 1;			// [step/s]
-	const int max_accel = 5;		// [step/s^2]
+	const int max_vel = 100;		// [step/s]
+	const int min_vel = 10;			// [step/s]
+	const int max_accel = 10;		// [step/s^2]
 
 	bool moving = false;
+	bool deccel = false;
 
 public:
 	bool InitialExtension();

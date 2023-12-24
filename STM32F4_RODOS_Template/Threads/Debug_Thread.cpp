@@ -32,11 +32,9 @@ void DebugThread::run()
 	TimestampedData<float> EncoderDataReceiver;
 
 	bool visual = false;
-	bool calib = false;
+	bool calib = true;
 
-	PRINTF("%d\n", getMode());
-	setMode(Mission_Point);
-	PRINTF("%d\n", getMode());
+	setMode(Mission_Dock_initial);
 
 	while (true)
 	{

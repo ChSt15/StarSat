@@ -24,13 +24,15 @@ bool ArmController::InitialExtension()
 		*/ 
 
 		// just for test
-		this->distance = 200;
+		this->distance = 1500 / 0.9f;
 
 		steppermotorthread.setDirection(true);
-		steppermotorthread.setPeriod((int) (1.f/ min_vel));
+		steppermotorthread.setPeriod((int) (1.f/min_vel * 1000.f * 1000.f));
 		steppermotorthread.setStepsToDo((int)(0.9f * distance / STEP2LENGTH));
+		steppermotorthread.resume();
 		last_t = SECONDS_NOW();
 		moving = true;
+		deccel = false;
 
 		return false;
 	}
@@ -40,25 +42,32 @@ bool ArmController::InitialExtension()
 		if (steppermotorthread.getStatus())
 		{
 			moving = false;
+			deccel = false;
 			return true;
 		}
 
 		dt = SECONDS_NOW() - last_t;
 		last_t = SECONDS_NOW();
 
+		// Avoid multiple accesses
+		int period = steppermotorthread.getPeriod();
+
 		// Decelerate to vel_min
-		if ((steppermotorthread.getStepsToDo() - DECCELMARGIN) < pow((1.f /steppermotorthread.getPeriod()), 2) / max_accel) // conservativ calc
+		float deccel_time = ((1.f / period * 1000.f * 1000.f) - min_vel) / max_accel;
+		float deccel_distance = -0.5 * max_accel * pow(deccel_time, 2) + (1.f / period * 1000.f * 1000.f) * deccel_time;
+		if (deccel || (steppermotorthread.getStepsToDo() - DECCELMARGIN) < deccel_distance)
 		{
-			int t = (int)(1.f / (1.f / steppermotorthread.getPeriod() - max_accel * dt));
-			(t < 1.f / min_vel) ? steppermotorthread.setPeriod(t) : steppermotorthread.setPeriod((int) (1.f / min_vel));
+			float t = (1.f / (1.f / period * 1000.f * 1000.f - max_accel * dt));
+			(t < 1.f / min_vel) ? steppermotorthread.setPeriod(t * 1000.f * 1000.f) : steppermotorthread.setPeriod((int) (1.f / min_vel * 1000.f * 1000.f));
+			deccel = true;
 			return false;
 		}
 
 		// Accelerate to vel_max
-		if (steppermotorthread.getPeriod() < 1.f/max_vel)
+		if (period > 1.f/max_vel * 1000 * 1000)
 		{
-			int t = (int)(1.f / (1.f / steppermotorthread.getPeriod() + max_accel * dt));
-			(t > 1.f / max_vel) ? steppermotorthread.setPeriod(t) : steppermotorthread.setPeriod((int) (1.f / max_vel));
+			float t = (1.f / (1.f / period * 1000.f * 1000.f + max_accel * dt));
+			(t > 1.f / max_vel) ? steppermotorthread.setPeriod(t * 1000.f * 1000.f) : steppermotorthread.setPeriod((int) (1.f / max_vel * 1000.f * 1000.f));
 			return false;
 		}
 	}
