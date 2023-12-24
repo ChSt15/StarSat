@@ -21,36 +21,18 @@ void SensorThread::run()
 {
 	imu.initialization();
 
-	IMUCalib gyroCalib;
-	gyroCalib.bias.x = 0.011274;
-	gyroCalib.bias.y = 0.018649;
-	gyroCalib.bias.z = -0.021776;
-	gyroCalib.scale = Matrix3D_F();
-	gyroCalib.scale.r[0][0] = 1.0;
-	gyroCalib.scale.r[1][1] = 1.0;
-	gyroCalib.scale.r[2][2] = 1.0;
-	imu.setGyroCalib(gyroCalib);
+	// Config
+	using namespace config;
+	{
+		// Thread 
+		this->period = sensor_thread_period;
+		if (!sensor_thread_enable) suspendCallerUntil(END_OF_TIME);
 
-	IMUCalib accelCalib;
-	accelCalib.bias.x = -0.025037;
-	accelCalib.bias.y = -0.0051067;
-	accelCalib.bias.z = -0.0089848;
-	accelCalib.scale = Matrix3D_F();
-	accelCalib.scale.r[0][0] = 1.0;
-	accelCalib.scale.r[1][1] = 1.0;
-	accelCalib.scale.r[2][2] = 1.0;
-	imu.setAccelCalib(accelCalib);
-
-	IMUCalib magCalib;
-	magCalib.bias.x = -0.025;//0.068;
-	magCalib.bias.y = 0.2625;//0.129;
-	magCalib.bias.z = -0.0495;//-0.0945;
-	magCalib.scale = Matrix3D_F();
-	magCalib.scale.r[0][0] = 1.0;
-	magCalib.scale.r[1][1] = 1.0;
-	magCalib.scale.r[2][2] = 1.0;
-	imu.setMagCalib(magCalib);
-
+		// IMU Calibparams
+		imu.setGyroCalib(gyroCalib);
+		imu.setAccelCalib(accelCalib);
+		imu.setMagCalib(magCalib);
+	}
 
 	while (true)
 	{

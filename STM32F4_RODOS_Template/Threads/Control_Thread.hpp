@@ -17,6 +17,7 @@
 
 #include "Debug_Thread.hpp"
 #include "Modes.hpp"
+#include "Config.hpp"
 
 
 class ControlThread : public Thread
@@ -31,7 +32,7 @@ public:
 
 private:
 
-	const int period = 100;		// [ms]
+	int period = 100;		// [ms]
 };
 
 

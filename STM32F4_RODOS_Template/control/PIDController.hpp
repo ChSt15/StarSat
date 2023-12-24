@@ -29,6 +29,8 @@ class PID {
         /// @brief Error of last run for determining the derivation of the error
         float lastError;
 
+        float lastMeasurment;
+
         /// @brief Integration of error until last control signal determination
         float integError;
 
@@ -40,6 +42,10 @@ class PID {
 
         /// @brief Indicates if derivation and integration term can be included -> after lastTimestamp is initialized
         bool flagInitialized = false;
+
+        bool use_BackCalculation = false;
+
+        bool use_DerivativofMeasurment = false;
 
         
     public:

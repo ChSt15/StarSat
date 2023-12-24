@@ -27,6 +27,13 @@ void DebugThread::init()
 
 void DebugThread::run()
 {
+	// Config
+	using namespace config;
+	{
+		this->period = debug_thread_period;
+		if (!debug_thread_enable) suspendCallerUntil(END_OF_TIME);
+	}
+
 	TimestampedData<IMUData> IMUDataReceiver;
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 	TimestampedData<float> EncoderDataReceiver;

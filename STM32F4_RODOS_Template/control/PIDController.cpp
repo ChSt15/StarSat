@@ -15,6 +15,7 @@ void PID::init(const PIDParams &params, float limit)
     this->parameters = params;
     this->setpoint = 0.0;
     this->lastError = 0.0;
+    this->lastMeasurment = 0.0;
     this->integError = 0.0;
     this->limit = limit;
 }
@@ -45,6 +46,7 @@ float PID::calculate(float measurement, int64_t timestamp)
 
         // Derivation term
         float derivTerm = params.kd * (error - this->lastError) / dt;
+
 
         // Determine output signal
         float controlSignal = propTerm + integTerm + derivTerm;

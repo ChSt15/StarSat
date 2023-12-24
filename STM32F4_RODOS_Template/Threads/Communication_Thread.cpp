@@ -9,6 +9,13 @@ void CommunicationThread::init()
 
 void CommunicationThread::run()
 {
+	// Config
+	using namespace config;
+	{
+		this->period = com_thread_period;
+		if (!com_thread_enable) suspendCallerUntil(END_OF_TIME);
+	}
+
 	while (true)
 	{
 		telecommand.processNewCommand();

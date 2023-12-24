@@ -25,9 +25,6 @@ static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Con
 /**
  * @todo NEEDS TO BE SPECIFIED
 */
-PIDParams paramsReactionWheelControl{ 1.0f, 1.0f, 1.0f };
-PIDParams paramsVelocityControl{ 1.0f, 1.0f, 1.0f };
-PIDParams paramsPositionControl{ 1.0f, 1.0f, 1.0f };
 float maxVoltage = 10.0f;									// [V]
 float maxSpeed = (10000.0f * 2 * M_PI) / 60.0f;				// [rad/s]
 float maxVelocity = M_PI_2;  								// [rad/s]
@@ -37,14 +34,6 @@ HAL_GPIO ledorange(GPIO_061);
 
 void ControlThread::init()
 {
-	/**
-	 * Initialize controller with PID parameters and max. Input/Output values
-	 * @todo specify values in "Control_Thread.cpp", dummy data is used right now
-	*/
-	reactionwheelControl.init(paramsReactionWheelControl, maxVoltage, maxSpeed);
-	velocitycontrol.init(paramsVelocityControl, maxSpeed, maxVelocity);
-	positionControl.init(paramsPositionControl, maxVelocity);
-
 	/**
 	 * Initialize HBridge
 	*/
@@ -57,6 +46,19 @@ void ControlThread::init()
 
 void ControlThread::run()
 {
+	// Config
+	using namespace config;
+	{
+		// Thread
+		this->period = control_thread_period;
+		if (!control_thread_enable) suspendCallerUntil(END_OF_TIME);
+
+		// Controllers
+		reactionwheelControl.init(paramsSpeedControl, maxVoltage, maxSpeed);
+		positionControl.init(paramsPosController, maxVelocity);
+		velocitycontrol.init(paramsVelController, maxSpeed, maxVelocity);
+	}
+
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 	TimestampedData<float> EncoderDataReceiver;
 
