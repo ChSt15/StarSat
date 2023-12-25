@@ -34,8 +34,6 @@ void DebugThread::run()
 	bool visual = false;
 	bool calib = true;
 
-	setMode(Mission_Dock_initial);
-
 	while (true)
 	{
 		IMUDataBuffer.get(IMUDataReceiver);
@@ -77,4 +75,4 @@ void DebugThread::run()
 }
 
 
-DebugThread debugthread;
+//DebugThread debugthread;

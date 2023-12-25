@@ -64,7 +64,9 @@ void ControlThread::run()
 	float desiredSpeed;
 	float desiredVoltage;
 
-	while (true)
+	setMode(Mission_Dock_initial);
+
+	while(true)
 	{
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		EncoderDataBuffer.get(EncoderDataReceiver);

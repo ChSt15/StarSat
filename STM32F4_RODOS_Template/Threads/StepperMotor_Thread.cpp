@@ -13,8 +13,6 @@ void StepperMotorThread::run()
 
     while(true)
     {
-
-  
         while (stepsToDo > 0 and period != 0)
         {
                 // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;

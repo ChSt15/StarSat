@@ -48,6 +48,7 @@ bool ArmController::InitialExtension()
 
 		dt = SECONDS_NOW() - last_t;
 		last_t = SECONDS_NOW();
+		//PRINTF("%f\n", dt);
 
 		// Avoid multiple accesses
 		int period = steppermotorthread.getPeriod();
