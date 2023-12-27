@@ -24,7 +24,7 @@ public:
 
 private:
 
-	int period = 500;		// [ms]
+	int period;		// [ms]
 };
 
 

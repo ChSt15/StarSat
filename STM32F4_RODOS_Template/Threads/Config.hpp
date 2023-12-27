@@ -6,6 +6,7 @@
 
 namespace config
 {
+    // WARNING: not fully done / implemented yet
 
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Control
@@ -14,11 +15,11 @@ namespace config
 
     // Sensor
     inline const bool sensor_thread_enable = true;
-    inline const int  sensor_thread_period = 50;       // [ms]
+    inline const int  sensor_thread_period = 100;       // [ms]
 
     // Coms
     inline const bool com_thread_enable = true;
-    inline const int  com_thread_period = 200;         // [ms]
+    inline const int  com_thread_period = 500;         // [ms]
 
     // Debug
     inline const bool debug_thread_enable = true;

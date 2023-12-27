@@ -23,7 +23,7 @@ public:
 
 private:
 
-	int period = 50;		// [ms]
+	int period;		// [ms]
 };
 
 

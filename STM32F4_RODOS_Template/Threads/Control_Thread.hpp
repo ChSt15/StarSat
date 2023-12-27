@@ -32,7 +32,7 @@ public:
 
 private:
 
-	int period = 100;		// [ms]
+	int period;		// [ms]
 };
 
 

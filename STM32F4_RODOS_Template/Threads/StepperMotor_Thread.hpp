@@ -66,6 +66,9 @@ public:
     void setStepsToDo(uint16_t steps);
 
 
+    uint16_t getStepsToDo();
+
+
     /**
      * @brief Sets number of steps, which needs to be performed
     */
