@@ -4,7 +4,6 @@
 #include "rodos.h"
 #include "PIDController.hpp"
 #include "../timestamp.hpp"
-#include "../threadsafe.hpp"
 
 
 class ReactionwheelControl
@@ -12,7 +11,8 @@ class ReactionwheelControl
 private:
 
 	PID controller;
-	Threadsafe<float> maxDesiredSpeed;				// max. speed the reactionwheel can reach in both directions -> to limit the setpoint [rad/s]
+	// TODO set value
+	float maxDesiredSpeed;			// max. speed the reactionwheel can reach in both directions -> to limit the setpoint [rad/s]
 
 public:
 
@@ -52,12 +52,6 @@ public:
 	 * @brief Get max. voltage that can be applied by HBridge [V] -> Limit of PID-controller output
 	*/
 	float getMaxVoltage();
-
-
-	/**
-	 * @brief Set max. speed that can the reactionwheel can reach [rad/s]
-	*/
-	void setMaxDesiredSpeed(float maxDesiredSpeed);
 
 
 	/**

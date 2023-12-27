@@ -3,17 +3,17 @@
 
 // IMU topic subscriber setup
 static CommBuffer<TimestampedData<IMUData>> IMUDataBuffer;
-static Subscriber IMUDataSubsciber(IMUDataTopic, IMUDataBuffer);
+static Subscriber IMUDataSubsciber(IMUDataTopic, IMUDataBuffer, "Telemetry Class");
 TimestampedData<IMUData> IMUDataReceiver;
 
 // Attitude topic subscriber setup
 static CommBuffer<TimestampedData<Attitude_Data>> AttitudeDataBuffer;
-static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer);
+static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer, "Telemetry Class");
 TimestampedData<Attitude_Data> AttitudeDataReceiver;
 
 // Encoder topic subscriber setup
 static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
-static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer);
+static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Telemetry Class");
 TimestampedData<float> EncoderDataReceiver;
 
 
@@ -32,6 +32,7 @@ void Telemetry::send_Continuous()
 	// Status
 	telemetry_continuous.modeid = getMode();
 	telemetry_continuous.cmdCnt = telecommand.getCommandCounter();
+	telemetry_continuous.lastcmdid = telecommand.getLastCommand();
 	telemetry_continuous.time = SECONDS_NOW();
 
 	// IMU
@@ -60,13 +61,26 @@ void Telemetry::send_Continuous()
 
 	// Arm
 	// TODO
+	telemetry_continuous.arm_extension = 0.;
 
 	// Electrical
 	// TODO
+	telemetry_continuous.U_bat = 0.;
+	telemetry_continuous.I_total = 0.;
+
+	telemetryContinuousTopic.publish(telemetry_continuous);
+	
 
 	if (this->enable_extendedtelem)
 	{
 		// TODO
+		telemetry_extended.speedControlOut = 0.;
+		telemetry_extended.posControlOut = 0.;
+		telemetry_extended.velControlOut = 0.;
+		telemetry_extended.arm_Calib = false;
+		telemetry_extended.I_reac = 0.;
+
+		telemetryExtendedContinuousTopic.publish(telemetry_extended);
 	}
 }
 

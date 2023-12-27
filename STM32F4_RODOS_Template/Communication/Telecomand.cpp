@@ -4,11 +4,13 @@
 // Telecomand topic
 Topic<Command> telecommandTopic(TelecommandTopicId, "Telecomand Topic");
 
+// Telecomand echo  topic
+Topic<Command> EchoTopic(TelecommandEchoTopicId, "Echo Topic");
+
 // Telecomand topic subscriber setup
 static Fifo<Command, 10> commandFIFO;
-static Subscriber telecommandSubsciber(telecommandTopic, commandFIFO);
+static Subscriber telecommandSubsciber(telecommandTopic, commandFIFO, "Telecommand Class");
 Command commandReceiver;
-
 
 void Telecommand::processNewCommand()
 {
@@ -18,6 +20,7 @@ void Telecommand::processNewCommand()
 	// Work through FIFO queue
 	while (commandFIFO.get(commandReceiver))
 	{
+		EchoTopic.publish(commandReceiver);
 		switch ((CommandIds) commandReceiver.id)
 		{
 		/*-----------------------------Modes----------------------------*/
@@ -48,26 +51,27 @@ void Telecommand::processNewCommand()
 		case SetMode_Mission:
 			setMode(Mission_Locate);
 			break;
+			/*
 		/*--------------------------Calib Parms-------------------------*/
 		case SetCalibParams_gyro:
 			calib.bias.x = commandReceiver.fval_1; 
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D();
+			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
 		case SetCalibParams_accel:
 			calib.bias.x = commandReceiver.fval_1;
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D();
+			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
 		case SetCalibParams_mag:
 			calib.bias.x = commandReceiver.fval_1;
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D();
+			calib.scale = Matrix3D_F();
 			imu.setGyroCalib(calib);
 			break;
 		/*-------------------------Control Parms------------------------*/
@@ -105,15 +109,15 @@ void Telecommand::processNewCommand()
 		case SendControlTelemetry:
 			telemetry.send_ControlParams();
 		case ToggleExtendedTelemetry:
-			telemetry.enable_ExtendedTelemetry(commandReceiver.fval_1 > 0 ? true: false);
+			telemetry.enable_ExtendedTelemetry(commandReceiver.fval_1 > 0);
 		/*-----------------------------Camera---------------------------*/
 		// TODO
-
 		default:
 			// Skip incrementing commandCnt
 			goto skipCnt;
 		}
 
+		lastCmndID = commandReceiver.id;
 		this->commandCnt++;
 
 		// marker to skip incrementing commandCnt
@@ -127,5 +131,9 @@ int Telecommand::getCommandCounter()
 	return this->commandCnt;
 }
 
+int Telecommand::getLastCommand()
+{
+	return this->lastCmndID;
+}
 
 Telecommand telecommand;

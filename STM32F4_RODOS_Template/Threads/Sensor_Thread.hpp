@@ -7,6 +7,7 @@
 #include "../hardware/imu.hpp"
 #include "../timestamp.hpp"
 #include "Modes.hpp"
+#include "Config.hpp"
 
 
 class SensorThread : public Thread
@@ -22,7 +23,7 @@ public:
 
 private:
 
-	const int period = 10;		// [ms]
+	int period;		// [ms]
 };
 
 

@@ -4,14 +4,12 @@
 #include "rodos.h"
 #include "matlib.h"
 #include "../timestamp.hpp"
-#include "../threadsafe.hpp"
-
 
 struct IMUData 
 {
-    Vector3D angularVelocity;   // [rad/s]
-    Vector3D magneticField;     // [gauss]
-    Vector3D acceleration;      // [g]
+    Vector3D_F angularVelocity;   // [rad/s]
+    Vector3D_F magneticField;     // [gauss]
+    Vector3D_F acceleration;      // [g]
     float temperature;          // [�C]
 };
 
@@ -21,8 +19,8 @@ struct IMUData
 */
 struct IMUCalib
 {
-    Vector3D bias;       // Bias of sensor. E.g. for magnetometer this is the soft iron offset.
-    Matrix3D scale;      // Scale of sensor. E.g. for magnetometer this is the hard iron offset. Also deals with non-orthogonality.
+    Vector3D_F bias;       // Bias of sensor. E.g. for magnetometer this is the soft iron offset.
+    Matrix3D_F scale;      // Scale of sensor. E.g. for magnetometer this is the hard iron offset. Also deals with non-orthogonality.
 };
 
 
@@ -32,14 +30,16 @@ class IMU
 {
 private:
 
+    Semaphore sem;
+
     /// @brief Data from IMU with calibration
     TimestampedData<IMUData> dataCalibrated;
     /// @brief Data from IMU without calibration
     TimestampedData<IMUData> dataRaw;
 
-    Threadsafe<IMUCalib> gyroCalib;
-    Threadsafe<IMUCalib> accelCalib;
-    Threadsafe<IMUCalib> magCalib;
+    IMUCalib gyroCalib;
+    IMUCalib accelCalib;
+    IMUCalib magCalib;
 
     HAL_I2C i2c;
 

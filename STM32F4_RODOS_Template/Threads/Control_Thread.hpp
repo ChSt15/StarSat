@@ -17,22 +17,11 @@
 
 #include "Debug_Thread.hpp"
 #include "Modes.hpp"
-
-
-/**
- * @todo NEEDS TO BE SPECIFIED
-*/
-PIDParams paramsReactionWheelControl {1.0f, 1.0f, 1.0f};
-PIDParams paramsVelocityControl {1.0f, 1.0f, 1.0f};
-PIDParams paramsPositionControl {1.0f, 1.0f, 1.0f};
-float maxVoltage = 10.0f;									// [V]
-float maxSpeed = (10000.0f * 2*M_PI) / 60.0f;				// [rad/s]
-float maxVelocity = M_PI_2;  								// [rad/s]
+#include "Config.hpp"
 
 
 class ControlThread : public Thread
 {
-
 public:
 
 	// Set name, prio and stack size
@@ -43,7 +32,7 @@ public:
 
 private:
 
-	const int period = 100;		// [ms]
+	int period;		// [ms]
 };
 
 

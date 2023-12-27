@@ -144,7 +144,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="hardware/ina3221|testing|Exe4_IMU/IMU_solution.cpp|Template.cpp|Template3.cpp|Template2.cpp|task2.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="hardware/ina3221|testing|Exe4_IMU/IMU_solution.cpp|Template3.cpp|Template2.cpp|task2.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

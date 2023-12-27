@@ -5,6 +5,7 @@
 
 #include "../Communication/Telemetry.hpp"
 #include "../Communication/Telecomand.hpp"
+#include "Config.hpp"
 
 
 class CommunicationThread : public Thread
@@ -20,7 +21,7 @@ public:
 
 private:
 
-	const int period = 1000;		// [ms]
+	int period;		// [ms]
 };
 
 

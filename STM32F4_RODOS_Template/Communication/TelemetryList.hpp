@@ -13,6 +13,7 @@ struct TelemetryContinuous
     // Status
     int modeid;
     int cmdCnt;
+    int lastcmdid;
     float time;             // [sec]
     // IMU
     float wx, wy, wz;       // [rad/s]
@@ -57,14 +58,6 @@ struct TelemetryControlParams
     float speed_P, speed_I, speed_D, speed_lim;
     float pos_P, pos_I, pos_D, pos_lim;
     float vel_P, vel_I, vel_D, vel_lim;
-};
-
-// not used in STM
-struct TelemetryCamera
-{
-    float rx, ry, rz;       // [Rodriguez Rot]
-    float px, py, pz;       // [mm]
-    uint32_t MeasurmentCnt;
 };
 
 

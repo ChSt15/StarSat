@@ -8,7 +8,6 @@ Define addresses of sensors
 
 Topic<TimestampedData<IMUData>> IMUDataTopic(-1, "IMUData");
 
-
 IMU::IMU(RODOS::I2C_IDX i2c):
 	i2c(i2c)
 {
@@ -30,37 +29,43 @@ TimestampedData<IMUData>& IMU::getDataRaw()
 
 void IMU::setGyroCalib(IMUCalib calib)
 {
-	this->gyroCalib.set(calib);
+	PROTECT_WITH_SEMAPHORE(sem) this->gyroCalib = calib;
 }
 
 
 IMUCalib IMU::getGyroCalib()
 {
-	return this->gyroCalib.get();
+	IMUCalib calib; 
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->gyroCalib;
+	return calib;
 }
 
 
 void IMU::setAccelCalib(IMUCalib calib)
 {
-	this->accelCalib.set(calib);
+	PROTECT_WITH_SEMAPHORE(sem) this->accelCalib = calib;
 }
 
 
 IMUCalib IMU::getAccelCalib()
 {
-	return this->accelCalib.get();
+	IMUCalib calib;
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->accelCalib;
+	return calib;
 }
 
 
 void IMU::setMagCalib(IMUCalib calib)
 {
-	this->magCalib.set(calib);
+	PROTECT_WITH_SEMAPHORE(sem) this->magCalib = calib;
 }
 
 
 IMUCalib IMU::getMagCalib()
 {
-	return this->magCalib.get();
+	IMUCalib calib;
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->magCalib;
+	return calib;
 }
 
 
@@ -191,17 +196,19 @@ float IMU::bytes_to_float(uint8_t* data)
 
 void IMU::calibrateData()
 {
+	// Save locally to avoid changes during calculations
 	IMUCalib gyro_calib = this->getGyroCalib();
+	IMUCalib accel_calib = this->getAccelCalib();
+	IMUCalib mag_calib = this->getMagCalib();
+
 	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity;
 	dataCalibrated.data.angularVelocity.z = -dataCalibrated.data.angularVelocity.z;
 	dataCalibrated.data.angularVelocity = dataCalibrated.data.angularVelocity.vecSub(gyro_calib.bias).matVecMult(gyro_calib.scale);
 
-	IMUCalib accel_calib = this->getAccelCalib();
 	dataCalibrated.data.acceleration = dataRaw.data.acceleration;
 	dataCalibrated.data.acceleration.z = -dataCalibrated.data.acceleration.z;
 	dataCalibrated.data.acceleration = dataCalibrated.data.acceleration.vecSub(accel_calib.bias).matVecMult(accel_calib.scale);
 
-	IMUCalib mag_calib = this->getMagCalib();
 	dataCalibrated.data.magneticField = dataRaw.data.magneticField;
 	dataCalibrated.data.magneticField.x = -dataRaw.data.magneticField.x;
 	dataCalibrated.data.magneticField.z = -dataRaw.data.magneticField.z;

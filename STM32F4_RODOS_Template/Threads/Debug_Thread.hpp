@@ -7,6 +7,7 @@
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/imu.hpp"
 #include "../timestamp.hpp"
+#include "Config.hpp"
 
 
 // WARNING: just a temporary solution, will be deleted once TTC is implemented
@@ -23,7 +24,7 @@ public:
 
 private:
 
-	const int period = 100;		// [ms]
+	int period;		// [ms]
 };
 
 
