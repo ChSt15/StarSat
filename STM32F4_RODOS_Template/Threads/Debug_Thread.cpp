@@ -39,11 +39,7 @@ void DebugThread::run()
 	TimestampedData<float> EncoderDataReceiver;
 
 	bool visual = false;
-	bool calib = false;
-
-	PRINTF("%d\n", getMode());
-	setMode(Mission_Point);
-	PRINTF("%d\n", getMode());
+	bool calib = true;
 
 	while (true)
 	{
@@ -86,4 +82,4 @@ void DebugThread::run()
 }
 
 
-DebugThread debugthread;
+//DebugThread debugthread;

@@ -13,12 +13,8 @@ void StepperMotorThread::run()
 
     while(true)
     {
-
-  
         while (stepsToDo > 0 and period != 0)
         {
-            PROTECT_WITH_SEMAPHORE(sem)
-            {
                 // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
                 // If not, then break inner while loop and indicate status as ready
                 if (currentDirection)                    // Positive direction
@@ -28,7 +24,7 @@ void StepperMotorThread::run()
                         DirectionPin.setPins(1);
                     }
                     else {
-                        stepsToDo = 0;
+                        PROTECT_WITH_SEMAPHORE(sem) stepsToDo = 0;
                         break;
                     }
                 }
@@ -38,7 +34,7 @@ void StepperMotorThread::run()
                         DirectionPin.setPins(0);
                     }
                     else {
-                        stepsToDo = 0;
+                        PROTECT_WITH_SEMAPHORE(sem) stepsToDo = 0;
                         break;
                     }
                 }
@@ -53,25 +49,25 @@ void StepperMotorThread::run()
                 // Update current position
                 if (currentDirection)
                 {
-                    this->stepCounter = +1;
+                    PROTECT_WITH_SEMAPHORE(sem) this->stepCounter++;
                 }
                 else {
-                    this->stepCounter = -1;
+                    PROTECT_WITH_SEMAPHORE(sem) this->stepCounter--;
                 }
 
                 // Update steps to be performed
-                this->stepsToDo = -1;
-            }
+                PROTECT_WITH_SEMAPHORE(sem) this->stepsToDo--;
+            
 
             // Wait for current this->period of time
-            suspendCallerUntil(NOW() + period * MICROSECONDS);
+            suspendCallerUntil(NOW() + period * MICROSECONDS - 100 * MICROSECONDS);
         }
 
         // Update status after execution of all commaned steps
         PROTECT_WITH_SEMAPHORE(sem) this->status_ready = true;
 
         // Wait for new commands setting this->stepsToDo
-        suspendCallerUntil(NOW() + 1 * SECONDS);
+        suspendCallerUntil(END_OF_TIME);
     }
 }
 
@@ -92,15 +88,15 @@ void StepperMotorThread::setDirection(bool direction)
 
 
 
-void StepperMotorThread::setPeriod(uint16_t period)
+void StepperMotorThread::setPeriod(int period)
 {
     PROTECT_WITH_SEMAPHORE(sem) this->period = period;
 }
 
 
-uint16_t StepperMotorThread::getPeriod()
+int StepperMotorThread::getPeriod()
 {
-    uint16_t t;
+    int t;
     PROTECT_WITH_SEMAPHORE(sem) t = this->period;
     return t;
 }
