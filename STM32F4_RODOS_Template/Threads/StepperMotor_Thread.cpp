@@ -20,8 +20,7 @@ void StepperMotorThread::run()
 
             while (stepsToDo > 0 and period != 0)
             {
-                PROTECT_WITH_SEMAPHORE(sem)
-                {
+         
                     // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
                     // If not, then break inner while loop and indicate status as ready
                     if (currentDirection)                    // Positive direction
@@ -31,7 +30,7 @@ void StepperMotorThread::run()
                             DirectionPin.setPins(1);
                         }
                         else {
-                            stepsToDo = 0;
+                            PROTECT_WITH_SEMAPHORE(sem) stepsToDo = 0;
                             break;
                         }
                     }
@@ -41,11 +40,11 @@ void StepperMotorThread::run()
                             DirectionPin.setPins(0);
                         }
                         else {
-                            stepsToDo = 0;
+                            PROTECT_WITH_SEMAPHORE(sem) stepsToDo = 0;
                             break;
                         }
                     }
-                }
+ 
 
                 // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
                 StepPin.setPins(0);
