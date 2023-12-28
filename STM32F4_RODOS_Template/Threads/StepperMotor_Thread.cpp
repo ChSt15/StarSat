@@ -167,4 +167,4 @@ bool StepperMotorThread::calibrate()
 
 
 /// @todo UPDATE PINS !!!
-StepperMotorThread steppermotorthread(RODOS::GPIO_000, RODOS::GPIO_001, RODOS::GPIO_002);
+StepperMotorThread steppermotorthread(RODOS::GPIO_049, RODOS::GPIO_051, RODOS::GPIO_001);
