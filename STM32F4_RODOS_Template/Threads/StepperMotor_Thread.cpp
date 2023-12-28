@@ -18,7 +18,7 @@ void StepperMotorThread::run()
         if (status)
         {
 
-            while (stepsToDo > 0 and period != 0)
+            while (stepsToDo > 0 && period != 0)
             {
                 PROTECT_WITH_SEMAPHORE(sem)
                 {
