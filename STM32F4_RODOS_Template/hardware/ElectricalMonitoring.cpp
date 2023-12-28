@@ -43,6 +43,7 @@ void ElectricalMonitoring::BeeperThread::run()
 
 
 ElectricalMonitoring::ElectricalMonitoring(RODOS::GPIO_PIN chipPowerPin, RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus) :
+    Thread("ElectricalMonitoring"),
     ina3221_(INA3221_ADDR41_VCC),
     beeperThread_(beeperPin),
     chipPowerPin_(chipPowerPin),
@@ -267,6 +268,23 @@ bool ElectricalMonitoring::rpiRunning() {
 }
 
 
+
+void ElectricalMonitoring::init() {
+    initialize();
+}
+
+void ElectricalMonitoring::run() {
+
+
+    while (1) {
+
+        update();
+
+        suspendCallerUntil(NOW() + 10*MILLISECONDS);
+
+    }
+    
+}
 
 
 ElectricalMonitoring electricalMonitor(RODOS::GPIO_PIN::GPIO_032, RODOS::GPIO_PIN::GPIO_000, RODOS::ADC_CHANNEL::ADC_CH_009, RODOS::PWM_IDX::PWM_IDX13, RODOS::I2C_IDX::I2C_IDX2);

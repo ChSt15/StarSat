@@ -33,7 +33,7 @@
 
 #include "rodos.h"
 
-#include "Beastdevices_INA3221.h"
+#include "Beastdevices_INA3221.hpp"
 
 void Beastdevices_INA3221::_read(ina3221_reg_t reg, uint16_t *val) {
 

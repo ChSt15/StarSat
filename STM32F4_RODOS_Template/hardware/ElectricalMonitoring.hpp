@@ -3,7 +3,7 @@
 
 #include "rodos.h"
 
-#include "ina3221/Beastdevices_INA3221.h"
+#include "ina3221/Beastdevices_INA3221.hpp"
 
 
 /**
@@ -17,7 +17,7 @@
  * 				
  * 
 */
-class ElectricalMonitoring
+class ElectricalMonitoring : public RODOS::Thread
 {
 private:
 
@@ -211,6 +211,10 @@ public:
 	void openExtSwitch();
 
 private:
+
+    void init() override;
+
+    void run() override;
 
 	/**
 	 * @brief Reads all values off the INA3221 chip.
