@@ -18,8 +18,8 @@ private:
 	 * PWM_IDX00 - PWM_IDX03: 168 Mhz; all other 84 Mhz
 	 * @note For high frequencies (20kHz), we might need to modell non-linearities with sqrt(voltagePercentage) in setVoltage()
 	*/
-	int pwmFrequency = 2000;
-	int pwmIncrements = 500;
+	int pwmFrequency;
+	int pwmIncrements;
 
 	// @brief Maximum output voltage percentage of HBridge output.
 	float MAX_OUTPUT_PERCENTAGE = 1.0f;
@@ -36,7 +36,7 @@ public:
 	/**
 	 * @brief Initialize HBridge -> calls PWM.init() functions
 	*/
-    void initialization();
+    void initialization(int pwmFrequency, int pwmIncrements);
 
 	/**
 	 * @brief Construct a new HBridge object

@@ -32,6 +32,10 @@ void SensorThread::run()
 		imu.setGyroCalib(gyroCalib);
 		imu.setAccelCalib(accelCalib);
 		imu.setMagCalib(magCalib);
+		imucalib.config(gyro_maxsamples, accel_maxsamples, mag_maxsamples);
+
+		// QEKF
+		qekf.config(sigma_gyro, sigma_accel, sigma_yaw, sigma_gyro_drift);
 	}
 
 	while (true)

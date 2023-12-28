@@ -49,6 +49,15 @@ QEKF::QEKF()
 	eye_10x10.r[9][9] = 1;
 }
 
+
+void QEKF::config(Vector3D_F sigma_gyro, Vector3D_F sigma_accel, float sigma_yaw, float sigma_gyro_drift)
+{
+	this->sigma_gyro = sigma_gyro;
+	this->sigma_accel = sigma_accel;
+	this->sigma_yaw = sigma_yaw;
+	this->sigma_gyro_drift = sigma_gyro_drift;
+}
+
 void QEKF::init(IMUData& imudata)
 {
 	// Calc roll, pitch from accelerometer

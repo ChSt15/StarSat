@@ -10,7 +10,7 @@ PID::PID()
 
 
 
-void PID::init(const PIDParams &params, float limit)
+void PID::init(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
     this->parameters = params;
     this->setpoint = 0.0;
@@ -18,6 +18,8 @@ void PID::init(const PIDParams &params, float limit)
     this->lastMeasurment = 0.0;
     this->integError = 0.0;
     this->limit = limit;
+    this->use_BackCalculation = use_BackCalculation;
+    this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
 
 
@@ -41,11 +43,22 @@ float PID::calculate(float measurement, int64_t timestamp)
         int64_t dt = timestamp - this->lastTimestamp;
 
         // Integral term
-        this->integError += error * dt;
+        if (!use_BackCalculation)
+        {
+            this->integError += error * dt;
+        }
         float integTerm = params.ki * this->integError;
 
         // Derivation term
-        float derivTerm = params.kd * (error - this->lastError) / dt;
+        float derivTerm;
+        if (use_DerivativofMeasurment)
+        {
+            derivTerm = params.kd * (measurement - this->lastMeasurment) / dt;
+        }
+        else
+        {
+            derivTerm = params.kd * (error - this->lastError) / dt;
+        }
 
 
         // Determine output signal
@@ -53,18 +66,27 @@ float PID::calculate(float measurement, int64_t timestamp)
 
         // Update state
         this->lastError = error;
+        this->lastMeasurment = measurement;
         this->lastTimestamp = timestamp;
 
         // Limit control signal
-        if(controlSignal > lim) controlSignal = lim;
-        else if (controlSignal < -lim) controlSignal = -lim;
+        float controlSignalSaturated = controlSignal;
+        if(controlSignalSaturated > lim) controlSignalSaturated = lim;
+        else if (controlSignalSaturated < -lim) controlSignalSaturated = -lim;
         
-        return controlSignal;
+        // Backcalculation
+        if (use_BackCalculation)
+        {
+            this->integError += (params.ki * error + controlSignalSaturated - controlSignal) * dt;
+        }
+
+        return controlSignalSaturated;
     } 
     else 
     {
         // Update state
         this->lastError = error;
+        this->lastMeasurment = measurement;
         this->lastTimestamp = timestamp;
         this->flagInitialized = true;
         

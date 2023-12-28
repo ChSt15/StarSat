@@ -34,11 +34,6 @@ HAL_GPIO ledorange(GPIO_061);
 
 void ControlThread::init()
 {
-	/**
-	 * Initialize HBridge
-	*/
-	hbridge.initialization();
-
 	ledorange.init(true, 1, 0);
 }
 
@@ -54,15 +49,20 @@ void ControlThread::run()
 		if (!control_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		// Controllers
-		reactionwheelControl.init(paramsSpeedControl, maxVoltage, maxSpeed);
-		positionControl.init(paramsPosController, maxVelocity);
-		velocitycontrol.init(paramsVelController, maxSpeed, maxVelocity);
+		reactionwheelControl.init(paramsSpeedControl, maxVoltage, maxSpeed, backcalculationSpeedController, derivativofmeasurmentSpeedController);
+		positionControl.init(paramsPosController, maxVelocity, backcalculationPosController, derivativofmeasurmentPosController);
+		velocitycontrol.init(paramsVelController, maxSpeed, maxVelocity, backcalculationVelController, derivativofmeasurmentVelController);
+
+		// ArmController
+		armController.config(max_vel, min_vel, max_accel, deccel_margin);
+
+		// HBridge
+		hbridge.initialization(pwmFrequency, pwmIncrements);
 	}
 
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 	TimestampedData<float> EncoderDataReceiver;
 
-	float desiredVelocity;
 	float desiredSpeed;
 	float desiredVoltage;
 
@@ -96,10 +96,7 @@ void ControlThread::run()
 			break;
 
 		case Control_Pos:
-			desiredVelocity = positionControl.update(AttitudeDataReceiver);
-
-			velocitycontrol.setDesiredAngularVelocity(desiredVelocity);
-			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
+			desiredSpeed = positionControl.update(AttitudeDataReceiver);
 
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);

@@ -1,7 +1,6 @@
 #include "ArmController.hpp"
 
 #define STEP2LENGTH 1		// [mm]
-#define DECCELMARGIN 50		// [steps]
 
 
 // Camera topic subscriber setup
@@ -12,6 +11,16 @@ TelemetryCamera CameraDataReceiver;
 
 float dt;
 float last_t;
+
+
+void ArmController::config(int max_vel, int min_vel, int max_accel, int deccel_margin)
+{
+	this->max_vel = max_vel;
+	this->min_vel = min_vel;
+	this->max_accel = max_accel;
+	this->deccel_margin = deccel_margin;
+}
+
 
 bool ArmController::InitialExtension()
 {
@@ -56,7 +65,7 @@ bool ArmController::InitialExtension()
 		// Decelerate to vel_min
 		float deccel_time = ((1.f / period * 1000.f * 1000.f) - min_vel) / max_accel;
 		float deccel_distance = -0.5 * max_accel * pow(deccel_time, 2) + (1.f / period * 1000.f * 1000.f) * deccel_time;
-		if (deccel || (steppermotorthread.getStepsToDo() - DECCELMARGIN) < deccel_distance)
+		if (deccel || (steppermotorthread.getStepsToDo() - deccel_margin) < deccel_distance)
 		{
 			float t = (1.f / (1.f / period * 1000.f * 1000.f - max_accel * dt));
 			(t < 1.f / min_vel) ? steppermotorthread.setPeriod(t * 1000.f * 1000.f) : steppermotorthread.setPeriod((int) (1.f / min_vel * 1000.f * 1000.f));

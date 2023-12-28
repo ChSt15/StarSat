@@ -6,8 +6,6 @@
 
 namespace config
 {
-    // WARNING: not fully done / implemented yet
-
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Control
     inline const bool control_thread_enable = true;
@@ -15,7 +13,7 @@ namespace config
 
     // Sensor
     inline const bool sensor_thread_enable = true;
-    inline const int  sensor_thread_period = 100;       // [ms]
+    inline const int  sensor_thread_period = 100;      // [ms]
 
     // Coms
     inline const bool com_thread_enable = true;
@@ -45,17 +43,24 @@ namespace config
     // Speed Controller
     inline const float limitSpeedController = 1.f;                      //
     inline const PIDParams paramsSpeedControl{ 1.0f, 1.0f, 1.0f };      // P, I, D
+    inline const bool backcalculationSpeedController = false;
+    inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = 1.f;                        //
     inline const PIDParams paramsPosController{ 1.0f, 1.0f, 1.0f };     // P, I, D
+    inline const bool backcalculationPosController = false;
+    inline const bool derivativofmeasurmentPosController = false;
     // Velocity Controller  
     inline const float limitVelController = 1.f;                        // 
     inline const PIDParams paramsVelController{ 1.0f, 1.0f, 1.0f };     // P, I, D
+    inline const bool backcalculationVelController = false;
+    inline const bool derivativofmeasurmentVelController = false;
 
     // Arm Controller
     inline const int max_vel = 50;			// [step/s]
     inline const int min_vel = 1;			// [step/s]
     inline const int max_accel = 5;		    // [step/s^2]
+    inline const int deccel_margin = 50;    // [step]
 
     // IMU Calibration
     inline const int gyro_maxsamples = 200;

@@ -21,7 +21,7 @@ public:
 	/**
 	 * @brief Initialize PID controller
 	*/
-	void init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed);
+	void init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed, bool use_BackCalculation, bool use_DerivativofMeasurment);
 
 
 	/**

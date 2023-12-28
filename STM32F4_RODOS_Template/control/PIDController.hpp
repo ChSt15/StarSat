@@ -29,6 +29,7 @@ class PID {
         /// @brief Error of last run for determining the derivation of the error
         float lastError;
 
+        /// @brief Measurment of last run for determining the derivation of the Measurment
         float lastMeasurment;
 
         /// @brief Integration of error until last control signal determination
@@ -59,7 +60,7 @@ class PID {
        /**
         * @brief Initialize parameters
         */
-       void init(const PIDParams &params, float limit);
+       void init(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment);
 
 
         /**

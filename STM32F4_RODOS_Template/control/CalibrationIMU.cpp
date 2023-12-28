@@ -2,6 +2,12 @@
 #include "rodos.h"
 #include "matlib.h"
 
+void CalibrationIMU::config(int gyro_maxsamples, int accel_maxsamples, int mag_maxsamples)
+{
+	this->gyro_maxsamples = gyro_maxsamples;
+	this->accel_maxsamples = accel_maxsamples;
+	this->mag_maxsamples = mag_maxsamples;
+}
 
 bool CalibrationIMU::calibrateGyro(TimestampedData<IMUData> imurawdata)
 {

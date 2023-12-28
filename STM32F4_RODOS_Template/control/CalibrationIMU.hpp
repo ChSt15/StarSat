@@ -12,9 +12,9 @@ class CalibrationIMU
 {
 private:
 
-    int gyro_maxsamples = 200;
-    int accel_maxsamples = 200;
-    int mag_maxsamples = 500;
+    int gyro_maxsamples;
+    int accel_maxsamples;
+    int mag_maxsamples;
 
     int gyro_samples = 0;
     int accel_samples = 0;
@@ -27,6 +27,8 @@ private:
     float mag_maxx, mag_maxy = -42000.0f;
 
 public:
+
+    void config(int gyro_maxsamples, int accel_maxsamples, int mag_maxsamples);
 
     bool calibrateGyro(TimestampedData<IMUData> imurawdata);
 

@@ -17,14 +17,18 @@ private:
 	float w_Mockup;
 	float distance;
 
-	const int max_vel = 100;		// [step/s]
-	const int min_vel = 10;			// [step/s]
-	const int max_accel = 10;		// [step/s^2]
+	int max_vel;			// [step/s]
+	int min_vel;			// [step/s]
+	int max_accel;			// [step/s^2]
+	int deccel_margin;		// [steps]
 
 	bool moving = false;
 	bool deccel = false;
 
 public:
+
+	void config(int max_vel, int min_vel, int max_accel, int deccel_margin);
+
 	bool InitialExtension();
 
 	bool FinalExtension();

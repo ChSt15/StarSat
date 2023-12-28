@@ -10,9 +10,9 @@ ReactionwheelControl::ReactionwheelControl()
 
 
 
-void ReactionwheelControl::init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed)
+void ReactionwheelControl::init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
-    this->controller.init(params, maxVoltage);
+    this->controller.init(params, maxVoltage, use_BackCalculation, use_DerivativofMeasurment);
     this->maxDesiredSpeed = maxDesiredSpeed;
 }
 

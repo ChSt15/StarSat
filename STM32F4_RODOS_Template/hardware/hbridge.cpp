@@ -11,7 +11,8 @@ HBridge::HBridge(RODOS::PWM_IDX pwm1, RODOS::PWM_IDX pwm2):
 }
 
 
-void HBridge::initialization(){
+void HBridge::initialization(int pwmFrequency, int pwmIncrements)
+{
     pwm1.init(pwmFrequency, pwmIncrements);
     pwm2.init(pwmFrequency, pwmIncrements);
 }

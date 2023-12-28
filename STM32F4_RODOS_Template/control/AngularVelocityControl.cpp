@@ -10,9 +10,9 @@ AngularVelocityControl::AngularVelocityControl()
 
 
 
-void AngularVelocityControl::init(const PIDParams& params, float maxSpeed, float maxDesiredVelocity)
+void AngularVelocityControl::init(const PIDParams& params, float maxSpeed, float maxDesiredVelocity, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
-    this->controller.init(params, maxSpeed);
+    this->controller.init(params, maxSpeed, use_BackCalculation, use_DerivativofMeasurment);
     this->maxDesiredVelocity = maxDesiredVelocity;
 }
 

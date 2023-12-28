@@ -22,7 +22,7 @@ public:
 	/**
 	 * @brief Initialize PID controller
 	*/
-	void init(const PIDParams& params, float maxSpeed, float maxDesiredVelocity);
+	void init(const PIDParams& params, float maxSpeed, float maxDesiredVelocity, bool use_BackCalculation, bool use_DerivativofMeasurment);
 
 
 	/**

@@ -10,9 +10,9 @@ AngularPositionControl::AngularPositionControl()
 
 
 
-void AngularPositionControl::init(const PIDParams& params, float maxAngularVelocity)
+void AngularPositionControl::init(const PIDParams& params, float maxAngularVelocity, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
-    this->controller.init(params, maxAngularVelocity);
+    this->controller.init(params, maxAngularVelocity, use_BackCalculation, use_DerivativofMeasurment);
 }
 
 

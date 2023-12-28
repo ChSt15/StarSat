@@ -78,15 +78,17 @@ private:
 	// Attitude data
 	TimestampedData <Attitude_Data> data;
 
-	// std of sensors (not final, duh)
-	Vector3D_F sigma_gyro = Vector3D_F(0.0027728, 0.0023483, 0.0018954);
-	Vector3D_F sigma_accel = Vector3D_F(0.0014530, 0.0017393, 0.0044343);
-	float sigma_yaw = 0.018469;
-	float sigma_gyro_drift = 1.0f * pow(10, -6);
+	// std of sensors
+	Vector3D_F sigma_gyro;
+	Vector3D_F sigma_accel;
+	float sigma_yaw;
+	float sigma_gyro_drift;
 
 public:
 
 	QEKF();
+
+	void config(Vector3D_F sigma_gyro, Vector3D_F sigma_accel, float sigma_yaw, float sigma_gyro_drift);
 
 	// @brief Calculation of initial orientation
 	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
