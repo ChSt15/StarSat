@@ -17,8 +17,8 @@ void StepperMotorThread::run()
     //CalibPin.
     EnablePin.init(true, 1, 1);
 
-    setPeriod(100);
-    setStepsToDo(10000);
+    //setPeriod(100);
+    //setStepsToDo(10000);
     
     while(true)
     {
@@ -175,4 +175,4 @@ bool StepperMotorThread::calibrate()
 
 
 /// @todo UPDATE PINS !!!
-StepperMotorThread steppermotorthread(RODOS::GPIO_049, RODOS::GPIO_051, RODOS::GPIO_001, RODOS::GPIO_053);
+StepperMotorThread steppermotorthread(RODOS::GPIO_049, RODOS::GPIO_051, RODOS::GPIO_001, RODOS::GPIO_055);
