@@ -3,14 +3,22 @@
 
 void StepperMotorThread::init()
 {
-    DirectionPin.init(true, 1, 1);
-    StepPin.init(true, 1, 0);
+    
 }
 
 
 void StepperMotorThread::run()
 {
     bool status;
+
+    DirectionPin.init(true, 1, 1);
+    StepPin.init(true, 1, 0);
+    CalibPin.init(false, 0, 0);
+    //CalibPin.
+    EnablePin.init(true, 1, 1);
+
+    setPeriod(100);
+    setStepsToDo(10000);
     
     while(true)
     {
@@ -28,7 +36,7 @@ void StepperMotorThread::run()
                     {
                         if (stepCounter < max_steps)         // Check limit
                         {
-                            DirectionPin.setPins(1);
+                            DirectionPin.write(1);
                         }
                         else {
                             stepsToDo = 0;
@@ -38,7 +46,7 @@ void StepperMotorThread::run()
                     else {                                // Negative direction
                         if (stepCounter > 0)                 // Check limit
                         {
-                            DirectionPin.setPins(0);
+                            DirectionPin.write(0);
                         }
                         else {
                             stepsToDo = 0;
@@ -48,11 +56,11 @@ void StepperMotorThread::run()
                 }
 
                 // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
-                StepPin.setPins(0);
+                StepPin.write(0);
                 suspendCallerUntil(NOW() + 100 * MICROSECONDS);
 
                 // Create Rising Edge
-                StepPin.setPins(1);
+                StepPin.write(1);
 
                 // Update current position
                 if (currentDirection)
@@ -142,20 +150,20 @@ bool StepperMotorThread::calibrate()
     {
         while(!status_calib)
         {
-            if(CalibPin.readPins() == 0)                // Check if Pin is low -> then execute step backwards
+            if(CalibPin.read() == 0)                // Check if Pin is low -> then execute step backwards
             {
-                DirectionPin.setPins(0);
-                StepPin.setPins(0);
+                DirectionPin.write(0);
+                StepPin.write(0);
                 suspendCallerUntil(NOW() + 100 * MICROSECONDS);
-                StepPin.setPins(1);
+                StepPin.write(1);
                 suspendCallerUntil(NOW() + 500 * MICROSECONDS);
             } else {                                    // Pin is high -> calibration completed
                 status_calib = true;
             }   
         }
 
-        StepPin.setPins(0);
-        DirectionPin.setPins(1);
+        StepPin.write(0);
+        DirectionPin.write(1);
         stepCounter = 0;
     }
 
@@ -167,4 +175,4 @@ bool StepperMotorThread::calibrate()
 
 
 /// @todo UPDATE PINS !!!
-StepperMotorThread steppermotorthread(RODOS::GPIO_049, RODOS::GPIO_051, RODOS::GPIO_001);
+StepperMotorThread steppermotorthread(RODOS::GPIO_049, RODOS::GPIO_051, RODOS::GPIO_001, RODOS::GPIO_053);
