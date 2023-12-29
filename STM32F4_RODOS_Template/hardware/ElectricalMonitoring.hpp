@@ -81,14 +81,18 @@ private:
 	bool powerGood_ = false;
 	bool rpiRunning_ = false;
 
+    bool rpiPowerOn_ = false;
+
 	RODOS::HAL_I2C i2cBus_;
 
     RODOS::GPIO_PIN chipPowerPin_;
+    RODOS::GPIO_PIN rpiPowerPin_;
 	RODOS::GPIO_PIN extPowerPin_;
 	RODOS::ADC_CHANNEL adcWheelPin_;
 	RODOS::PWM_IDX beeperIDX_;
 
     RODOS::HAL_GPIO chipPower_;
+    RODOS::HAL_GPIO rpiPower_;
 	RODOS::HAL_GPIO extPower_;
 	RODOS::HAL_ADC adcWheel_;
 	RODOS::HAL_PWM beeper_;
@@ -105,7 +109,8 @@ private:
     enum class ChipResetState_t {
 		IDLE,
         RESET_INIT,
-        CHIP_WAIT
+        CHIP_WAIT,
+        STARTUP_WAIT
 	};
 
 	SystemState_t state_ = SystemState_t::INIT;
@@ -130,7 +135,7 @@ public:
 	 * @param beeperPin PWM pin connected to the warning beeper.
 	 * @param ina3221_i2cBus I2C bus connected to the INA3221 chip.
 	*/
-	ElectricalMonitoring(RODOS::GPIO_PIN chipPowerPin, RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus);
+	ElectricalMonitoring(RODOS::GPIO_PIN rpiPowerPin, RODOS::GPIO_PIN chipPowerPin, RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus);
 
 	/**
 	 * Call once quickly after system startup.

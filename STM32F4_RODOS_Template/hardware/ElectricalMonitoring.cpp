@@ -42,11 +42,12 @@ void ElectricalMonitoring::BeeperThread::run()
 }
 
 
-ElectricalMonitoring::ElectricalMonitoring(RODOS::GPIO_PIN chipPowerPin, RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus) :
+ElectricalMonitoring::ElectricalMonitoring(RODOS::GPIO_PIN rpiPowerPin, RODOS::GPIO_PIN chipPowerPin, RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus) :
     Thread("ElectricalMonitoring"),
     ina3221_(INA3221_ADDR41_VCC),
     beeperThread_(beeperPin),
     chipPowerPin_(chipPowerPin),
+    rpiPowerPin_(rpiPowerPin),
     extPowerPin_(powerOffPin),
     adcWheelPin_(adcWheelPin),
     beeperIDX_(beeperPin),
@@ -70,6 +71,7 @@ void ElectricalMonitoring::update()
         {
             beeperThread_.beepForTime_ns(500*MILLISECONDS);
             chipPower_.init(true, 1, 1);
+            rpiPower_.init(true, 1, 0);
             extPower_.init(true, 1, 1);
             adcWheel_.init(adcWheelPin_);
 
@@ -92,12 +94,18 @@ void ElectricalMonitoring::update()
 
             //Check if power should be turned off
             if (voltageBattery_ < batteryCutoffVoltage) {
-                openExtSwitch();
+                //openExtSwitch();
             }
 
             //Check if battery is low
             if (voltageBattery_ < batteryWarningVoltage) {
-                beeperThread_.beepForTime_ns(100*MILLISECONDS);
+                //beeperThread_.beepForTime_ns(100*MILLISECONDS);
+            }
+
+            //Check if we can turn on the RPI
+            if (!rpiPowerOn_ && powerGood_) {
+                rpiPowerOn_ = true;
+                rpiPower_.write(1);
             }
 
             //Begin waiting for next conversion
@@ -287,4 +295,4 @@ void ElectricalMonitoring::run() {
 }
 
 
-ElectricalMonitoring electricalMonitor(RODOS::GPIO_PIN::GPIO_032, RODOS::GPIO_PIN::GPIO_000, RODOS::ADC_CHANNEL::ADC_CH_009, RODOS::PWM_IDX::PWM_IDX13, RODOS::I2C_IDX::I2C_IDX2);
+ElectricalMonitoring electricalMonitor(RODOS::GPIO_PIN::GPIO_050, RODOS::GPIO_PIN::GPIO_032, RODOS::GPIO_PIN::GPIO_000, RODOS::ADC_CHANNEL::ADC_CH_009, RODOS::PWM_IDX::PWM_IDX13, RODOS::I2C_IDX::I2C_IDX2);
