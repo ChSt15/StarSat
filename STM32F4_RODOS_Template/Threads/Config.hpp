@@ -9,14 +9,14 @@ namespace config
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Control
     inline const bool control_thread_enable = true;
-    inline const int  control_thread_period = 100;     // [ms]
+    inline const int  control_thread_period = 10;     // [ms]
 
     // Sensor
     inline const bool sensor_thread_enable = true;
-    inline const int  sensor_thread_period = 100;      // [ms]
+    inline const int  sensor_thread_period = 10;      // [ms]
 
     // Coms
-    inline const bool com_thread_enable = true;
+    inline const bool com_thread_enable = false;
     inline const int  com_thread_period = 500;         // [ms]
 
     // Debug
@@ -27,13 +27,13 @@ namespace config
     // IMU
     inline const IMUCalib gyroCalib{
         Vector3D_F(0.011274, 0.018649, -0.021776),                      // Offset [rad/s]
-        Matrix3D_F(YPR_F(0, 0, 0)) };                                   // Yaw, Pitch, Roll [rad]
+        Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1))};  // Yaw, Pitch, Roll [rad]
     inline const IMUCalib accelCalib{
         Vector3D_F(-0.025037, -0.0051067, -0.0089848),                  // Offset [g]
-        Matrix3D_F(YPR_F(0, 0, 0)) };                                   // Yaw, Pitch, Roll [rad]
+        Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1)) }; // Yaw, Pitch, Roll [rad]
     inline const IMUCalib magCalib{
         Vector3D_F(-0.025, 0.2625, -0.0495),                            // Offset [gauss]
-        Matrix3D_F(YPR_F(0, 0, 0)) };                                   // Yaw, Pitch, Roll [rad]
+        Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1)) }; // Yaw, Pitch, Roll [rad]
 
     // HBridge
     inline const int pwmFrequency = 2000;       // [Hz]

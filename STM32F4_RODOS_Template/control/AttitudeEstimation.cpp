@@ -12,6 +12,17 @@ Topic<TimestampedData<Attitude_Data>> AttitudeDataTopic(-1, "AttitudeData");
 
 QEKF::QEKF()
 {
+
+}
+
+
+void QEKF::config(Vector3D_F sigma_gyro, Vector3D_F sigma_accel, float sigma_yaw, float sigma_gyro_drift)
+{
+	this->sigma_gyro = sigma_gyro;
+	this->sigma_accel = sigma_accel;
+	this->sigma_yaw = sigma_yaw;
+	this->sigma_gyro_drift = sigma_gyro_drift;
+
 	P.r[0][0] = 1;
 	P.r[1][1] = 1;
 	P.r[2][2] = 1;
@@ -47,15 +58,6 @@ QEKF::QEKF()
 	eye_10x10.r[7][7] = 1;
 	eye_10x10.r[8][8] = 1;
 	eye_10x10.r[9][9] = 1;
-}
-
-
-void QEKF::config(Vector3D_F sigma_gyro, Vector3D_F sigma_accel, float sigma_yaw, float sigma_gyro_drift)
-{
-	this->sigma_gyro = sigma_gyro;
-	this->sigma_accel = sigma_accel;
-	this->sigma_yaw = sigma_yaw;
-	this->sigma_gyro_drift = sigma_gyro_drift;
 }
 
 void QEKF::init(IMUData& imudata)
@@ -105,7 +107,6 @@ TimestampedData<Attitude_Data>& QEKF::estimate(TimestampedData<IMUData>& imudata
 	data.timestamp = NOW();
 	data.data.attitude = Quaternion(q0, q1, q2, q3);
 	data.data.angularVelocity = Vector3D(wx, wy, wz);
-
 	return data;
 }
 

@@ -12,6 +12,9 @@
 
 HAL_GPIO ledred(GPIO_062);
 
+
+float t_last;
+
 void SensorThread::init()
 {
 	ledred.init(true, 1, 0);
@@ -42,7 +45,7 @@ void SensorThread::run()
 	{
 		imu.readRawData();
 
-		switch (mode)
+		switch (getMode())
 		{
 		case Calib_Gyro:
 
