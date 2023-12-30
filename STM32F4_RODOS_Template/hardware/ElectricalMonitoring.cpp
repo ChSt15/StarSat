@@ -107,7 +107,7 @@ void ElectricalMonitoring::update()
             }
 
             //Check if we can turn on the RPI
-            if (!rpiPowerOn_ && powerGood_ && config::disable_rpi == false) {
+            if (!rpiPowerOn_ && powerGood_ && config::enable_rpi) {
                 rpiPowerOn_ = true;
                 rpiPower_.setPins(1);
             }
