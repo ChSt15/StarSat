@@ -16,33 +16,17 @@ void StepperMotorThread::run()
     CalibPin.init(false, 0, 0);
     //CalibPin.
     EnablePin.init(true, 1, 0);
-
-    //setPeriod(1000);
-    //setStepsToDo(10000);
-
-    //suspendCallerUntil(END_OF_TIME);
-
-    /*while (1) {
-
-        StepPin.setPins(0);
-
-        suspendCallerUntil(NOW() + 1 * MILLISECONDS);
-
-        StepPin.setPins(1);
-
-        suspendCallerUntil(NOW() + 1 * MILLISECONDS);
-
-    }*/
     
     while(true)
     {
         PROTECT_WITH_SEMAPHORE(sem) status = this->status_calib;
-        if (status)
+        if (status || true)
         {
 
             while (stepsToDo > 0 && period != 0)
-            {
-                PROTECT_WITH_SEMAPHORE(sem)
+            {   
+
+                //PROTECT_WITH_SEMAPHORE(sem)
                 {
                     // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
                     // If not, then break inner while loop and indicate status as ready
@@ -53,7 +37,7 @@ void StepperMotorThread::run()
                             DirectionPin.setPins(1);
                         }
                         else {
-                            stepsToDo = 0;
+                            PROTECT_WITH_SEMAPHORE(sem) stepsToDo = 0;
                             break;
                         }
                     }
@@ -63,7 +47,7 @@ void StepperMotorThread::run()
                             DirectionPin.setPins(0);
                         }
                         else {
-                            stepsToDo = 0;
+                            PROTECT_WITH_SEMAPHORE(sem) stepsToDo = 0;
                             break;
                         }
                     }
@@ -96,6 +80,9 @@ void StepperMotorThread::run()
             // Update status after execution of all commaned steps
             PROTECT_WITH_SEMAPHORE(sem) this->status_ready = true;
 
+            // print smallest
+            //PRINTF("smallest: %d\n", smallest/MICROSECONDS);
+
             // Wait for new commands setting this->stepsToDo
             suspendCallerUntil(END_OF_TIME);
         }
@@ -121,6 +108,7 @@ void StepperMotorThread::setDirection(bool direction)
 
 void StepperMotorThread::setPeriod(int period)
 {
+    PRINTF("Period: %d\n", period);
     PROTECT_WITH_SEMAPHORE(sem) this->period = period;
 }
 
@@ -164,7 +152,7 @@ bool StepperMotorThread::calibrate()
     {
         while(!status_calib)
         {
-            if(CalibPin.read() == 0)                // Check if Pin is low -> then execute step backwards
+            if(CalibPin.readPins() == 0)                // Check if Pin is low -> then execute step backwards
             {
                 DirectionPin.setPins(0);
                 StepPin.setPins(0);
