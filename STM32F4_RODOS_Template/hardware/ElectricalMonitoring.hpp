@@ -22,15 +22,15 @@ class ElectricalMonitoring : public RODOS::Thread
 private:
 
     /// @brief The time between sensor reads in nanoseconds.
-    static constexpr int64_t sensorReadInterval_ns = 0.1*SECONDS; // 10 Hz
+    static constexpr int64_t sensorReadInterval_ns = 0.2*SECONDS; // 5 Hz
 	/// @brief Shunt resistor used by board in mOhms.
 	static constexpr float SHUNT_RESISTOR = 100;
 	/// @brief Factor used to convert H-Bridge current output to amps in Volts per Amp
 	static constexpr float HBRIDGE_I_FACTOR = 0.5f;
     /// @brief Current threshold for the rpi to be considered running in Amps.
-    static constexpr float RPI_RUNNING_CURRENT = 0.1f;
+    static constexpr float RPI_RUNNING_CURRENT = 0.08f;
     /// @brief How much the 5V bus voltage can deviate from 5V before it is considered bad.
-    static constexpr float BUS_VOLTAGE_TOLERANCE = 0.5f;
+    static constexpr float BUS_VOLTAGE_TOLERANCE = 0.2f;
     /// @brief How long to wait after powering the chips off before powering them back on.
     static constexpr int64_t CHIP_RESET_WAIT_TIME = 500*MILLISECONDS;
 
@@ -85,9 +85,6 @@ private:
 
 	RODOS::HAL_I2C i2cBus_;
 
-    RODOS::GPIO_PIN chipPowerPin_;
-    RODOS::GPIO_PIN rpiPowerPin_;
-	RODOS::GPIO_PIN extPowerPin_;
 	RODOS::ADC_CHANNEL adcWheelPin_;
 	RODOS::PWM_IDX beeperIDX_;
 

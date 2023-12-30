@@ -1,6 +1,9 @@
+#include "../threads/Config.hpp"
+
 #include "ElectricalMonitoring.hpp"
 
 ElectricalMonitoring::BeeperThread::BeeperThread(RODOS::PWM_IDX beeper) :
+    Thread("BeeperThread"),
     beeper(beeper)
 {}
 
@@ -14,7 +17,7 @@ void ElectricalMonitoring::BeeperThread::beepForTime_ns(int64_t time_ns) {
 
 void ElectricalMonitoring::BeeperThread::init()
 {
-    beeper.init(200, 100);
+    beeper.init(1000, 100);
     beeper.write(0);
 }
 
@@ -29,12 +32,12 @@ void ElectricalMonitoring::BeeperThread::run()
         beepSem_.leave();
 
         if (val > NOW()) {
-            beeper.write(100);
+            beeper.write(50);
         } else {
             beeper.write(0);
         }
 
-        suspendCallerUntil(NOW() + 1*MILLISECONDS);
+        suspendCallerUntil(NOW() + 100*MILLISECONDS);
         //suspendCallerUntil(NOW() + beepTime_ns);
     
     }
@@ -44,14 +47,13 @@ void ElectricalMonitoring::BeeperThread::run()
 
 ElectricalMonitoring::ElectricalMonitoring(RODOS::GPIO_PIN rpiPowerPin, RODOS::GPIO_PIN chipPowerPin, RODOS::GPIO_PIN powerOffPin, RODOS::ADC_CHANNEL adcWheelPin, RODOS::PWM_IDX beeperPin, RODOS::I2C_IDX ina3221_i2cBus) :
     Thread("ElectricalMonitoring"),
-    ina3221_(INA3221_ADDR41_VCC),
+    ina3221_(INA3221_ADDR40_GND),
     beeperThread_(beeperPin),
-    chipPowerPin_(chipPowerPin),
-    rpiPowerPin_(rpiPowerPin),
-    extPowerPin_(powerOffPin),
+    chipPower_(chipPowerPin),
+    rpiPower_(rpiPowerPin),
+    extPower_(powerOffPin),
     adcWheelPin_(adcWheelPin),
     beeperIDX_(beeperPin),
-    extPower_(powerOffPin),
     adcWheel_(RODOS::ADC_IDX0),
     beeper_(beeperPin),
     i2cBus_(ina3221_i2cBus)
@@ -69,7 +71,7 @@ void ElectricalMonitoring::update()
     {
     case SystemState_t::INIT :
         {
-            beeperThread_.beepForTime_ns(500*MILLISECONDS);
+            beeperThread_.beepForTime_ns(800*MILLISECONDS);
             chipPower_.init(true, 1, 1);
             rpiPower_.init(true, 1, 0);
             extPower_.init(true, 1, 1);
@@ -83,6 +85,8 @@ void ElectricalMonitoring::update()
 
             readValues(true);
             state_ = SystemState_t::CONV_INIT;
+
+            //suspendCallerUntil(END_OF_TIME);
         }
         break;
 
@@ -94,18 +98,18 @@ void ElectricalMonitoring::update()
 
             //Check if power should be turned off
             if (voltageBattery_ < batteryCutoffVoltage) {
-                //openExtSwitch();
+                openExtSwitch();
             }
 
             //Check if battery is low
             if (voltageBattery_ < batteryWarningVoltage) {
-                //beeperThread_.beepForTime_ns(100*MILLISECONDS);
+                beeperThread_.beepForTime_ns(100*MILLISECONDS);
             }
 
             //Check if we can turn on the RPI
-            if (!rpiPowerOn_ && powerGood_) {
+            if (!rpiPowerOn_ && powerGood_ && config::disable_rpi == false) {
                 rpiPowerOn_ = true;
-                rpiPower_.write(1);
+                rpiPower_.setPins(1);
             }
 
             //Begin waiting for next conversion
@@ -171,7 +175,7 @@ void ElectricalMonitoring::update()
     case ChipResetState_t::RESET_INIT:
         if (state_ != SystemState_t::INIT) {
             
-            chipPower_.write(0); //Power off
+            chipPower_.setPins(0); //Power off
             chipResetStartTime_ns_ = NOW();
             chipResetState_ = ChipResetState_t::CHIP_WAIT;
         }
@@ -181,7 +185,7 @@ void ElectricalMonitoring::update()
     case ChipResetState_t::CHIP_WAIT:
         {
             if (NOW() - chipResetStartTime_ns_ > CHIP_RESET_WAIT_TIME) {
-                chipPower_.write(1); //Power on
+                chipPower_.setPins(1); //Power on
                 chipResetState_ = ChipResetState_t::IDLE;
             }
         }
@@ -190,7 +194,7 @@ void ElectricalMonitoring::update()
 
     default:
         {
-            chipPower_.write(1); //Power on
+            chipPower_.setPins(1); //Power on
             chipResetState_ = ChipResetState_t::IDLE;
         }
 
@@ -221,10 +225,13 @@ void ElectricalMonitoring::readValues(bool setValue) {
     currentReactionWheel_ = float(adcWheel_.read(adcWheelPin_)) / 1023 * 3.3f / HBRIDGE_I_FACTOR;
 
     //Check if power is good
-    powerGood_ = (voltage5VBus_ < 5.0f + BUS_VOLTAGE_TOLERANCE) < (voltage5VBus_ >  5.0f - BUS_VOLTAGE_TOLERANCE);
+    powerGood_ = (voltage5VBus_ < 5.0f + BUS_VOLTAGE_TOLERANCE) && (voltage5VBus_ >  5.0f - BUS_VOLTAGE_TOLERANCE);
 
     //Check if RPI is running
     rpiRunning_ = (currentRPI_ > RPI_RUNNING_CURRENT);
+
+    //Print everything
+    //PRINTF("VBAT: %f V, 5V: %f V, Stepper: %f A, Aux: %f A, RPI: %f A, RW: %f A, PowerGood: %d, RPI Running: %d\n", voltageBattery_, voltage5VBus_, currentStepper_, currentAux_, currentRPI_, currentReactionWheel_, powerGood_, rpiRunning_);
 
 }
 
@@ -272,7 +279,7 @@ bool ElectricalMonitoring::powerGood() {
 }
 
 bool ElectricalMonitoring::rpiRunning() {
-    return rpiRunning_;
+    return rpiRunning_ && rpiPowerOn_;
 }
 
 
@@ -283,16 +290,29 @@ void ElectricalMonitoring::init() {
 
 void ElectricalMonitoring::run() {
 
+    bool printWarning = true; //Set to false to disable warning message. Disable this if you know what you are doing!
+
+    if (!config::electrical_monitoring_thread_enable) {
+        while (1) {
+
+            if (!printWarning)
+                suspendCallerUntil(END_OF_TIME);
+
+            PRINTF("Electrical Monitoring Thread disabled! PLEASE REENABLE!\n");
+            suspendCallerUntil(NOW() + 1 * SECONDS);
+
+        }
+    }
 
     while (1) {
 
         update();
 
-        suspendCallerUntil(NOW() + 10*MILLISECONDS);
+        suspendCallerUntil(NOW() + config::electrical_monitoring_thread_period*MILLISECONDS);
 
     }
     
 }
 
 
-ElectricalMonitoring electricalMonitor(RODOS::GPIO_PIN::GPIO_050, RODOS::GPIO_PIN::GPIO_032, RODOS::GPIO_PIN::GPIO_000, RODOS::ADC_CHANNEL::ADC_CH_009, RODOS::PWM_IDX::PWM_IDX13, RODOS::I2C_IDX::I2C_IDX2);
+ElectricalMonitoring electricalMonitor(RODOS::GPIO_PIN::GPIO_050, RODOS::GPIO_PIN::GPIO_000, RODOS::GPIO_PIN::GPIO_058, RODOS::ADC_CHANNEL::ADC_CH_009, RODOS::PWM_IDX::PWM_IDX13, RODOS::I2C_IDX::I2C_IDX2);
