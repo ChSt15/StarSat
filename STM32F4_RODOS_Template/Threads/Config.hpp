@@ -16,15 +16,15 @@ namespace config
 
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Control
-    inline const bool control_thread_enable = false;
+    inline const bool control_thread_enable = true;
     inline const int  control_thread_period = 100;     // [ms]
 
     // Sensor
-    inline const bool sensor_thread_enable = false;
+    inline const bool sensor_thread_enable = true;
     inline const int  sensor_thread_period = 100;       // [ms]
 
     // Coms
-    inline const bool com_thread_enable = false;
+    inline const bool com_thread_enable = true;
     inline const int  com_thread_period = 500;         // [ms]
 
     // Debug
@@ -56,10 +56,10 @@ namespace config
     inline const int stepsPerRevolution = 200;  // Number of steps for a full revolution of the motor shaft
     inline const float stepsPermm = 100;        // Number of steps for a mm of movement of the arm PLEASE CHANGE THIS TO THE CORRECT VALUE!
     inline const bool invertStepper = false;    // Invert stepper direction
-    inline const bool disableStepper = false;   // Disable stepper (Enable pin i set to keeped high to disable driver)
+    inline const bool enableStepper = true;   // Disable stepper (Enable pin i set to keeped high to disable driver)
 
     // Raspberry Pi
-    inline const bool disable_rpi = false;      // Will not turn on rpi if true
+    inline const bool enable_rpi = false;      // Will not turn on rpi if true
 
 
     /* ---------------------------------------- Control ----------------------------------------  */
