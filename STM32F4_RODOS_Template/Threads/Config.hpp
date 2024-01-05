@@ -4,6 +4,12 @@
 #include "../hardware/imu.hpp"
 #include "../control/PIDController.hpp"
 
+/**
+ * @todo:   - Implement stepper config settings
+ *          - Change the number of steps per mm to the correct value.
+ *          
+*/
+
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
@@ -20,8 +26,12 @@ namespace config
     inline const int  com_thread_period = 500;         // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = true;
+    inline const bool debug_thread_enable = false;
     inline const int  debug_thread_period = 500;       // [ms]
+
+    // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
+    inline const bool electrical_monitoring_thread_enable = true; //DO NOT DISABLE THIS THREAD. IT IS NEEDED TO PROTECT THE BATTERY! ONLY DISABLE IF YOU KNOW WHAT YOU ARE DOING AND REALLY NEED TO!
+    inline const int  electrical_monitoring_thread_period = 100;       // [ms]
 
     /* ---------------------------------------- Hardware ---------------------------------------  */
     // IMU
@@ -38,6 +48,17 @@ namespace config
     // HBridge
     inline const int pwmFrequency = 2000;       // [Hz]
     inline const int pwmIncrements = 500;
+
+    // Stepper  
+    inline const int microstepping = 16;        // Number of steps to make for a full step
+    inline const int stepsPerRevolution = 200;  // Number of steps for a full revolution of the motor shaft
+    inline const float stepsPermm = 100;        // Number of steps for a mm of movement of the arm PLEASE CHANGE THIS TO THE CORRECT VALUE!
+    inline const bool invertStepper = false;    // Invert stepper direction
+    inline const bool enableStepper = true;   // Disable stepper (Enable pin i set to keeped high to disable driver)
+
+    // Raspberry Pi
+    inline const bool enable_rpi = false;      // Will not turn on rpi if true
+
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller

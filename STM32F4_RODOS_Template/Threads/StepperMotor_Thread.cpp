@@ -3,14 +3,36 @@
 
 void StepperMotorThread::init()
 {
-    DirectionPin.init(true, 1, 1);
-    StepPin.init(true, 1, 0);
+    
 }
 
 
 void StepperMotorThread::run()
 {
     bool status;
+
+    DirectionPin.init(true, 1, 1);
+    StepPin.init(true, 1, 0);
+    CalibPin.init(false, 0, 0);
+    //CalibPin.
+    EnablePin.init(true, 1, 0);
+
+    //setPeriod(1000);
+    //setStepsToDo(10000);
+
+    //suspendCallerUntil(END_OF_TIME);
+
+    /*while (1) {
+
+        StepPin.setPins(0);
+
+        suspendCallerUntil(NOW() + 1 * MILLISECONDS);
+
+        StepPin.setPins(1);
+
+        suspendCallerUntil(NOW() + 1 * MILLISECONDS);
+
+    }*/
     
     while(true)
     {
@@ -18,7 +40,7 @@ void StepperMotorThread::run()
         if (status)
         {
 
-            while (stepsToDo > 0 and period != 0)
+            while (stepsToDo > 0 && period != 0)
             {
          
                     // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
@@ -141,7 +163,7 @@ bool StepperMotorThread::calibrate()
     {
         while(!status_calib)
         {
-            if(CalibPin.readPins() == 0)                // Check if Pin is low -> then execute step backwards
+            if(CalibPin.read() == 0)                // Check if Pin is low -> then execute step backwards
             {
                 DirectionPin.setPins(0);
                 StepPin.setPins(0);
@@ -165,5 +187,4 @@ bool StepperMotorThread::calibrate()
 
 
 
-/// @todo UPDATE PINS !!!
-StepperMotorThread steppermotorthread(RODOS::GPIO_000, RODOS::GPIO_001, RODOS::GPIO_002);
+StepperMotorThread steppermotorthread(RODOS::GPIO_049, RODOS::GPIO_051, RODOS::GPIO_001, RODOS::GPIO_055);

@@ -14,11 +14,12 @@ public:
 
 
 	// Set name, prio and stack size
-	StepperMotorThread(RODOS::GPIO_PIN dir_pin, RODOS::GPIO_PIN step_pin, RODOS::GPIO_PIN calib_pin)  :
-                Thread("StepperMotor Thread", 100, 2000),
+	StepperMotorThread(RODOS::GPIO_PIN dir_pin, RODOS::GPIO_PIN step_pin, RODOS::GPIO_PIN calib_pin, RODOS::GPIO_PIN enable_pin)  :
+                Thread("StepperMotor Thread", 100),
                 DirectionPin(dir_pin),
                 StepPin(step_pin),
-                CalibPin(calib_pin)
+                CalibPin(calib_pin),
+                EnablePin(enable_pin)
                 {
                     stepCounter = 0;
                     currentDirection = true;
@@ -80,6 +81,7 @@ private:
     HAL_GPIO DirectionPin;                                  // High: positive direction, Low: negative direction
     HAL_GPIO StepPin;                                       // Rising Edge indicates steps
     HAL_GPIO CalibPin;                                      // High if Arm is at limit (= calibrated)
+    HAL_GPIO EnablePin;                                     // High: Motor is enabled, Low: Motor is disabled
 
     
     uint16_t stepCounter;                       // Indicates current position of arm
