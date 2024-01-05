@@ -69,6 +69,10 @@ float PID::calculate(float measurement, int64_t timestamp)
         this->lastMeasurment = measurement;
         this->lastTimestamp = timestamp;
 
+        // WARNING
+        // temporary values, should be changed
+        if (!settled && abs((error - this->lastError) / dt) < 0.1f && abs(error) < 0.1f) PROTECT_WITH_SEMAPHORE(sem) settled = true;
+
         // Limit control signal
         float controlSignalSaturated = controlSignal;
         if(controlSignalSaturated > lim) controlSignalSaturated = lim;
@@ -114,7 +118,11 @@ PIDParams PID::getParams()
 
 void PID::setSetpoint(float setpoint)
 {
-    PROTECT_WITH_SEMAPHORE(sem) this->setpoint = setpoint;
+    PROTECT_WITH_SEMAPHORE(sem)
+    {
+        this->setpoint = setpoint;
+        this->settled = false;
+    }
 }
 
 
@@ -138,4 +146,12 @@ float PID::getLimits()
     float lim;
     PROTECT_WITH_SEMAPHORE(sem) lim = this->limit;
     return lim;
+}
+
+
+bool PID::isSettled()
+{
+    bool settled;
+    PROTECT_WITH_SEMAPHORE(sem) settled = this->settled;
+    return settled;
 }

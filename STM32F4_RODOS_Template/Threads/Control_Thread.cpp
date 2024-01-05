@@ -21,6 +21,8 @@ static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer, "
 static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
 static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Control Thread");
 
+static CommBuffer<TelemetryCamera> CameraDataBuffer;
+static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Control Thread");
 
 /**
  * @todo NEEDS TO BE SPECIFIED
@@ -62,11 +64,11 @@ void ControlThread::run()
 
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 	TimestampedData<float> EncoderDataReceiver;
+	TelemetryCamera CameraDataReceiver;
 
 	float desiredSpeed;
 	float desiredVoltage;
 
-	setMode(Mission_Dock_initial);
 
 	while(true)
 	{
@@ -107,19 +109,57 @@ void ControlThread::run()
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
+			velocitycontrol.setDesiredAngularVelocity(M_PI / 16.f);
+			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
+			reactionwheelControl.setDesiredSpeed(desiredSpeed);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			hbridge.setVoltage(desiredVoltage);
+
+			// prob. not gonne work just placholder
+			if (!CameraDataReceiver.MeasurmentCnt != 0) break;
+
+			setMode(Mission_Point);
 			break;
 
+
 		case Mission_Point:
+			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup());
+			desiredSpeed = positionControl.update(AttitudeDataReceiver);
+			reactionwheelControl.setDesiredSpeed(desiredSpeed);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			hbridge.setVoltage(desiredVoltage);
+
+			if (!positionControl.isSettled()) break;
+
+			setMode(Mission_Dock_initial);
 			break;
 
 		case Mission_Dock_initial:
-			// not complete, just to show principle
-			if (!armController.InitialExtension()) break;
+			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup());
+			desiredSpeed = positionControl.update(AttitudeDataReceiver);
+			reactionwheelControl.setDesiredSpeed(desiredSpeed);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			hbridge.setVoltage(desiredVoltage);
+
+			if (!armController.InitialExtension())
+			{
+				armController.CalcAngularVelocity();
+				break;
+			}
 
 			setMode(Mission_Dock_final);
 			break;
 
 		case Mission_Dock_final:
+			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup());
+			desiredSpeed = positionControl.update(AttitudeDataReceiver);
+			reactionwheelControl.setDesiredSpeed(desiredSpeed);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			hbridge.setVoltage(desiredVoltage);
+
+			if (!armController.FinalExtension()) break;
+
+			setMode(Idle);
 			break;
 
 

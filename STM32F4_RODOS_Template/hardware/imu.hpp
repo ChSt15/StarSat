@@ -40,6 +40,7 @@ private:
     IMUCalib gyroCalib;
     IMUCalib accelCalib;
     IMUCalib magCalib;
+    bool newCalib = false;
 
     HAL_I2C i2c;
 

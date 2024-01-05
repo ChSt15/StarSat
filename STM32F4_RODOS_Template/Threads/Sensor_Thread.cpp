@@ -13,7 +13,8 @@
 HAL_GPIO ledred(GPIO_062);
 
 
-float t_last;
+float t_last = 0;
+int cnt = 0;
 
 void SensorThread::init()
 {
@@ -77,11 +78,15 @@ void SensorThread::run()
 		IMUDataTopic.publish(imu.getData());
 
 		// Atitude estimation
-		if (!qekf.is_initialized) qekf.init(imu.getData().data);
-		else AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
+		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
 
 		// Encoder
 		EncoderDataTopic.publish(encoder.getSpeed());
+
+		float dt = NOW() / MICROSECONDS - t_last;
+		t_last = NOW() / MICROSECONDS;
+		cnt++;
+		//if (cnt % 100 == 0) PRINTF("%f,\n", dt);
 
 		ledred.setPins(~ledred.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);

@@ -48,7 +48,8 @@ class PID {
 
         bool use_DerivativofMeasurment = false;
 
-        
+        bool settled = false;
+  
     public:
 
         /**
@@ -100,6 +101,8 @@ class PID {
          * @brief Get max. and min. limit of control signal
         */
         float getLimits();
+
+        bool isSettled();
 };
 
 

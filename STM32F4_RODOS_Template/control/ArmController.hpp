@@ -14,7 +14,7 @@ private:
 	 
 	Semaphore sem;
 
-	float w_Mockup;
+	float w_Mockup = NAN;
 	float distance;
 
 	int max_vel;			// [step/s]
@@ -25,6 +25,8 @@ private:
 	bool moving = false;
 	bool deccel = false;
 
+	int lastframe = -42;
+
 public:
 
 	void config(int max_vel, int min_vel, int max_accel, int deccel_margin);
@@ -33,7 +35,7 @@ public:
 
 	bool FinalExtension();
 
-	bool CalcAngularVelocity();
+	void CalcAngularVelocity();
 
 	float getAngularvelocityMockup();
 

@@ -54,6 +54,8 @@ public:
 	*/
 	float getMaxAngularVelocity();
 
+	bool isSettled();
+
 
 	/**
 	 * @brief Determine output of angular position controller / input of angular velocity controller

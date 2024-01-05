@@ -18,10 +18,6 @@ extern Topic<TimestampedData<Attitude_Data>> AttitudeDataTopic;
 
 class QEKF
 {
-public:
-
-	bool is_initialized = false;
-
 private:
 
 	// State
@@ -32,9 +28,8 @@ private:
 	//-------- Prediction ----------//
 	// Jakobians of prediction
 	Matrix_F<10, 10> A;
-	Matrix_F<10, 6> G;
-	// Covariance of process noise
-	Matrix_F<6, 6> Q;
+	// G * Q * G^T
+	Matrix_F<10, 10> GQG;
 
 	//-------- Correction (accel) ----------//
 	// Gain
@@ -68,6 +63,15 @@ private:
 	// Helper rotaions
 	Matrix_F<3, 3> body2nav;
 	Matrix_F<3, 3> nav2body;
+	//-------- Correction (test) ----------//
+	Matrix_F<10, 4> K;
+	Vector_F<4> v;
+	Matrix_F<4, 4> R;
+	Matrix_F<4, 4> S;
+	Matrix_F<4, 10> C;
+	Vector_F<4> z;
+	Vector_F<4> y;
+
 
 	// Helper identity 10x10
 	Matrix_F<10, 10> eye_10x10;
@@ -78,11 +82,7 @@ private:
 	// Attitude data
 	TimestampedData <Attitude_Data> data;
 
-	// std of sensors
-	Vector3D_F sigma_gyro;
-	Vector3D_F sigma_accel;
-	float sigma_yaw;
-	float sigma_gyro_drift;
+	bool is_initialized = false;
 
 public:
 
@@ -92,26 +92,28 @@ public:
 
 	// @brief Calculation of initial orientation
 	// @param imudata -> IMU data struct defined in imu.hpp (angularVelocity [rad/s], magneticField [gauss], acceleration [g])
-	void init(IMUData& imudata);
+	void init(const TimestampedData<IMUData>& imudata);
 
 	// @brief Orientation estimation
 	// @param imudata -> IMU data struct defined in imu.hpp with timestamp of measurement.
 	// @return Attitude data defined in AttitudeEstimation.hpp with timestamp of estimation.
-	TimestampedData<Attitude_Data>& estimate(TimestampedData<IMUData>& imudata);
+	TimestampedData<Attitude_Data>& estimate(const TimestampedData<IMUData>& imudata);
 
 private:
 
 	// @brief Propagation step using only gyro
 	// @param gyro -> angluarvelocity vector in rad/s
-	void propagate(Vector3D_F gyro);
+	void propagate(const Vector3D_F& gyro);
 
 	// @brief Update step using accelerometer
 	// @param accel -> linearacceleration vector in g
-	void update_accel(Vector3D_F a);
+	void update_accel(const Vector3D_F& a);
 
 	// @brief Update step using magnetometer
 	// @param mag -> magneticfieldstrength vector in gauss
-	void update_mag(Vector3D_F m);
+	void update_mag(const Vector3D_F& m);
+
+	void update(const Vector3D_F& a, const Vector3D_F& m);
 
 };
 

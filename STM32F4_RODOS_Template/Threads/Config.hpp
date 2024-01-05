@@ -8,7 +8,7 @@ namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Control
-    inline const bool control_thread_enable = true;
+    inline const bool control_thread_enable = false;
     inline const int  control_thread_period = 10;     // [ms]
 
     // Sensor

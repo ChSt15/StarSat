@@ -65,14 +65,23 @@ void AngularPositionControl::setMaxAngularVelocity(float maxAngularVelocity)
     this->controller.setLimits(maxAngularVelocity);
 }
 
+bool AngularPositionControl::isSettled()
+{
+    return this->controller.isSettled();
+}
 
 
 float AngularPositionControl::update(TimestampedData<Attitude_Data> attitude_measured)
 {
-    float controlSignal = this->controller.calculate(attitude_measured.data.attitude.toYPR().yaw, attitude_measured.timestamp);
-    /**
-     * If necessary, add/adjust things like integral windup, etc.
-    */
+    float measured_pos = attitude_measured.data.attitude.toYPR().yaw;
+
+    // make sure the angle "warps around" by limiting set angle to measured angle +/- pi;
+    float set_pos = controller.getSetpoint();
+    while (set_pos > measured_pos + M_PI) set_pos -= 2 * M_PI;
+    while (set_pos < measured_pos - M_PI) set_pos += 2 * M_PI;
+    controller.setSetpoint(set_pos);
+
+    return this->controller.calculate(measured_pos, attitude_measured.timestamp);
 }
 
 

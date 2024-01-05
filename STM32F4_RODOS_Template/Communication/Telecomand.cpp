@@ -114,15 +114,11 @@ void Telecommand::processNewCommand()
 		// TODO
 		default:
 			// Skip incrementing commandCnt
-			goto skipCnt;
+			continue;
 		}
 
 		lastCmndID = commandReceiver.id;
 		this->commandCnt++;
-
-		// marker to skip incrementing commandCnt
-		skipCnt:;
-
 	}
 }
 
