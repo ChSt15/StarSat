@@ -68,7 +68,7 @@ bool ArmController::InitialExtension()
 		if (deccel || (steppermotorthread.getStepsToDo() - deccel_margin) < deccel_distance)
 		{
 			float t = (1.f / (1.f / period * 1000.f * 1000.f - max_accel * dt));
-			(t < 1.f / min_vel) ? steppermotorthread.setPeriod(t * 1000.f * 1000.f) : steppermotorthread.setPeriod((int) (1.f / min_vel * 1000.f * 1000.f));
+			(t < 1.f / min_vel && t > 0) ? steppermotorthread.setPeriod(t * 1000.f * 1000.f) : steppermotorthread.setPeriod((int) (1.f / min_vel * 1000.f * 1000.f));
 			deccel = true;
 			return false;
 		}
