@@ -33,7 +33,7 @@ bool ArmController::InitialExtension()
 		*/
 
 		// just for test
-		this->distance = 1500 / 0.9f;
+		this->distance = 1600 / 0.9f;
 
 		steppermotorthread.setDirection(true);
 		steppermotorthread.setPeriod((int) (1.f/min_vel * 1000.f * 1000.f));
