@@ -79,12 +79,51 @@ IMUCalib IMU::getMagCalib()
 void IMU::Check_I2C_Enable()
 {
 
+	if (CS_XLG.readPins() == 1)
+	{
+		PRINTF("I2C Enable Check for Accel/Gyro was successfull\n");
+	}
+	else
+	{
+		PRINTF("I2C Enable Check for Accel/Gyro failed\n");
+	}
+	if (CS_M.readPins() == 1)
+	{
+		PRINTF("I2C Enable Check for Magnetometer was successfull\n");
+	}
+	else
+	{
+		PRINTF("I2C Enable Check for Magnetometer failed\n");
+	}
 }
 
 
 void IMU::Check_WHOAMI()
 {
+	uint8_t DATA[1];
 
+	uint8_t LSM9DS1_WHO_AM_I[1] = { 0x0F };
+
+	i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_WHO_AM_I, 1, DATA, 1);
+	if (DATA[0] == 0b01101000)
+	{
+		PRINTF("WHO AM I Check for Accel/Gyro was successfull\n");
+	}
+	else
+	{
+		PRINTF("WHO AM I Check for Accel/Gyro failed\n");
+	}
+
+	i2c.writeRead(LSM9DS1_M_ADDR, LSM9DS1_WHO_AM_I, 1, DATA, 1);
+	if (DATA[0] == 0b00111101)
+	{
+		PRINTF("WHO AM I Check for Magnetometer was successfull\n");
+	}
+	else
+	{
+		PRINTF("WHO AM I Check for Magnetometer failed\n");
+	}
+	PRINTF("\n");
 }
 
 void IMU::initialization()
@@ -101,6 +140,7 @@ TimestampedData<IMUData>& IMU::readRawData()
 	accelRead();
 	gyroRead();
 	tempRead();
+	this->dataRaw.timestamp = NOW();
 	return this->dataRaw;
 }
 
@@ -124,8 +164,6 @@ void IMU::gyroRead()
 
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_G_OUT_Z, 1, data, 2);
 	this->dataRaw.data.angularVelocity.z = -grad2Rad(bytes_to_float(data) * gyroScale);
-
-	this->dataRaw.timestamp = NOW();
 }
 
 
@@ -149,8 +187,6 @@ void IMU::accelRead()
 	// z-axis
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_XL_OUT_Z, 1, data, 2);
 	this->dataRaw.data.acceleration.z = -bytes_to_float(data) * accelScale;
-
-	this->dataRaw.timestamp = NOW();
 }
 
 
@@ -180,8 +216,6 @@ void IMU::magRead()
 
 	this->i2c.writeRead(LSM9DS1_M_ADDR, LSM9DS1_M_OUT_Z, 1, data, 2);
 	this->dataRaw.data.magneticField.z = -bytes_to_float(data) * magScale;
-
-	this->dataRaw.timestamp = NOW();
 }
 
 
@@ -191,7 +225,6 @@ void IMU::tempRead()
 
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_OUT_TEMP, 1, data, 2);
 	this->dataRaw.data.temperature = (int16_t) ((data[1] << 8 | data[0]));
-	this->dataRaw.timestamp = NOW();
 }
 
 
@@ -216,7 +249,7 @@ void IMU::calibrateData()
 	dataCalibrated.data.magneticField = dataRaw.data.magneticField.vecSub(magCalib_local.bias).matVecMult(magCalib_local.scale);
 
 	dataCalibrated.data.temperature = (dataRaw.data.temperature / 16.0) + 25.0;
-	dataCalibrated.timestamp = NOW();
+	dataCalibrated.timestamp = dataRaw.timestamp;
 }
 
 

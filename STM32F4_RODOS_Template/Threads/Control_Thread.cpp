@@ -79,6 +79,18 @@ void ControlThread::run()
 
 		switch (current_mode)
 		{
+		case Idle:
+			hbridge.setVoltage(0.f);
+			break;
+		case Calib_Mag:
+			velocitycontrol.setDesiredAngularVelocity(M_PI / 16.f);
+			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
+			reactionwheelControl.setDesiredSpeed(desiredSpeed);
+			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
+			hbridge.setVoltage(desiredVoltage);
+
+			break;
+
 		/* ---------------------------- Controller ---------------------------- */
 		case Control_Speed:
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
