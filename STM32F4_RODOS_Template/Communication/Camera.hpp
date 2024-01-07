@@ -12,7 +12,7 @@ struct TelemetryCamera
     float px, py, pz;       // [mm]
     uint32_t MeasurmentCnt;
 
-
+    // WARNING: coordinate transformation not implemented
     float getDistance();
     float getYawtoMockup();
     float getYawofMockup();

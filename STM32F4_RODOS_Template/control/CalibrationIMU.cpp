@@ -9,7 +9,7 @@ void CalibrationIMU::config(int gyro_maxsamples, int accel_maxsamples, int mag_m
 	this->mag_maxsamples = mag_maxsamples;
 }
 
-bool CalibrationIMU::calibrateGyro(TimestampedData<IMUData> imurawdata)
+bool CalibrationIMU::calibrateGyro(TimestampedData<IMUData>& imurawdata)
 {
 	if (gyro_samples <= gyro_maxsamples)
 	{
@@ -33,7 +33,7 @@ bool CalibrationIMU::calibrateGyro(TimestampedData<IMUData> imurawdata)
 	}
 }
 
-bool CalibrationIMU::calibrateAccel(TimestampedData<IMUData> imurawdata)
+bool CalibrationIMU::calibrateAccel(TimestampedData<IMUData>& imurawdata)
 {
 	if (accel_samples <= accel_maxsamples)
 	{
@@ -57,7 +57,7 @@ bool CalibrationIMU::calibrateAccel(TimestampedData<IMUData> imurawdata)
 	}
 }
 
-bool CalibrationIMU::calibrateMag(TimestampedData<IMUData> imurawdata)
+bool CalibrationIMU::calibrateMag(TimestampedData<IMUData>& imurawdata)
 {
 	if (mag_samples <= mag_maxsamples)
 	{

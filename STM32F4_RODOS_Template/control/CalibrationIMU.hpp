@@ -30,11 +30,11 @@ public:
 
     void config(int gyro_maxsamples, int accel_maxsamples, int mag_maxsamples);
 
-    bool calibrateGyro(TimestampedData<IMUData> imurawdata);
+    bool calibrateGyro(TimestampedData<IMUData>& imurawdata);
 
-    bool calibrateAccel(TimestampedData<IMUData> imurawdata);
+    bool calibrateAccel(TimestampedData<IMUData>& imurawdata);
 
-    bool calibrateMag(TimestampedData<IMUData> imurawdata);
+    bool calibrateMag(TimestampedData<IMUData>& imurawdata);
 
 };
 

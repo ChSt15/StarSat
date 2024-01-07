@@ -98,7 +98,7 @@ bool ArmController::FinalExtension()
 		return false;
 	}
 
-	CameraDataBuffer.get(CameraDataReceiver);
+	if (!CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver)) return false;
 
 	float time_to_target_arm = 0.95f * this->distance / (this->min_vel * STEP2LENGTH);
 	// WARNING:
@@ -132,9 +132,9 @@ bool ArmController::FinalExtension()
 
 void ArmController::CalcAngularVelocity()
 {
-	CameraDataBuffer.get(CameraDataReceiver);
+	if (!CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver)) return;
 
-	if (lastframe > 0 && CameraDataReceiver.MeasurmentCnt > 0);
+	if (lastframe < 0 && CameraDataReceiver.MeasurmentCnt > 0);
 	{
 		lastframe = CameraDataReceiver.MeasurmentCnt;
 		last_time = SECONDS_NOW();

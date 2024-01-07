@@ -19,6 +19,7 @@ static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Deb
 
 HAL_GPIO ledblue(GPIO_063);
 
+float start;
 
 void DebugThread::init()
 {
@@ -38,6 +39,8 @@ void DebugThread::run()
 	TimestampedData<Attitude_Data> AttitudeDataReceiver;
 	TimestampedData<float> EncoderDataReceiver;
 
+	start = SECONDS_NOW();
+
 	bool visual = false;
 	bool calib = false;
 
@@ -49,10 +52,13 @@ void DebugThread::run()
 
 		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
 
+		if (SECONDS_NOW() > start + 5 && SECONDS_NOW() < start + 7) setMode(Calib_Accel);
+
 		if (!calib)
 		{
 			if (!visual)
 			{
+				PRINTF("Mode: %d\n", getMode());
 				PRINTF("Reactionwheel Speed: %f\n", EncoderDataReceiver.data);
 
 				PRINTF("Gyro: %f, %f, %f\n", IMUDataReceiver.data.angularVelocity.x, IMUDataReceiver.data.angularVelocity.y, IMUDataReceiver.data.angularVelocity.z);

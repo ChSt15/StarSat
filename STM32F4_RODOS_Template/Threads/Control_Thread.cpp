@@ -115,15 +115,15 @@ void ControlThread::run()
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 			hbridge.setVoltage(desiredVoltage);
 
-			// prob. not gonne work just placholder
-			if (!CameraDataReceiver.MeasurmentCnt != 0) break;
+			if (CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver)) break;
 
 			setMode(Mission_Point);
 			break;
 
 
 		case Mission_Point:
-			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup());
+			CameraDataBuffer.get(CameraDataReceiver);
+			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
 			desiredSpeed = positionControl.update(AttitudeDataReceiver);
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
@@ -135,7 +135,8 @@ void ControlThread::run()
 			break;
 
 		case Mission_Dock_initial:
-			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup());
+			CameraDataBuffer.get(CameraDataReceiver);
+			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
 			desiredSpeed = positionControl.update(AttitudeDataReceiver);
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
@@ -151,7 +152,8 @@ void ControlThread::run()
 			break;
 
 		case Mission_Dock_final:
-			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup());
+			CameraDataBuffer.get(CameraDataReceiver);
+			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
 			desiredSpeed = positionControl.update(AttitudeDataReceiver);
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);

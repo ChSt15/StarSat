@@ -24,7 +24,7 @@ void StepperMotorThread::run()
         {
 
             while (stepsToDo > 0 && period != 0)
-            {   
+            {
 
                 //PROTECT_WITH_SEMAPHORE(sem)
                 {
@@ -51,30 +51,31 @@ void StepperMotorThread::run()
                             break;
                         }
                     }
- 
 
-                // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
-                StepPin.setPins(0);
-                suspendCallerUntil(NOW() + 100 * MICROSECONDS);
 
-                // Create Rising Edge
-                StepPin.setPins(1);
+                    // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
+                    StepPin.setPins(0);
+                    suspendCallerUntil(NOW() + 100 * MICROSECONDS);
 
-                // Update current position
-                if (currentDirection)
-                {
-                    PROTECT_WITH_SEMAPHORE(sem) this->stepCounter++;
+                    // Create Rising Edge
+                    StepPin.setPins(1);
+
+                    // Update current position
+                    if (currentDirection)
+                    {
+                        PROTECT_WITH_SEMAPHORE(sem) this->stepCounter++;
+                    }
+                    else {
+                        PROTECT_WITH_SEMAPHORE(sem) this->stepCounter--;
+                    }
+
+                    // Update steps to be performed
+                    PROTECT_WITH_SEMAPHORE(sem) this->stepsToDo--;
+
+
+                    // Wait for current this->period of time
+                    suspendCallerUntil(NOW() + period * MICROSECONDS - 100 * MICROSECONDS);
                 }
-                else {
-                    PROTECT_WITH_SEMAPHORE(sem) this->stepCounter--;
-                }
-
-                // Update steps to be performed
-                PROTECT_WITH_SEMAPHORE(sem) this->stepsToDo--;
-
-
-                // Wait for current this->period of time
-                suspendCallerUntil(NOW() + period * MICROSECONDS - 100 * MICROSECONDS);
             }
 
             // Update status after execution of all commaned steps
@@ -85,6 +86,7 @@ void StepperMotorThread::run()
 
             // Wait for new commands setting this->stepsToDo
             suspendCallerUntil(END_OF_TIME);
+     
         }
     }
 }
