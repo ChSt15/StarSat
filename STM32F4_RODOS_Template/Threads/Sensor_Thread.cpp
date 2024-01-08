@@ -42,10 +42,6 @@ void SensorThread::run()
 		qekf.config(sigma_gyro, sigma_accel, sigma_yaw, sigma_gyro_drift);
 	}
 
-
-	imu.Check_WHOAMI();
-	imu.Check_I2C_Enable();
-
 	while (true)
 	{
 		imu.readRawData();

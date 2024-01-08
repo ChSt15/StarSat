@@ -8,9 +8,6 @@ Define addresses of sensors
 
 Topic<TimestampedData<IMUData>> IMUDataTopic(-1, "IMUData");
 
-static IMUCalib gyroCalib_local;
-static IMUCalib accelCalib_local;
-static IMUCalib magCalib_local;
 
 IMU::IMU(RODOS::I2C_IDX i2c):
 	i2c(i2c)
@@ -33,8 +30,11 @@ TimestampedData<IMUData>& IMU::getDataRaw()
 
 void IMU::setGyroCalib(IMUCalib calib)
 {
-	PROTECT_WITH_SEMAPHORE(sem) this->gyroCalib = calib;
-	newCalib = true;
+	PROTECT_WITH_SEMAPHORE(sem)
+	{
+		this->gyroCalib_buffer = calib;
+		this->newCalib_gyro = true;
+	}
 }
 
 
@@ -48,8 +48,11 @@ IMUCalib IMU::getGyroCalib()
 
 void IMU::setAccelCalib(IMUCalib calib)
 {
-	PROTECT_WITH_SEMAPHORE(sem) this->accelCalib = calib;
-	newCalib = true;
+	PROTECT_WITH_SEMAPHORE(sem)
+	{
+		this->accelCalib_buffer = calib;
+		this->newCalib_accel = true;
+	}
 }
 
 
@@ -63,8 +66,11 @@ IMUCalib IMU::getAccelCalib()
 
 void IMU::setMagCalib(IMUCalib calib)
 {
-	PROTECT_WITH_SEMAPHORE(sem) this->magCalib = calib;
-	newCalib = true;
+	PROTECT_WITH_SEMAPHORE(sem)
+	{
+		this->magCalib_buffer = calib;
+		this->newCalib_mag = true;
+	}
 }
 
 
@@ -79,22 +85,6 @@ IMUCalib IMU::getMagCalib()
 void IMU::Check_I2C_Enable()
 {
 
-	if (CS_XLG.readPins() == 1)
-	{
-		PRINTF("I2C Enable Check for Accel/Gyro was successfull\n");
-	}
-	else
-	{
-		PRINTF("I2C Enable Check for Accel/Gyro failed\n");
-	}
-	if (CS_M.readPins() == 1)
-	{
-		PRINTF("I2C Enable Check for Magnetometer was successfull\n");
-	}
-	else
-	{
-		PRINTF("I2C Enable Check for Magnetometer failed\n");
-	}
 }
 
 
@@ -236,46 +226,28 @@ float IMU::bytes_to_float(uint8_t* data)
 
 void IMU::calibrateData()
 {
-	if (newCalib)
+	if (newCalib_gyro)
 	{
-		gyroCalib_local = this->getGyroCalib();
-		accelCalib_local = this->getAccelCalib();
-		magCalib_local = this->getMagCalib();
-		newCalib = false;
+		gyroCalib = this->getGyroCalib();
+		PROTECT_WITH_SEMAPHORE(this->sem) newCalib_gyro = false;
+	}
+	if (newCalib_accel)
+	{
+		accelCalib = this->getAccelCalib();
+		PROTECT_WITH_SEMAPHORE(this->sem) newCalib_accel = false;
+	}
+	if (newCalib_mag)
+	{
+		magCalib = this->getMagCalib();
+		PROTECT_WITH_SEMAPHORE(this->sem) newCalib_mag = false;
 	}
 
-	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity.vecSub(gyroCalib_local.bias).matVecMult(gyroCalib_local.scale);
-	dataCalibrated.data.acceleration = dataRaw.data.acceleration.vecSub(accelCalib_local.bias).matVecMult(accelCalib_local.scale);
-	dataCalibrated.data.magneticField = dataRaw.data.magneticField.vecSub(magCalib_local.bias).matVecMult(magCalib_local.scale);
+	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity.vecSub(gyroCalib.bias).matVecMult(gyroCalib.scale);
+	dataCalibrated.data.acceleration = dataRaw.data.acceleration.vecSub(accelCalib.bias).matVecMult(accelCalib.scale);
+	dataCalibrated.data.magneticField = dataRaw.data.magneticField.vecSub(magCalib.bias).matVecMult(magCalib.scale);
 
 	dataCalibrated.data.temperature = (dataRaw.data.temperature / 16.0) + 25.0;
 	dataCalibrated.timestamp = dataRaw.timestamp;
 }
-
-
-/**
- * ------- ONLY FOR TESTING -------
-*/
-bool IMU::isCalibRunning()
-{
-	return this->calibRunning;
-}
-
-void IMU::setCalibRunning(bool status)
-{
-	this->calibRunning = status;
-}
-
-bool IMU::isCalibDone()
-{
-	return this->calibDone;
-}
-
-void IMU::setCalibDone(bool status)
-{
-	this->calibDone = status;
-}
-
-
 
 IMU imu(I2C_IDX2);

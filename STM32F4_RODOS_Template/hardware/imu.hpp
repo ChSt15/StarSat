@@ -38,9 +38,14 @@ private:
     TimestampedData<IMUData> dataRaw;
 
     IMUCalib gyroCalib;
+    IMUCalib gyroCalib_buffer;
+    bool newCalib_gyro = false;
     IMUCalib accelCalib;
+    IMUCalib accelCalib_buffer;
+    bool newCalib_accel = false;
     IMUCalib magCalib;
-    bool newCalib = false;
+    IMUCalib magCalib_buffer;
+    bool newCalib_mag = false;
 
     HAL_I2C i2c;
 
@@ -64,12 +69,6 @@ private:
     const uint8_t LSM9DS1_M_OUT_Z[2] = { 0x2C };
     // Temperature
     const uint8_t LSM9DS1_OUT_TEMP[2] = { 0x15 };
-
-    /**
-     * ------- ONLY FOR TESTING -------
-    */
-   bool calibRunning = false;       // for pausing the IMU Thread
-   bool calibDone = false;          // for indicating whether calibration values are determined and can be applied to raw data
 
 
 public:
@@ -124,15 +123,6 @@ public:
 
     /// @brief Calibrate current raw data (this->dataRaw) by applying current calibration values and saves to this->dataCalibrated
     void calibrateData();
-
-    /**
-     * ------- ONLY FOR TESTING -------
-    */
-    bool isCalibRunning();
-    void setCalibRunning(bool status);
-
-    bool isCalibDone();
-    void setCalibDone(bool status);
 
 private:
 
