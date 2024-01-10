@@ -3,12 +3,6 @@
 #define STEP2LENGTH 1		// [mm]
 
 
-// Camera topic subscriber setup
-static CommBuffer<TelemetryCamera> CameraDataBuffer;
-static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Arm Controller Class");
-TelemetryCamera CameraDataReceiver;
-
-
 void ArmController::config(int max_vel, int min_vel, int max_accel, int deccel_margin)
 {
 	this->max_vel = max_vel;
@@ -22,18 +16,19 @@ float last_t;
 float last_time;
 float last_yaw;
 
-bool ArmController::InitialExtension()
+static bool init = false;
+
+bool ArmController::InitialExtension(TelemetryCamera& camera)
 {
 	if (!moving)
 	{
 		// TODO Coordinate transfrom
 		/*
-		CameraDataBuffer.get(CameraDataReceiver);
-		this->distance = CameraDataReceiver.getDistance();
+		this->distance = camera.getDistance();
 		*/
 
 		// just for test
-		this->distance = 1600 / 0.9f;
+		this->distance = 1600 / 0.95f;
 
 		steppermotorthread.setDirection(true);
 		steppermotorthread.setPeriod((int) (1.f/min_vel * 1000.f * 1000.f));
@@ -57,7 +52,6 @@ bool ArmController::InitialExtension()
 
 		float dt = SECONDS_NOW() - last_t;
 		last_t = SECONDS_NOW();
-		//PRINTF("%f\n", dt);
 
 		// Avoid multiple accesses
 		int period = steppermotorthread.getPeriod();
@@ -85,7 +79,7 @@ bool ArmController::InitialExtension()
 	return false;
 }
 
-bool ArmController::FinalExtension()
+bool ArmController::FinalExtension(TelemetryCamera& camera)
 {
 	if (moving)
 	{
@@ -98,13 +92,9 @@ bool ArmController::FinalExtension()
 		return false;
 	}
 
-	if (!CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver)) return false;
-
 	float time_to_target_arm = 0.95f * this->distance / (this->min_vel * STEP2LENGTH);
-	// WARNING:
-	// where is 0 yaw defined to be ?
 	float time_to_target_mockup;
-	float yaw = CameraDataReceiver.getYawofMockup();
+	float yaw = camera.getYawofMockup();
 	float w = getAngularvelocityMockup();
 	if (w > 0)
 	{
@@ -130,21 +120,19 @@ bool ArmController::FinalExtension()
 }
 
 
-void ArmController::CalcAngularVelocity()
+void ArmController::CalcAngularVelocity(TelemetryCamera& camera)
 {
-	if (!CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver)) return;
-
-	if (lastframe < 0 && CameraDataReceiver.MeasurmentCnt > 0);
+	if (lastframe < 0)
 	{
-		lastframe = CameraDataReceiver.MeasurmentCnt;
+		lastframe = camera.MeasurmentCnt;
 		last_time = SECONDS_NOW();
-		last_yaw = CameraDataReceiver.getYawofMockup();
+		last_yaw = camera.getYawofMockup();
+		init = true;
 		return;
 	}
-
-	if (CameraDataReceiver.MeasurmentCnt == lastframe + 1)
+	else if (camera.validFrame(lastframe))
 	{
-		float yaw = CameraDataReceiver.getYawofMockup();
+		float yaw = camera.getYawofMockup();
 		float time = SECONDS_NOW();
 		float w = yaw - last_yaw / (time - last_time);
 
@@ -154,7 +142,7 @@ void ArmController::CalcAngularVelocity()
 			else this->w_Mockup = (this->w_Mockup + w) / 2.f;
 		}
 
-		lastframe = CameraDataReceiver.MeasurmentCnt;
+		lastframe = camera.MeasurmentCnt;
 		last_time = time;
 		last_yaw = yaw;
 	}

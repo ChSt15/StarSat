@@ -12,8 +12,6 @@
 #include "../hardware/ReactionwheelEncoder.hpp"
 #include "../hardware/hbridge.hpp"
 
-#include "Debug_Thread.hpp"
-
 
 static CommBuffer<TimestampedData<Attitude_Data>> AttitudeDataBuffer;
 static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer, "Control Thread");
@@ -68,12 +66,14 @@ void ControlThread::run()
 
 	float desiredSpeed;
 	float desiredVoltage;
+	int frameCnt = -42;
 
 
 	while(true)
 	{
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		EncoderDataBuffer.get(EncoderDataReceiver);
+		CameraDataBuffer.get(CameraDataReceiver);
 
 		modes current_mode = getMode();
 
@@ -127,14 +127,13 @@ void ControlThread::run()
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 			hbridge.setVoltage(desiredVoltage);
 
-			if (CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver)) break;
+			if (CameraDataReceiver.validFrame(frameCnt)) break;
 
 			setMode(Mission_Point);
 			break;
 
 
 		case Mission_Point:
-			CameraDataBuffer.get(CameraDataReceiver);
 			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
 			desiredSpeed = positionControl.update(AttitudeDataReceiver);
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
@@ -147,16 +146,15 @@ void ControlThread::run()
 			break;
 
 		case Mission_Dock_initial:
-			CameraDataBuffer.get(CameraDataReceiver);
 			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
 			desiredSpeed = positionControl.update(AttitudeDataReceiver);
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 			hbridge.setVoltage(desiredVoltage);
 
-			if (!armController.InitialExtension())
+			if (!armController.InitialExtension(CameraDataReceiver))
 			{
-				armController.CalcAngularVelocity();
+				armController.CalcAngularVelocity(CameraDataReceiver);
 				break;
 			}
 
@@ -164,14 +162,13 @@ void ControlThread::run()
 			break;
 
 		case Mission_Dock_final:
-			CameraDataBuffer.get(CameraDataReceiver);
 			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
 			desiredSpeed = positionControl.update(AttitudeDataReceiver);
 			reactionwheelControl.setDesiredSpeed(desiredSpeed);
 			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
 			hbridge.setVoltage(desiredVoltage);
 
-			if (!armController.FinalExtension()) break;
+			if (!armController.FinalExtension(CameraDataReceiver)) break;
 
 			setMode(Idle);
 			break;

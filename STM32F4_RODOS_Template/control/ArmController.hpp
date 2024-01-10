@@ -31,11 +31,11 @@ public:
 
 	void config(int max_vel, int min_vel, int max_accel, int deccel_margin);
 
-	bool InitialExtension();
+	bool InitialExtension(TelemetryCamera& camera);
 
-	bool FinalExtension();
+	bool FinalExtension(TelemetryCamera& camera);
 
-	void CalcAngularVelocity();
+	void CalcAngularVelocity(TelemetryCamera& camera);
 
 	float getAngularvelocityMockup();
 

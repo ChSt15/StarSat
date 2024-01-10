@@ -16,6 +16,8 @@ struct TelemetryCamera
     float getDistance();
     float getYawtoMockup();
     float getYawofMockup();
+
+    bool validFrame(int& last_frame);
 };
 
 

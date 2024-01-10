@@ -20,3 +20,10 @@ float TelemetryCamera::getYawofMockup()
 	AngleAxis_F orientation = AngleAxis_F(sqrtf(this->rx * this->rx + this->ry * this->ry + this->rz * this->rz), this->rx, this->ry, this->rz);
 	return YPR_F(orientation).yaw;
 }
+
+bool TelemetryCamera::validFrame(int& last_frame)
+{
+	bool valid = this->MeasurmentCnt == last_frame + 1;
+	last_frame = this->MeasurmentCnt;
+	return valid;
+}
