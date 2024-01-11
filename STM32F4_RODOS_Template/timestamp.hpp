@@ -7,8 +7,8 @@
  */
 template <typename T>
 struct TimestampedData {
-    /// @brief Timestamp in nanoseconds
-    int64_t timestamp;
+    /// @brief Timestamp in seconds
+    float timestamp;
     T data;
 };
 

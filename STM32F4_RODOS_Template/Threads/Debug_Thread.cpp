@@ -50,9 +50,7 @@ void DebugThread::run()
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		EncoderDataBuffer.get(EncoderDataReceiver);
 
-		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
-
-		if (SECONDS_NOW() > start + 5 && SECONDS_NOW() < start + 7) setMode(Calib_Accel);
+		//PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
 
 		if (!calib)
 		{

@@ -14,7 +14,7 @@ namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Control
-    inline const bool control_thread_enable = false;
+    inline const bool control_thread_enable = true;
     inline const int  control_thread_period = 20;     // [ms]
 
     // Sensor
@@ -26,7 +26,7 @@ namespace config
     inline const int  com_thread_period = 500;        // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = true;
+    inline const bool debug_thread_enable = false;
     inline const int  debug_thread_period = 500;      // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
@@ -63,7 +63,7 @@ namespace config
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
     inline const float limitSpeedController = 10.f;                         // [V]
-    inline const PIDParams paramsSpeedControl{ 1.0f, 1.0f, 1.0f };          // P, I, D
+    inline const PIDParams paramsSpeedControl{ 0.2f, 0.0f, 0.0f };          // P, I, D
     inline const bool backcalculationSpeedController = false;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller

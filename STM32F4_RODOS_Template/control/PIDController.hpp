@@ -36,7 +36,7 @@ class PID {
         float integError;
 
         /// @brief Timestamp of last control signal determination in nanoseconds            
-        int64_t lastTimestamp;
+        float lastTimestamp;
 
         /// @brief Limits for control signal
         float limit;
@@ -68,7 +68,7 @@ class PID {
          * @brief Calculate new control output based on current setpoint and current measurement
          * @return Control output within minLimit to maxLimit
         */
-        float calculate(float measurement, int64_t dt);
+        float calculate(float measurement, float dt);
 
 
         /**

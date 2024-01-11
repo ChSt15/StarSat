@@ -19,7 +19,7 @@ void SensorThread::init()
 
 void SensorThread::run()
 {
-	imu.initialization();
+
 
 	// Config
 	using namespace config;
@@ -27,6 +27,12 @@ void SensorThread::run()
 		// Thread 
 		this->period = sensor_thread_period;
 		if (!sensor_thread_enable) suspendCallerUntil(END_OF_TIME);
+
+		//IMU 
+		imu.initialization();
+
+		//Encoder
+		encoder.Init();
 
 		// IMU Calibparams
 		imu.setGyroCalib(gyroCalib);

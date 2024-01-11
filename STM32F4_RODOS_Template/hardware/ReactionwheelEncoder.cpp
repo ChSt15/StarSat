@@ -143,7 +143,7 @@ TimestampedData<float>& ReactionwheelEncoder::getSpeed()
         TIM2Freq = 0;
     }
 
-    Speed.timestamp = NOW();
+    Speed.timestamp = SECONDS_NOW();
     if (EncoderB)
     {
         Speed.data = -1 * ((float)TIM2Freq / 16) * 2 * 3.1415;  //CCW

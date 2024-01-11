@@ -61,13 +61,14 @@ void ControlThread::run()
 
 	int frameCnt = -42;
 
+	setMode(Control_Speed);
+	reactionwheelControl.setDesiredSpeed(2 * M_PI * 10);
 
 	while(true)
 	{
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		EncoderDataBuffer.get(EncoderDataReceiver);
 		CameraDataBuffer.get(CameraDataReceiver);
-
 		modes current_mode = getMode();
 
 		switch (current_mode)

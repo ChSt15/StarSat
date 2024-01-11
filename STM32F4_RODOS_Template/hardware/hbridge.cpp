@@ -15,6 +15,8 @@ void HBridge::initialization(int pwmFrequency, int pwmIncrements)
 {
     pwm1.init(pwmFrequency, pwmIncrements);
     pwm2.init(pwmFrequency, pwmIncrements);
+    this->pwmFrequency = pwmFrequency;
+    this->pwmIncrements = pwmIncrements;
 }
 
 
@@ -24,13 +26,14 @@ void HBridge::setVoltage(float voltagePercentage)
     float voltagePercentageDesired = checkVoltagePercentage(voltagePercentage);
     
     // Set increments accordingly
-    uint16_t increments = static_cast<uint16_t>(abs(pwmIncrements * voltagePercentage));
-    if (voltagePercentageDesired >= 0) {
+    uint16_t increments = pwmIncrements * voltagePercentageDesired;
+    //PRINTF("%f, %d\n",voltagePercentage, increments);
+    if (increments >= 0) {
         pwm1.write(increments);
         pwm2.write(0);
     } else {
         pwm1.write(0);
-        pwm2.write(increments);
+        pwm2.write(-increments);
     }
 }
 
