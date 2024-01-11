@@ -12,10 +12,6 @@
 
 HAL_GPIO ledred(GPIO_062);
 
-
-float t_last = 0;
-int cnt = 0;
-
 void SensorThread::init()
 {
 	ledred.init(true, 1, 0);
@@ -44,7 +40,14 @@ void SensorThread::run()
 
 	while (true)
 	{
-		imu.readRawData();
+		// IMU
+		IMUDataTopic.publish(imu.readData());
+
+		// Atitude estimation
+		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
+
+		// Encoder
+		EncoderDataTopic.publish(encoder.getSpeed());
 
 		switch (getMode())
 		{
@@ -72,21 +75,6 @@ void SensorThread::run()
 		default:
 			break;
 		}
-
-		// IMU
-		imu.calibrateData();
-		IMUDataTopic.publish(imu.getData());
-
-		// Atitude estimation
-		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
-
-		// Encoder
-		EncoderDataTopic.publish(encoder.getSpeed());
-
-		float dt = NOW() / MICROSECONDS - t_last;
-		t_last = NOW() / MICROSECONDS;
-		cnt++;
-		//if (cnt % 100 == 0) PRINTF("%f,\n", dt);
 
 		ledred.setPins(~ledred.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);

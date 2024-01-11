@@ -1,14 +1,13 @@
 #include "ArmController.hpp"
 
-#define STEP2LENGTH 1		// [mm]
 
-
-void ArmController::config(int max_vel, int min_vel, int max_accel, int deccel_margin)
+void ArmController::config(int max_vel, int min_vel, int max_accel, int deccel_margin, float steps2mm)
 {
 	this->max_vel = max_vel;
 	this->min_vel = min_vel;
 	this->max_accel = max_accel;
 	this->deccel_margin = deccel_margin;
+	this->steps2mm = steps2mm;
 }
 
 float last_t;
@@ -32,7 +31,7 @@ bool ArmController::InitialExtension(TelemetryCamera& camera)
 
 		steppermotorthread.setDirection(true);
 		steppermotorthread.setPeriod((int) (1.f/min_vel * 1000.f * 1000.f));
-		steppermotorthread.setStepsToDo((int)(0.95f * distance / STEP2LENGTH));
+		steppermotorthread.setStepsToDo((int)(0.95f * distance / steps2mm));
 		steppermotorthread.resume();
 		last_t = SECONDS_NOW();
 		moving = true;
@@ -92,7 +91,7 @@ bool ArmController::FinalExtension(TelemetryCamera& camera)
 		return false;
 	}
 
-	float time_to_target_arm = 0.95f * this->distance / (this->min_vel * STEP2LENGTH);
+	float time_to_target_arm = 0.95f * this->distance / (this->min_vel * steps2mm);
 	float time_to_target_mockup;
 	float yaw = camera.getYawofMockup();
 	float w = getAngularvelocityMockup();
@@ -108,11 +107,11 @@ bool ArmController::FinalExtension(TelemetryCamera& camera)
 	}
 	
 	// change margin to what works best
-	if (time_to_target_arm - time_to_target_mockup < 0.01)
+	if (time_to_target_arm - time_to_target_mockup < 0.02)
 	{
 		steppermotorthread.setDirection(true);
 		steppermotorthread.setPeriod((int)(1.f / min_vel * 1000.f * 1000.f));
-		steppermotorthread.setStepsToDo((int)(0.05 * distance / STEP2LENGTH));
+		steppermotorthread.setStepsToDo((int)(0.05 * distance / steps2mm));
 		steppermotorthread.resume();
 		moving = true;
 	}
@@ -158,7 +157,7 @@ float ArmController::getAngularvelocityMockup()
 
 float ArmController::getArmExtention()
 {
-	return steppermotorthread.getStepCounter() * STEP2LENGTH;
+	return steppermotorthread.getStepCounter() * steps2mm;
 }
 
 

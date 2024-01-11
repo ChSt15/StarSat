@@ -68,11 +68,7 @@ float ReactionwheelControl::update(TimestampedData<float> speed_measured)
 {
     float controlSignal = this->controller.calculate(speed_measured.data, speed_measured.timestamp);
     float maxVoltage = this->controller.getLimits();
-    controlSignal = controlSignal / maxVoltage;
-
-    /**
-     * If necessary, add/adjust things like integral windup, etc.
-    */
+    return controlSignal / maxVoltage;
 }
 
 ReactionwheelControl reactionwheelControl;

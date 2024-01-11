@@ -103,7 +103,7 @@ private:
 
 	// @brief Propagation step using only gyro
 	// @param gyro -> angluarvelocity vector in rad/s
-	void propagate(const Vector3D_F& gyro);
+	void propagate(const Vector3D_F& gyro, const float& time);
 
 	// @brief Update step using accelerometer
 	// @param accel -> linearacceleration vector in g

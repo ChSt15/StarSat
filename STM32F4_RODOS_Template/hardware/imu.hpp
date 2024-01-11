@@ -53,7 +53,8 @@ private:
     const float gyroScale = 8.75 / 1000.0;            // +-2000dps -> 70, +-500dps -> 17.50, +-245dps -> 8.75
     const float accelScale = 0.061 / 1000.0;        // +-2g -> 0.061, +-4g -> 0.122, +-8g -> 0.244, +-16g -> 0.732
     const float magScale = 0.14 / 1000.0;           // +-4gauss -> 0.14, +-8gauss -> 0.29, +-12gauss -> 0.43, +-16gauss -> 0.58
-
+    const float tempScale = 1.f / 16.f;
+    const float tempOffset = 25.f;
     /// @brief define adresses of registers for reading data
     /// Gyroscope
     const uint8_t LSM9DS1_G_OUT_X[2] = { 0x18 };
@@ -120,6 +121,8 @@ public:
     /// @brief Calls subroutines and reads raw data of IMU and saves it into this->dataRaw
     /// @return saved this->dataRaw
     TimestampedData<IMUData>& readRawData();
+
+    TimestampedData<IMUData>& readData();
 
     /// @brief Calibrate current raw data (this->dataRaw) by applying current calibration values and saves to this->dataCalibrated
     void calibrateData();

@@ -41,7 +41,7 @@ void IMU::setGyroCalib(IMUCalib calib)
 IMUCalib IMU::getGyroCalib()
 {
 	IMUCalib calib; 
-	PROTECT_WITH_SEMAPHORE(sem) calib = this->gyroCalib;
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->gyroCalib_buffer;
 	return calib;
 }
 
@@ -59,7 +59,7 @@ void IMU::setAccelCalib(IMUCalib calib)
 IMUCalib IMU::getAccelCalib()
 {
 	IMUCalib calib;
-	PROTECT_WITH_SEMAPHORE(sem) calib = this->accelCalib;
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->accelCalib_buffer;
 	return calib;
 }
 
@@ -77,7 +77,7 @@ void IMU::setMagCalib(IMUCalib calib)
 IMUCalib IMU::getMagCalib()
 {
 	IMUCalib calib;
-	PROTECT_WITH_SEMAPHORE(sem) calib = this->magCalib;
+	PROTECT_WITH_SEMAPHORE(sem) calib = this->magCalib_buffer;
 	return calib;
 }
 
@@ -130,8 +130,15 @@ TimestampedData<IMUData>& IMU::readRawData()
 	accelRead();
 	gyroRead();
 	tempRead();
-	this->dataRaw.timestamp = NOW();
+	this->dataRaw.timestamp = SECONDS_NOW();
 	return this->dataRaw;
+}
+
+TimestampedData<IMUData>& IMU::readData()
+{
+	readRawData();
+	calibrateData();
+	return this->dataCalibrated;
 }
 
 void IMU::gyroInit()
@@ -214,7 +221,7 @@ void IMU::tempRead()
 	uint8_t data[2];
 
 	this->i2c.writeRead(LSM9DS1_AG_ADDR, LSM9DS1_OUT_TEMP, 1, data, 2);
-	this->dataRaw.data.temperature = (int16_t) ((data[1] << 8 | data[0]));
+	this->dataRaw.data.temperature = bytes_to_float(data) * tempScale + tempOffset;
 }
 
 
@@ -241,12 +248,12 @@ void IMU::calibrateData()
 		magCalib = this->getMagCalib();
 		PROTECT_WITH_SEMAPHORE(this->sem) newCalib_mag = false;
 	}
-
+	
 	dataCalibrated.data.angularVelocity = dataRaw.data.angularVelocity.vecSub(gyroCalib.bias).matVecMult(gyroCalib.scale);
 	dataCalibrated.data.acceleration = dataRaw.data.acceleration.vecSub(accelCalib.bias).matVecMult(accelCalib.scale);
 	dataCalibrated.data.magneticField = dataRaw.data.magneticField.vecSub(magCalib.bias).matVecMult(magCalib.scale);
 
-	dataCalibrated.data.temperature = (dataRaw.data.temperature / 16.0) + 25.0;
+	dataCalibrated.data.temperature = dataRaw.data.temperature;
 	dataCalibrated.timestamp = dataRaw.timestamp;
 }
 

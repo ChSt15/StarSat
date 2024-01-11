@@ -76,7 +76,6 @@ void QEKF::init(const TimestampedData<IMUData>& imudata)
 	this->X.r[1][0] = quat.q.x;
 	this->X.r[2][0] = quat.q.y;
 	this->X.r[3][0] = quat.q.z;
-	// yet to be tested
 	this->X.r[4][0] = imudata.data.angularVelocity.x;
 	this->X.r[5][0] = imudata.data.angularVelocity.y;
 	this->X.r[6][0] = imudata.data.angularVelocity.z;
@@ -96,7 +95,7 @@ void QEKF::init(const TimestampedData<IMUData>& imudata)
 	P.r[8][8] = 1;
 	P.r[9][9] = 1;
 
-	last_t = SECONDS_NOW();
+	last_t = imudata.timestamp;
 	is_initialized = true;
 }
 
@@ -122,7 +121,7 @@ TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& i
 	}
 	else
 	{
-		this->propagate(imudata.data.angularVelocity);
+		this->propagate(imudata.data.angularVelocity, imudata.timestamp);
 
 		//this->update_accel(imudata.data.acceleration);
 		//this->update_mag(imudata.data.magneticField);
@@ -137,10 +136,10 @@ TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& i
 
 
 
-void QEKF::propagate(const Vector3D_F& w)
+void QEKF::propagate(const Vector3D_F& w, const float& t)
 {
-	float dt = SECONDS_NOW() - last_t;
-	last_t = SECONDS_NOW();
+	float dt = t - last_t;
+	last_t = t;
 
 	float old_q0 = q0;
 	float old_q1 = q1;

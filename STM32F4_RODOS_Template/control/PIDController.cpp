@@ -5,7 +5,10 @@
 
 PID::PID()
 {
-
+    this->setpoint = 0.0;
+    this->lastError = 0.0;
+    this->lastMeasurment = 0.0;
+    this->integError = 0.0;
 }
 
 
@@ -13,10 +16,6 @@ PID::PID()
 void PID::init(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
     this->parameters = params;
-    this->setpoint = 0.0;
-    this->lastError = 0.0;
-    this->lastMeasurment = 0.0;
-    this->integError = 0.0;
     this->limit = limit;
     this->use_BackCalculation = use_BackCalculation;
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;

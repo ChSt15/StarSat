@@ -10,7 +10,9 @@
 #include "../control/AngularPositionControl.hpp"
 #include "../control/AngularVelocityControl.hpp"
 #include "../control/PIDController.hpp"
+#include "../control/ArmController.hpp"
 #include "../hardware/ReactionwheelEncoder.hpp"
+#include "../hardware/ElectricalMonitoring.hpp"
 #include "../Threads/Modes.hpp"
 #include "Telecomand.hpp"
 

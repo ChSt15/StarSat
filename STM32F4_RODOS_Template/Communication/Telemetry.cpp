@@ -60,13 +60,12 @@ void Telemetry::send_Continuous()
 	telemetry_continuous.speed = EncoderDataReceiver.data;
 
 	// Arm
-	// TODO
-	telemetry_continuous.arm_extension = 0.;
+	telemetry_continuous.arm_extension = armController.getArmExtention();
 
 	// Electrical
-	// TODO
-	telemetry_continuous.U_bat = 0.;
-	telemetry_continuous.I_total = 0.;
+	// TODO: not thread safe yet
+	telemetry_continuous.U_bat = electricalMonitor.getBatteryVoltage();
+	telemetry_continuous.I_total = electricalMonitor.getAuxCurrent() + electricalMonitor.getReactionWheelCurrent() + electricalMonitor.getRPICurrent() + electricalMonitor.getStepperCurrent();
 
 	telemetryContinuousTopic.publish(telemetry_continuous);
 	

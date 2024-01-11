@@ -22,6 +22,8 @@ private:
 	int max_accel;			// [step/s^2]
 	int deccel_margin;		// [steps]
 
+	float steps2mm;
+
 	bool moving = false;
 	bool deccel = false;
 
@@ -29,7 +31,7 @@ private:
 
 public:
 
-	void config(int max_vel, int min_vel, int max_accel, int deccel_margin);
+	void config(int max_vel, int min_vel, int max_accel, int deccel_margin, float steps2mm);
 
 	bool InitialExtension(TelemetryCamera& camera);
 

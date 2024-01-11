@@ -66,10 +66,7 @@ float AngularVelocityControl::getMaxDesiredVelocity()
 
 float AngularVelocityControl::update(TimestampedData<Attitude_Data> attitude_measured)
 {
-    float controlSignal = this->controller.calculate(attitude_measured.data.angularVelocity.z, attitude_measured.timestamp);
-    /**
-     * If necessary, add/adjust things like integral windup, etc.
-    */
+    return this->controller.calculate(attitude_measured.data.angularVelocity.z, attitude_measured.timestamp);
 }
 
 

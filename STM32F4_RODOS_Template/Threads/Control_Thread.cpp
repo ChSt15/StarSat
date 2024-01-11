@@ -25,7 +25,6 @@ static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Contro
 /**
  * @todo NEEDS TO BE SPECIFIED
 */
-float maxVoltage = 10.0f;									// [V]
 float maxSpeed = (10000.0f * 2 * M_PI) / 60.0f;				// [rad/s]
 float maxVelocity = M_PI_2;  								// [rad/s]
 
@@ -49,23 +48,17 @@ void ControlThread::run()
 		if (!control_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		// Controllers
-		reactionwheelControl.init(paramsSpeedControl, maxVoltage, maxSpeed, backcalculationSpeedController, derivativofmeasurmentSpeedController);
-		positionControl.init(paramsPosController, maxVelocity, backcalculationPosController, derivativofmeasurmentPosController);
-		velocitycontrol.init(paramsVelController, maxSpeed, maxVelocity, backcalculationVelController, derivativofmeasurmentVelController);
+		reactionwheelControl.init(paramsSpeedControl, limitSpeedController, maxSpeed, backcalculationSpeedController, derivativofmeasurmentSpeedController);
+		positionControl.init(paramsPosController, limitPosController, backcalculationPosController, derivativofmeasurmentPosController);
+		velocitycontrol.init(paramsVelController, limitVelController, maxVelocity, backcalculationVelController, derivativofmeasurmentVelController);
 
 		// ArmController
-		armController.config(max_vel, min_vel, max_accel, deccel_margin);
+		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
 
 		// HBridge
 		hbridge.initialization(pwmFrequency, pwmIncrements);
 	}
 
-	TimestampedData<Attitude_Data> AttitudeDataReceiver;
-	TimestampedData<float> EncoderDataReceiver;
-	TelemetryCamera CameraDataReceiver;
-
-	float desiredSpeed;
-	float desiredVoltage;
 	int frameCnt = -42;
 
 
@@ -82,52 +75,32 @@ void ControlThread::run()
 		case Idle:
 			hbridge.setVoltage(0.f);
 			break;
+
 		case Calib_Mag:
 			velocitycontrol.setDesiredAngularVelocity(M_PI / 16.f);
-			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
-			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-			hbridge.setVoltage(desiredVoltage);
+			VelController_inControl();
 
 			break;
 
 		/* ---------------------------- Controller ---------------------------- */
 		case Control_Speed:
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-
-			hbridge.setVoltage(desiredVoltage);
-
+			SpeedController_inControl();
 			break;
 
 		case Control_Vel:
-			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
-
-			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-
-			hbridge.setVoltage(desiredVoltage);
-
+			VelController_inControl();
 			break;
 
 		case Control_Pos:
-			desiredSpeed = positionControl.update(AttitudeDataReceiver);
-
-			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-
-			hbridge.setVoltage(desiredVoltage);
-			
+			PosController_inControl();
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
 			velocitycontrol.setDesiredAngularVelocity(M_PI / 16.f);
-			desiredSpeed = velocitycontrol.update(AttitudeDataReceiver);
-			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-			hbridge.setVoltage(desiredVoltage);
+			VelController_inControl();
 
-			if (CameraDataReceiver.validFrame(frameCnt)) break;
+			if (!CameraDataReceiver.validFrame(frameCnt)) break;
 
 			setMode(Mission_Point);
 			break;
@@ -135,10 +108,7 @@ void ControlThread::run()
 
 		case Mission_Point:
 			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
-			desiredSpeed = positionControl.update(AttitudeDataReceiver);
-			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-			hbridge.setVoltage(desiredVoltage);
+			PosController_inControl();
 
 			if (!positionControl.isSettled()) break;
 
@@ -147,10 +117,7 @@ void ControlThread::run()
 
 		case Mission_Dock_initial:
 			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
-			desiredSpeed = positionControl.update(AttitudeDataReceiver);
-			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-			hbridge.setVoltage(desiredVoltage);
+			PosController_inControl();
 
 			if (!armController.InitialExtension(CameraDataReceiver))
 			{
@@ -163,16 +130,12 @@ void ControlThread::run()
 
 		case Mission_Dock_final:
 			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
-			desiredSpeed = positionControl.update(AttitudeDataReceiver);
-			reactionwheelControl.setDesiredSpeed(desiredSpeed);
-			desiredVoltage = reactionwheelControl.update(EncoderDataReceiver);
-			hbridge.setVoltage(desiredVoltage);
+			PosController_inControl();
 
 			if (!armController.FinalExtension(CameraDataReceiver)) break;
 
 			setMode(Idle);
 			break;
-
 
 		default:
 			break;
@@ -183,5 +146,21 @@ void ControlThread::run()
 	}
 }
 
+void ControlThread::SpeedController_inControl()
+{
+	hbridge.setVoltage(reactionwheelControl.update(EncoderDataReceiver));
+}
+
+void ControlThread::PosController_inControl()
+{
+	reactionwheelControl.setDesiredSpeed(positionControl.update(AttitudeDataReceiver));
+	hbridge.setVoltage(reactionwheelControl.update(EncoderDataReceiver));
+}
+
+void ControlThread::VelController_inControl()
+{
+	reactionwheelControl.setDesiredSpeed(velocitycontrol.update(AttitudeDataReceiver));
+	hbridge.setVoltage(reactionwheelControl.update(EncoderDataReceiver));
+}
 
 ControlThread controlthread;

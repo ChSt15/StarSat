@@ -15,6 +15,8 @@
 #include "../hardware/ReactionwheelEncoder.hpp"
 #include "../hardware/hbridge.hpp"
 
+#include "../Communication/Camera.hpp"
+
 #include "Debug_Thread.hpp"
 #include "Modes.hpp"
 #include "Config.hpp"
@@ -30,9 +32,18 @@ public:
 	void init();
 	void run();
 
+	void SpeedController_inControl();
+	void PosController_inControl();
+	void VelController_inControl();
+
 private:
 
 	int period;		// [ms]
+
+	// Topic Buffers
+	TimestampedData<Attitude_Data> AttitudeDataReceiver;
+	TimestampedData<float> EncoderDataReceiver;
+	TelemetryCamera CameraDataReceiver;
 };
 
 
