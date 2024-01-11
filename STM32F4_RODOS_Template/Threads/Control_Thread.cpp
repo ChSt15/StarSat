@@ -62,7 +62,7 @@ void ControlThread::run()
 	int frameCnt = -42;
 
 	setMode(Control_Speed); 
-	reactionwheelControl.setDesiredSpeed(200.f);
+	reactionwheelControl.setDesiredSpeed(150.f);
 
 	while(true)
 	{
