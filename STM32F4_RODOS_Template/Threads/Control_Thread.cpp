@@ -150,8 +150,7 @@ void ControlThread::run()
 
 void ControlThread::SpeedController_inControl()
 {
-	float temp = reactionwheelControl.update(EncoderDataReceiver);
-	hbridge.setVoltage(temp);
+	hbridge.setVoltage(reactionwheelControl.update(EncoderDataReceiver));
 }
 
 void ControlThread::PosController_inControl()
