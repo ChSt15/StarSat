@@ -26,8 +26,8 @@ namespace config
     inline const int  com_thread_period = 500;        // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = false;
-    inline const int  debug_thread_period = 500;      // [ms]
+    inline const bool debug_thread_enable = true;
+    inline const int  debug_thread_period = 100;      // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
     inline const bool electrical_monitoring_thread_enable = true; //DO NOT DISABLE THIS THREAD. IT IS NEEDED TO PROTECT THE BATTERY! ONLY DISABLE IF YOU KNOW WHAT YOU ARE DOING AND REALLY NEED TO!
@@ -62,9 +62,9 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float limitSpeedController = 10.f;                         // [V]
-    inline const PIDParams paramsSpeedControl{ 0.2f, 0.0f, 0.0f };          // P, I, D
-    inline const bool backcalculationSpeedController = false;
+    inline const float limitSpeedController = 6.f;                         // [V]
+    inline const PIDParams paramsSpeedControl{ 0.8f, 0.3f, 0.0f };          // P, I, D 0.01 before
+    inline const bool backcalculationSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]

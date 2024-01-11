@@ -67,8 +67,7 @@ float ReactionwheelControl::getMaxDesiredSpeed()
 float ReactionwheelControl::update(TimestampedData<float> speed_measured)
 {
     float controlSignal = this->controller.calculate(speed_measured.data, speed_measured.timestamp);
-    float maxVoltage = this->controller.getLimits();
-    return controlSignal / maxVoltage;
+    return controlSignal / 12.f;
 }
 
 ReactionwheelControl reactionwheelControl;

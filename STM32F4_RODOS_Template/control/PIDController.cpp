@@ -21,7 +21,7 @@ void PID::init(const PIDParams &params, float limit, bool use_BackCalculation, b
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
 
-
+int cnt = 0;
 
 float PID::calculate(float measurement, float timestamp)
 {   
@@ -38,31 +38,42 @@ float PID::calculate(float measurement, float timestamp)
 
     if(flagInitialized)
     {
+ 
         // Delta t in nanoseconds   ->  might need to be adjusted
         float dt = timestamp - this->lastTimestamp;
-        PRINTF("%f, %f, %f\n", dt, timestamp, lastTimestamp);
+        /*
+        if (cnt % 40 == 0) PRINTF("%f\n", dt);
+        cnt++;
+        */
+     
+
         // Integral term
+        float integTerm = 0;
         if (!use_BackCalculation)
         {
             this->integError += error * dt;
+            integTerm = params.ki * this->integError;
         }
-        float integTerm = params.ki * this->integError;
+        else 
+        {
+            integTerm = this->integError;
+        }
 
         // Derivation term
         float derivTerm = 0;
         if (use_DerivativofMeasurment)
         {
-            derivTerm = 0;//params.kd * (measurement - this->lastMeasurment) / dt;
+            derivTerm = params.kd * (measurement - this->lastMeasurment) / dt;
         }
         else
         {
-            derivTerm = 0;//params.kd * (error - this->lastError) / dt;
+            derivTerm = params.kd * (error - this->lastError) / dt;
         }
 
 
         // Determine output signal
         float controlSignal = propTerm + integTerm + derivTerm;
-        //PRINTF("%f, %f, %f, %f\n", controlSignal, propTerm ,integTerm, derivTerm);
+
         // Update state
         this->lastError = error;
         this->lastMeasurment = measurement;
@@ -82,7 +93,7 @@ float PID::calculate(float measurement, float timestamp)
         {
             this->integError += (params.ki * error + controlSignalSaturated - controlSignal) * dt;
         }
-    
+
         return controlSignalSaturated;
     } 
     else 

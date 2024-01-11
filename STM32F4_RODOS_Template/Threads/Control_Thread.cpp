@@ -61,8 +61,8 @@ void ControlThread::run()
 
 	int frameCnt = -42;
 
-	setMode(Control_Speed);
-	reactionwheelControl.setDesiredSpeed(2 * M_PI * 10);
+	setMode(Control_Speed); 
+	reactionwheelControl.setDesiredSpeed(200.f);
 
 	while(true)
 	{
@@ -143,13 +143,15 @@ void ControlThread::run()
 		}
 
 		ledorange.setPins(~ledorange.readPins());
-		suspendCallerUntil(NOW() + period * MILLISECONDS);
+		suspendCallerUntil(END_OF_TIME);
+		//suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }
 
 void ControlThread::SpeedController_inControl()
 {
-	hbridge.setVoltage(reactionwheelControl.update(EncoderDataReceiver));
+	float temp = reactionwheelControl.update(EncoderDataReceiver);
+	hbridge.setVoltage(temp);
 }
 
 void ControlThread::PosController_inControl()

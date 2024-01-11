@@ -3,12 +3,13 @@
 #include "rodos.h"
 #include "math.h"
 
+#include "../Threads/Control_Thread.hpp"
+
 #include "../control/AttitudeEstimation.hpp"
 #include "../hardware/imu.hpp"
 #include "../timestamp.hpp"
 #include "../control/CalibrationIMU.hpp"
 #include "../hardware/ReactionwheelEncoder.hpp"
-
 
 HAL_GPIO ledred(GPIO_062);
 
@@ -19,7 +20,8 @@ void SensorThread::init()
 
 void SensorThread::run()
 {
-
+	float last_t = SECONDS_NOW();
+	int cnt = 0;
 
 	// Config
 	using namespace config;
@@ -46,6 +48,8 @@ void SensorThread::run()
 
 	while (true)
 	{
+
+
 		// IMU
 		IMUDataTopic.publish(imu.readData());
 
@@ -54,6 +58,8 @@ void SensorThread::run()
 
 		// Encoder
 		EncoderDataTopic.publish(encoder.getSpeed());
+
+		controlthread.resumeAndYield();
 
 		switch (getMode())
 		{
@@ -81,7 +87,11 @@ void SensorThread::run()
 		default:
 			break;
 		}
-
+		/*
+		if (cnt % 10 == 0) PRINTF("%f\n", SECONDS_NOW() - last_t);
+		last_t = SECONDS_NOW();
+		cnt++;
+		*/
 		ledred.setPins(~ledred.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}

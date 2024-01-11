@@ -27,7 +27,7 @@ class ControlThread : public Thread
 public:
 
 	// Set name, prio and stack size
-	ControlThread() : Thread("Control Thread", 100, 2000) {}
+	ControlThread() : Thread("Control Thread", 150, 2000) {}
 
 	void init();
 	void run();
