@@ -2,39 +2,13 @@
 #define FLOATSAT_CONTROL_REACTIONWHEELCONTROL_HPP_
 
 #include "rodos.h"
-#include "PIDController.hpp"
+#include "../PIDController.hpp"
 #include "../timestamp.hpp"
 
 
-class ReactionwheelControl
+class ReactionwheelControl: public PID
 {
-private:
-
-	PID controller;
-	// TODO set value
-	float maxDesiredSpeed;			// max. speed the reactionwheel can reach in both directions -> to limit the setpoint [rad/s]
-
 public:
-
-	ReactionwheelControl();
-
-	/**
-	 * @brief Initialize PID controller
-	*/
-	void init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed, bool use_BackCalculation, bool use_DerivativofMeasurment);
-
-
-	/**
-	 * @brief Set control parameters of PID controller
-	*/
-	void setParams(PIDParams params);
-
-
-	/**
-	 * @brief Get control parameters of PID controller
-	*/
-	PIDParams getParams();
-
 
 	/**
 	 * @brief Set desired speed for reaction wheel in [rad/s]

@@ -9,8 +9,6 @@
  * - Check the class consts. They are only temporary values!
 */
 
-extern Topic<TimestampedData<float>> EncoderDataTopic;
-
 class ReactionwheelEncoder
 {
 

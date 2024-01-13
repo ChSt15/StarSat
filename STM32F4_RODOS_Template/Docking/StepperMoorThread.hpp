@@ -15,7 +15,7 @@ public:
 
 	// Set name, prio and stack size
 	StepperMotorThread(RODOS::GPIO_PIN dir_pin, RODOS::GPIO_PIN step_pin, RODOS::GPIO_PIN calib_pin, RODOS::GPIO_PIN enable_pin)  :
-                Thread("StepperMotor Thread", 1000),
+                Thread("StepperMotor Thread", 200),
                 DirectionPin(dir_pin),
                 StepPin(step_pin),
                 CalibPin(calib_pin),

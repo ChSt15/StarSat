@@ -1,27 +1,14 @@
 #include "PIDController.hpp"
-#include "rodos.h"
 
 
-
-PID::PID()
-{
-    this->setpoint = 0.0;
-    this->lastError = 0.0;
-    this->lastMeasurment = 0.0;
-    this->integError = 0.0;
-}
-
-
-
-void PID::init(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment)
+void PID::config(const PIDParams &params, float limit_out, float limit_in, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
     this->parameters = params;
-    this->limit = limit;
+    this->limit_out = limit_out;
+    this->limit_in = limit_in;
     this->use_BackCalculation = use_BackCalculation;
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
-
-int cnt = 0;
 
 float PID::calculate(float measurement, float timestamp)
 {   
@@ -39,12 +26,8 @@ float PID::calculate(float measurement, float timestamp)
     if(flagInitialized)
     {
  
-        // Delta t in nanoseconds   ->  might need to be adjusted
+        // Delta t in seconds
         float dt = timestamp - this->lastTimestamp;
-        /*
-        if (cnt % 40 == 0) PRINTF("%f\n", dt);
-        cnt++;
-        */
      
 
         // Integral term
@@ -144,14 +127,14 @@ float PID::getSetpoint()
 }
 
 
-void PID::setLimits(float limit)
+void PID::setOutputLimits(float limit)
 {
     PROTECT_WITH_SEMAPHORE(sem) this->limit = limit;
 }
 
 
 
-float PID::getLimits()
+float PID::getOutputLimits()
 {
     float lim;
     PROTECT_WITH_SEMAPHORE(sem) lim = this->limit;

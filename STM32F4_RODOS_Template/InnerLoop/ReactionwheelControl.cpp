@@ -1,35 +1,4 @@
 #include "ReactionwheelControl.hpp"
-#include "rodos.h"
-
-
-
-ReactionwheelControl::ReactionwheelControl()
-{
-    this->controller = PID();
-}
-
-
-
-void ReactionwheelControl::init(const PIDParams& params, float maxVoltage, float maxDesiredSpeed, bool use_BackCalculation, bool use_DerivativofMeasurment)
-{
-    this->controller.init(params, maxVoltage, use_BackCalculation, use_DerivativofMeasurment);
-    this->maxDesiredSpeed = maxDesiredSpeed;
-}
-
-
-
-void ReactionwheelControl::setParams(PIDParams params)
-{
-    this->controller.setParams(params);
-}
-
-
-
-PIDParams ReactionwheelControl::getParams()
-{
-    return this->controller.getParams();
-}
-
 
 
 void ReactionwheelControl::setDesiredSpeed(float w_set)
@@ -66,8 +35,7 @@ float ReactionwheelControl::getMaxDesiredSpeed()
 
 float ReactionwheelControl::update(TimestampedData<float> speed_measured)
 {
-    float controlSignal = this->controller.calculate(speed_measured.data, speed_measured.timestamp);
-    return controlSignal / 12.f;
+    return PID::calculate(speed_measured.data, speed_measured.timestamp) / 12.f;
 }
 
 ReactionwheelControl reactionwheelControl;

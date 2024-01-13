@@ -37,7 +37,11 @@ public:
 
 	bool FinalExtension(TelemetryCamera& camera);
 
+	bool Calibrate();
+
 	void CalcAngularVelocity(TelemetryCamera& camera);
+
+	void Stop();
 
 	float getAngularvelocityMockup();
 

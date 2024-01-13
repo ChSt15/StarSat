@@ -6,8 +6,6 @@
 #include "stm32f4xx_conf.h"
 
 
-Topic<TimestampedData<float>> EncoderDataTopic(-1, "EncoderData");
-
 ReactionwheelEncoder::ReactionwheelEncoder()
 {
 

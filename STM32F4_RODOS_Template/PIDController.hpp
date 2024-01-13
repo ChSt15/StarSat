@@ -7,10 +7,11 @@
 /**
  * @brief Struct for controller parameters 
 */
-struct PIDParams {
-    float kp;
-    float ki;
-    float kd;   
+struct PIDParams 
+{
+    float kp = 0.f;
+    float ki = 0.f;
+    float kd = 0.f;   
 };
 
 
@@ -24,26 +25,28 @@ class PID {
         PIDParams parameters;
 
         /// @brief Desired value the controller should achieve
-        float setpoint;
+        float setpoint = 0.f;
 
         /// @brief Error of last run for determining the derivation of the error
-        float lastError;
+        float lastError = 0.f;
 
         /// @brief Measurment of last run for determining the derivation of the Measurment
-        float lastMeasurment;
+        float lastMeasurment = 0.f;
 
         /// @brief Integration of error until last control signal determination
-        float integError;
+        float integError = 0.f;
 
-        /// @brief Timestamp of last control signal determination in nanoseconds            
-        float lastTimestamp;
+        /// @brief Timestamp of last control signal determination in seconds            
+        float lastTimestamp = 0.f;
 
         /// @brief Limits for control signal
-        float limit;
+        float limit_out = 0.f;
+
+        float limit_in = 0.f
 
         /// @brief Indicates if derivation and integration term can be included -> after lastTimestamp is initialized
         bool flagInitialized = false;
-
+         
         bool use_BackCalculation = false;
 
         bool use_DerivativofMeasurment = false;
@@ -52,16 +55,10 @@ class PID {
   
     public:
 
-        /**
-         * @brief Constructor
-        */
-       PID();
-
-
        /**
         * @brief Initialize parameters
         */
-       void init(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment);
+       void config(const PIDParams &params, float limit_out, float limit_in, bool use_BackCalculation, bool use_DerivativofMeasurment);
 
 
         /**
@@ -94,13 +91,13 @@ class PID {
         /**
          * @brief Set max. and min. limit of control signal
         */
-        void setLimits(float Limit);
-
+        void setOutputLimits(float limit_out);
 
         /**
          * @brief Get max. and min. limit of control signal
         */
-        float getLimits();
+        float getOutputLimits();
+
 
         bool isSettled();
 };
