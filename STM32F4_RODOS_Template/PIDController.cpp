@@ -93,7 +93,7 @@ float PID::calculate(float measurement, float timestamp)
     
 }
 
-void PID::setParams(const PIDParams &params)
+void PID::setParams(const PIDParams& params)
 {
     PROTECT_WITH_SEMAPHORE(sem)
     {

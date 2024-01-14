@@ -104,13 +104,13 @@ void Telecommand::processNewCommand()
 			break;
 		/*-----------------------Control Setpoint----------------------*/
 		case SetControlDesired_speed:
-			reactionwheelControl.setSetpoint(commandReceiver.fval_1);
+			speedSetpointTopic.publish(commandReceiver.fval_1);
 			break;
 		case SetControlDesired_pos:
-			positionControl.setSetpoint(commandReceiver.fval_1);
+			AngularPositionSetpointTopic.publish(commandReceiver.fval_1);
 			break;
 		case SetControlDesired_vel:
-			velocitycontrol.setSetpoint(commandReceiver.fval_1);
+			AngularVelocitySetpointTopic.publish(commandReceiver.fval_1);
 			break;
 		/*----------------------------Telemtry--------------------------*/
 		case SendCalibTelemetry:

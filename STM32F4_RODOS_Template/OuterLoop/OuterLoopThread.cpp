@@ -5,6 +5,14 @@ static CommBuffer<TelemetryCamera> CameraDataBuffer;
 static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Control Thread");
 static TelemetryCamera CameraDataReceiver;
 
+static CommBuffer<float> VelocitySetpointBuffer;
+static Subscriber VelocitySetpointSubsciber(AngularVelocitySetpointTopic, VelocitySetpointBuffer, "Control Thread");
+static TelemetryCamera VelocitySetpointReceiver;
+
+static CommBuffer<float> PositionSetpointBuffer;
+static Subscriber PositionSetpointSubsciber(AngularPositionSetpointTopic, PositionSetpointBuffer, "Control Thread");
+static TelemetryCamera PositionSetpointReceiver;
+
 HAL_GPIO ledorange(GPIO_061);
 
 
@@ -71,10 +79,16 @@ void OuterLoopThread::run()
 
 		/* ---------------------------- Controller ---------------------------- */
 		case Control_Vel:
+			VelocitySetpointBuffer.get(VelocitySetpointReceiver);
+			velocitycontrol.setSetpoint(VelocitySetpointReceiver);
+
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			break;
 
 		case Control_Pos:
+			PositionSetpointBuffer.getOnlyIfNewData(PositionSetpointReceiver);
+			positionControl.setSetpoint(PositionSetpointReceiver);
+
 			publishSpeed(positionControl.update(qekf.getestimit()));
 			break;
 

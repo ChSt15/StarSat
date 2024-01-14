@@ -11,6 +11,7 @@
 #include "../OuterLoop/AngularPositionControl.hpp"
 #include "../OuterLoop/AngularVelocityControl.hpp"
 #include "../InnerLoop/ReactionwheelControl.hpp"
+#include "../InnerLoop/InnerLoopTopics.hpp"
 
 
 class Telecommand

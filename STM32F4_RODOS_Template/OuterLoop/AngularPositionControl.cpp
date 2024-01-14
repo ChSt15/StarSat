@@ -1,5 +1,7 @@
 #include "AngularPositionControl.hpp"
 
+extern Topic<float> AngularPositionSetpointTopic(-1, "AngularPosition Setpoint Topic");
+
 
 void AngularPositionControl::setSetpoint(float angle_set)
 {   

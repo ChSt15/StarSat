@@ -23,4 +23,6 @@ public:
 
 extern AngularVelocityControl velocitycontrol;
 
+extern Topic<float> AngularVelocitySetpointTopic;
+
 #endif

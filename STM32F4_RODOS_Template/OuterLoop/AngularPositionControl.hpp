@@ -29,4 +29,6 @@ public:
 
 extern AngularPositionControl positionControl;
 
+extern Topic<float> AngularPositionSetpointTopic;
+
 #endif

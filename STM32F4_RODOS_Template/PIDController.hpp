@@ -74,7 +74,7 @@ class PID {
         /**
          * @brief Set parameter of controller
         */
-        void setParams(const PIDParams &params);
+        void setParams(const PIDParams& params);
 
 
         /**
