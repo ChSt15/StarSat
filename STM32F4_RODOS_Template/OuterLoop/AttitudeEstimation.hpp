@@ -1,12 +1,12 @@
-#ifndef FLOATSAT_CONTROL_ATTITUDEESTIMATION_HPP_
-#define FLOATSAT_CONTROL_ATTITUDEESTIMATION_HPP_
+#ifndef FLOATSAT_OUTERLOOP_ATTITUDEESTIMATION_HPP_
+#define FLOATSAT_OUTERLOOP_ATTITUDEESTIMATION_HPP_
 
 #include "rodos.h"
 #include "matlib.h"
 #include "math.h"
 
 #include "../timestamp.hpp"
-#include "../hardware/imu.hpp"
+#include "IMU.hpp"
 
 struct Attitude_Data 
 {
@@ -98,6 +98,8 @@ public:
 	// @param imudata -> IMU data struct defined in imu.hpp with timestamp of measurement.
 	// @return Attitude data defined in AttitudeEstimation.hpp with timestamp of estimation.
 	TimestampedData<Attitude_Data>& estimate(const TimestampedData<IMUData>& imudata);
+
+	TimestampedData<Attitude_Data>& getestimit();
 
 private:
 

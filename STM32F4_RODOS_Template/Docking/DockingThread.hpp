@@ -4,9 +4,11 @@
 #include "rodos.h"
 
 #include "ArmControl.hpp"
-#include "StepperMoorThread.hpp"
+#include "StepperMotorThread.hpp"
+#include "../Communication/Camera.hpp"
 
-#include "../Threads/Modes.hpp"
+#include "../Modes.hpp"
+#include "../Config.hpp"
 
 class DockingThread : public Thread
 {
@@ -22,6 +24,8 @@ public:
 private:
 
 	int period;		// [ms]
+
+	CameraData cameraData;
 };
 
 

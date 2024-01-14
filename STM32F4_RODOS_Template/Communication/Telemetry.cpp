@@ -16,6 +16,11 @@ static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
 static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Telemetry Class");
 TimestampedData<float> EncoderDataReceiver;
 
+// Docking topic subscriber setup
+static CommBuffer<DockingTememetry> DockingDataBuffer;
+static Subscriber DockingDataSubsciber(dockingTelemetryTopic, DockingDataBuffer, "Telemetry Class");
+DockingTememetry DockingDataReceiver;
+
 
 // Countinuos telemetry topic
 Topic<TelemetryContinuous> telemetryContinuousTopic(TelemetryContinuousTopicID, "Continuous telemetry topic");
@@ -36,7 +41,7 @@ void Telemetry::send_Continuous()
 	telemetry_continuous.time = SECONDS_NOW();
 
 	// IMU
-	IMUDataBuffer.get(IMUDataReceiver);
+	IMUDataBuffer.getOnlyIfNewData(IMUDataReceiver);
 	telemetry_continuous.wx = IMUDataReceiver.data.angularVelocity.x;
 	telemetry_continuous.wy = IMUDataReceiver.data.angularVelocity.y;
 	telemetry_continuous.wz = IMUDataReceiver.data.angularVelocity.z;
@@ -49,18 +54,19 @@ void Telemetry::send_Continuous()
 	telemetry_continuous.temp = IMUDataReceiver.data.temperature;
 
 	// Attitude
-	AttitudeDataBuffer.get(AttitudeDataReceiver);
+	AttitudeDataBuffer.getOnlyIfNewData(AttitudeDataReceiver);
 	telemetry_continuous.q0 = AttitudeDataReceiver.data.attitude.q0;
 	telemetry_continuous.q1 = AttitudeDataReceiver.data.attitude.q.x;
 	telemetry_continuous.q2 = AttitudeDataReceiver.data.attitude.q.y;
 	telemetry_continuous.q3 = AttitudeDataReceiver.data.attitude.q.z;
 
 	// Encoder
-	EncoderDataBuffer.get(EncoderDataReceiver);
+	EncoderDataBuffer.getOnlyIfNewData(EncoderDataReceiver);
 	telemetry_continuous.speed = EncoderDataReceiver.data;
 
 	// Arm
-	telemetry_continuous.arm_extension = armController.getArmExtention();
+	DockingDataBuffer.getOnlyIfNewData(DockingDataReceiver);
+	telemetry_continuous.arm_extension = DockingDataReceiver.armExtention;
 
 	// Electrical
 	// TODO: not thread safe yet
@@ -117,21 +123,21 @@ void Telemetry::send_ControlParams()
 	telemetry_control.speed_P = params.kp;
 	telemetry_control.speed_I = params.ki;
 	telemetry_control.speed_D = params.kd;
-	telemetry_control.speed_lim = reactionwheelControl.getMaxVoltage();
+	telemetry_control.speed_lim = reactionwheelControl.getLimit();
 
 	// Position control
 	params = positionControl.getParams();
 	telemetry_control.pos_P = params.kp;
 	telemetry_control.pos_I = params.ki;
 	telemetry_control.pos_D = params.kd;
-	telemetry_control.pos_lim = positionControl.getMaxAngularVelocity();
+	telemetry_control.pos_lim = positionControl.getLimit();
 
 	// Velocity control
 	params = velocitycontrol.getParams();
 	telemetry_control.vel_P = params.kp;
 	telemetry_control.vel_I = params.ki;
 	telemetry_control.vel_D = params.kd;
-	telemetry_control.vel_lim = velocitycontrol.getMaxSpeed();
+	telemetry_control.vel_lim = velocitycontrol.getLimit();
 
 	telemetryControlParamsTopic.publish(telemetry_control);
 }

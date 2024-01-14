@@ -21,9 +21,9 @@ float TelemetryCamera::getYawofMockup()
 	return YPR_F(orientation).yaw;
 }
 
-bool TelemetryCamera::validFrame(int& last_frame)
+bool CameraData::validFrame()
 {
-	bool valid = this->MeasurmentCnt == last_frame + 1;
-	last_frame = this->MeasurmentCnt;
+	bool valid = (this->telemetryCamera.MeasurmentCnt == this->last_frame + 1);
+	this->last_frame = this->telemetryCamera.MeasurmentCnt;
 	return valid;
 }

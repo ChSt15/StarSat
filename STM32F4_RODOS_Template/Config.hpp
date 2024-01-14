@@ -1,8 +1,8 @@
-#ifndef FLOATSAT_THREADS_CONFIG_HPP_
-#define FLOATSAT_THREADS_CONFIG_HPP_
+#ifndef FLOATSAT_CONFIG_HPP_
+#define FLOATSAT_CONFIG_HPP_
 
-#include "../hardware/imu.hpp"
-#include "../control/PIDController.hpp"
+#include "OuterLoop/IMU.hpp"
+#include "PIDController.hpp"
 
 /**
  * @todo:   - Implement stepper config settings
@@ -13,21 +13,25 @@
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
-    // Control
-    inline const bool control_thread_enable = true;
-    inline const int  control_thread_period = 20;     // [ms]
+    // Inner Loop
+    inline const bool innerloop_thread_enable = true;
+    inline const int  innerloop_thread_period = 20;     // [ms]
 
-    // Sensor
-    inline const bool sensor_thread_enable = true;
-    inline const int  sensor_thread_period = 20;      // [ms]
+    // Outer Loop
+    inline const bool outerloop_thread_enable = true;
+    inline const int  outerloop_thread_period = 100;      // [ms]
+
+    // Docking Loop
+    inline const bool docking_thread_enable = true;
+    inline const int  docking_thread_period = 250;      // [ms]
 
     // Coms
     inline const bool com_thread_enable = false;
-    inline const int  com_thread_period = 500;        // [ms]
+    inline const int  com_thread_period = 1000;        // [ms]
 
     // Debug
     inline const bool debug_thread_enable = true;
-    inline const int  debug_thread_period = 100;      // [ms]
+    inline const int  debug_thread_period = 250;      // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
     inline const bool electrical_monitoring_thread_enable = true; //DO NOT DISABLE THIS THREAD. IT IS NEEDED TO PROTECT THE BATTERY! ONLY DISABLE IF YOU KNOW WHAT YOU ARE DOING AND REALLY NEED TO!

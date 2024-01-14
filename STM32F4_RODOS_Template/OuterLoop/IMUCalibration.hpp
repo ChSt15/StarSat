@@ -1,11 +1,11 @@
-#ifndef FLOATSAT_CONTROL_CALIBRATIONIMU_HPP_
-#define FLOATSAT_CONTROL_CALIBRATIONIMU_HPP_
+#ifndef FLOATSAT_OUTERLOOP_IMUCALIBRATION_HPP_
+#define FLOATSAT_OUTERLOOP_IMUCALIBRATION_HPP_
 
 #include "rodos.h"
 #include "matlib.h"
 
 #include "../timestamp.hpp"
-#include "../hardware/imu.hpp"
+#include "IMU.hpp"
 
 
 class CalibrationIMU

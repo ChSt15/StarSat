@@ -1,5 +1,5 @@
-#ifndef FLOATSAT_OUTER_OUTERLOOPTHREAD_HPP_
-#define FLOATSAT_OUTER_OUTERLOOPTHREAD_HPP_
+#ifndef FLOATSAT_OUTERLOOP_OUTERLOOPTHREAD_HPP_
+#define FLOATSAT_OUTERLOOP_OUTERLOOPTHREAD_HPP_
 
 #include "rodos.h"
 
@@ -9,9 +9,12 @@
 #include "IMU.hpp"
 #include "IMUCalibration.hpp"
 
-#include "../Threads/Modes.hpp"
+#include "../Modes.hpp"
+#include "../Config.hpp"
 #include "../InnerLoop/InnerLoopTopics.hpp"
 #include "../InnerLoop/InnerLoopThread.hpp"
+#include "../Communication/Camera.hpp"
+
 
 class OuterLoopThread : public Thread
 {

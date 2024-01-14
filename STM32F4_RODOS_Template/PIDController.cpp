@@ -1,11 +1,10 @@
 #include "PIDController.hpp"
 
 
-void PID::config(const PIDParams &params, float limit_out, float limit_in, bool use_BackCalculation, bool use_DerivativofMeasurment)
+void PID::config(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
     this->parameters = params;
-    this->limit_out = limit_out;
-    this->limit_in = limit_in;
+    this->limit = limit;
     this->use_BackCalculation = use_BackCalculation;
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
@@ -14,7 +13,7 @@ float PID::calculate(float measurement, float timestamp)
 {   
     // Save locally to avoid changes during calculations
     PIDParams params = this->getParams();
-    float lim = this->getLimits();
+    float lim = this->getLimit();
     float setp = this->getSetpoint();
 
     // Error
@@ -127,20 +126,15 @@ float PID::getSetpoint()
 }
 
 
-void PID::setOutputLimits(float limit)
+float PID::getLimit()
 {
-    PROTECT_WITH_SEMAPHORE(sem) this->limit = limit;
+    return 0.f;
 }
 
-
-
-float PID::getOutputLimits()
+void PID::setLimit(float limit)
 {
-    float lim;
-    PROTECT_WITH_SEMAPHORE(sem) lim = this->limit;
-    return lim;
-}
 
+}
 
 bool PID::isSettled()
 {

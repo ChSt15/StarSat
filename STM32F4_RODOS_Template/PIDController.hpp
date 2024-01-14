@@ -1,5 +1,5 @@
-#ifndef FLOATSAT_CONTROL_PIDCONTROLLER_HPP_
-#define FLOATSAT_CONTROL_PIDCONTROLLER_HPP_
+#ifndef FLOATSAT_PIDCONTROLLER_HPP_
+#define FLOATSAT_PIDCONTROLLER_HPP_
 
 #include "rodos.h"
 #include "matlib.h"
@@ -40,9 +40,7 @@ class PID {
         float lastTimestamp = 0.f;
 
         /// @brief Limits for control signal
-        float limit_out = 0.f;
-
-        float limit_in = 0.f
+        float limit = 0.f;
 
         /// @brief Indicates if derivation and integration term can be included -> after lastTimestamp is initialized
         bool flagInitialized = false;
@@ -58,7 +56,7 @@ class PID {
        /**
         * @brief Initialize parameters
         */
-       void config(const PIDParams &params, float limit_out, float limit_in, bool use_BackCalculation, bool use_DerivativofMeasurment);
+       void config(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment);
 
 
         /**
@@ -85,19 +83,12 @@ class PID {
         */
         void setSetpoint(float setpoint);
 
+        float getLimit();
+
+        void setLimit(float limit);
+
 
         float getSetpoint();
-
-        /**
-         * @brief Set max. and min. limit of control signal
-        */
-        void setOutputLimits(float limit_out);
-
-        /**
-         * @brief Get max. and min. limit of control signal
-        */
-        float getOutputLimits();
-
 
         bool isSettled();
 };

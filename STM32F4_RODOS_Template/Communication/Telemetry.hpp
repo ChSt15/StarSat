@@ -4,17 +4,23 @@
 #include "rodos.h"
 
 #include "TelemetryList.hpp"
-#include "../hardware/imu.hpp"
-#include "../control/AttitudeEstimation.hpp"
-#include "../control/ReactionwheelControl.hpp"
-#include "../control/AngularPositionControl.hpp"
-#include "../control/AngularVelocityControl.hpp"
-#include "../control/PIDController.hpp"
-#include "../control/ArmController.hpp"
-#include "../hardware/ReactionwheelEncoder.hpp"
-#include "../hardware/ElectricalMonitoring.hpp"
-#include "../Threads/Modes.hpp"
 #include "Telecomand.hpp"
+
+#include "../InnerLoop/ReactionwheelControl.hpp"
+#include "../InnerLoop/ReactionwheelEncoder.hpp"
+#include "../InnerLoop/InnerLoopTopics.hpp"
+
+#include "../OuterLoop/IMU.hpp"
+#include "../OuterLoop/AttitudeEstimation.hpp"
+#include "../OuterLoop/AngularPositionControl.hpp"
+#include "../OuterLoop/AngularVelocityControl.hpp"
+
+#include "../Docking/DockingTopics.hpp"
+
+#include "../Electrical/ElectricalMonitoring.hpp"
+
+#include "../Modes.hpp"
+#include "../PIDController.hpp"
 
 
 class Telemetry

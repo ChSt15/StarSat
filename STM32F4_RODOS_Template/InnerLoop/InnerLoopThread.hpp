@@ -8,7 +8,8 @@
 #include "ReactionwheelEncoder.hpp"
 #include "InnerLoopTopics.hpp"
 
-#include "../Threads/Modes.hpp"
+#include "../Modes.hpp"
+#include "../Config.hpp"
 
 
 class InnerLoopThread : public Thread

@@ -19,8 +19,8 @@ void InnerLoopThread::run()
 	using namespace config;
 	{
 		// Thread 
-		this->period = sensor_thread_period;
-		if (!sensor_thread_enable) suspendCallerUntil(END_OF_TIME);
+		this->period = innerloop_thread_period;
+		if (!innerloop_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		// Encoder
 		encoder.Init();
@@ -29,7 +29,7 @@ void InnerLoopThread::run()
 		hbridge.initialization(pwmFrequency, pwmIncrements);
 
 		// Controller
-		reactionwheelControl.config(paramsSpeedControl, limitSpeedController, maxSpeed, backcalculationSpeedController, derivativofmeasurmentSpeedController);
+		reactionwheelControl.config(paramsSpeedControl, limitSpeedController, backcalculationSpeedController, derivativofmeasurmentSpeedController);
 	}
 
 	while (true)

@@ -1,4 +1,4 @@
-#include "../threads/Config.hpp"
+#include "../Config.hpp"
 
 #include "ElectricalMonitoring.hpp"
 

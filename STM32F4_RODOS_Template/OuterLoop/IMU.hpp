@@ -1,5 +1,5 @@
-#ifndef FLOATSAT_HARDWARE_IMU_HPP_
-#define FLOATSAT_HARDWARE_IMU_HPP_
+#ifndef FLOATSAT_OUTERLOOP_IMU_HPP_
+#define FLOATSAT_OUTERLOOP_IMU_HPP_
 
 #include "rodos.h"
 #include "matlib.h"

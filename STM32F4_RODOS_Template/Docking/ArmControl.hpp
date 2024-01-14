@@ -1,33 +1,34 @@
-#ifndef FLOATSAT_CONTROL_ARMCONTROLLER_HPP_
-#define FLOATSAT_CONTROL_ARMCONTROLLER_HPP_
+#ifndef FLOATSAT_DOCKING_ARMCONTROL_HPP_
+#define FLOATSAT_DOCKING_ARMCONTROL_HPP_
 
 #include "rodos.h"
 #include "matlib.h"
 #include <math.h>
-#include "../Threads/StepperMotor_Thread.hpp"
+#include "StepperMotorThread.hpp"
+#include "StepperMotorTopics.hpp"
+#include "DockingTopics.hpp"
 #include "../Communication/Camera.hpp"
 
 
 class ArmController
 {
 private:
-	 
-	Semaphore sem;
-
-	float w_Mockup = NAN;
-	float distance;
 
 	int max_vel;			// [step/s]
 	int min_vel;			// [step/s]
 	int max_accel;			// [step/s^2]
 	int deccel_margin;		// [steps]
+	float steps2mm;			// [mm/steps]
 
-	float steps2mm;
+	float last_yaw = NAN;
+	float last_time;
+
+	StepperInstruction instructions;
+	StepperStatus status;
+	DockingTememetry telemetry;
 
 	bool moving = false;
 	bool deccel = false;
-
-	int lastframe = -42;
 
 public:
 
@@ -37,15 +38,14 @@ public:
 
 	bool FinalExtension(TelemetryCamera& camera);
 
-	bool Calibrate();
-
 	void CalcAngularVelocity(TelemetryCamera& camera);
 
+	void updateTelemetry(TelemetryCamera& camera);
+
+	// Hard stop, use not recommended. Its there to make sure theres no dual input
 	void Stop();
 
-	float getAngularvelocityMockup();
-
-	float getArmExtention();
+	bool Calibrate();
 };
 
 

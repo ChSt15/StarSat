@@ -16,12 +16,17 @@ struct TelemetryCamera
     float getDistance();
     float getYawtoMockup();
     float getYawofMockup();
+};
 
-    bool validFrame(int& last_frame);
+struct CameraData
+{
+    TelemetryCamera telemetryCamera;
+    unsigned int last_frame = 0;
+
+    bool validFrame();
 };
 
 
 extern Topic<TelemetryCamera> cameraDataTopic;
-
 
 #endif

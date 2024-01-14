@@ -1,5 +1,5 @@
-#ifndef FLOATSAT_CONTROL_REACTIONWHEELCONTROL_HPP_
-#define FLOATSAT_CONTROL_REACTIONWHEELCONTROL_HPP_
+#ifndef FLOATSAT_INNERLOOP_REACTIONWHEELCONTROL_HPP_
+#define FLOATSAT_INNERLOOP_REACTIONWHEELCONTROL_HPP_
 
 #include "rodos.h"
 #include "../PIDController.hpp"
@@ -9,30 +9,6 @@
 class ReactionwheelControl: public PID
 {
 public:
-
-	/**
-	 * @brief Set desired speed for reaction wheel in [rad/s]
-	*/
-	void setDesiredSpeed(float w_set);
-
-
-	/**
-	 * @brief Set max. voltage that can be applied by HBridge [V] -> Limit of PID-controller output
-	*/
-	void setMaxVoltage(float maxVoltage);
-
-
-	/**
-	 * @brief Get max. voltage that can be applied by HBridge [V] -> Limit of PID-controller output
-	*/
-	float getMaxVoltage();
-
-
-	/**
-	 * @brief Get max. speed that can the reactionwheel can reach [rad/s]
-	*/
-	float getMaxDesiredSpeed();
-
 
 	/**
 	 * @brief Determine output of reactionwheel controller / input of HBridge

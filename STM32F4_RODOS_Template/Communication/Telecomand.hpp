@@ -5,12 +5,12 @@
 
 #include "TelecommandList.hpp"
 #include "Telemetry.hpp"
-#include "../Threads/Modes.hpp"
-#include "../hardware/imu.hpp"
-#include "../control/PIDController.hpp"
-#include "../control/ReactionwheelControl.hpp"
-#include "../control/AngularPositionControl.hpp"
-#include "../control/AngularVelocityControl.hpp"
+#include "../Modes.hpp"
+#include "../PIDController.hpp"
+#include "../OuterLoop/IMU.hpp"
+#include "../OuterLoop/AngularPositionControl.hpp"
+#include "../OuterLoop/AngularVelocityControl.hpp"
+#include "../InnerLoop/ReactionwheelControl.hpp"
 
 
 class Telecommand

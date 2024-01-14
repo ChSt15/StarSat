@@ -57,21 +57,21 @@ void Telecommand::processNewCommand()
 			calib.bias.x = commandReceiver.fval_1; 
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D_F();
+			calib.scale = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, 1));
 			imu.setGyroCalib(calib);
 			break;
 		case SetCalibParams_accel:
 			calib.bias.x = commandReceiver.fval_1;
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D_F();
+			calib.scale = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, 1));
 			imu.setGyroCalib(calib);
 			break;
 		case SetCalibParams_mag:
 			calib.bias.x = commandReceiver.fval_1;
 			calib.bias.y = commandReceiver.fval_2;
 			calib.bias.z = commandReceiver.fval_3;
-			calib.scale = Matrix3D_F();
+			calib.scale = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, 1));
 			imu.setGyroCalib(calib);
 			break;
 		/*-------------------------Control Parms------------------------*/
@@ -80,36 +80,48 @@ void Telecommand::processNewCommand()
 			params.ki = commandReceiver.fval_2;
 			params.kd = commandReceiver.fval_3;
 			reactionwheelControl.setParams(params);
+			break;
 		case SetControlLimit_speed:
-			// TODO
+			reactionwheelControl.setLimit(commandReceiver.fval_1);
+			break;
 		case SetControlParams_pos:
 			params.kp = commandReceiver.fval_1;
 			params.ki = commandReceiver.fval_2;
 			params.kd = commandReceiver.fval_3;
 			positionControl.setParams(params);
+			break;
 		case SetControlLimit_pos:
-			positionControl.setMaxAngularVelocity(commandReceiver.fval_1);
+			positionControl.setLimit(commandReceiver.fval_1);
+			break;
 		case SetControlParams_vel:
 			params.kp = commandReceiver.fval_1;
 			params.ki = commandReceiver.fval_2;
 			params.kd = commandReceiver.fval_3;
 			velocitycontrol.setParams(params);
+			break;
 		case SetControlLimit_vel:
-			// TODO
+			velocitycontrol.setLimit(commandReceiver.fval_1);
+			break;
 		/*-----------------------Control Setpoint----------------------*/
 		case SetControlDesired_speed:
-			reactionwheelControl.setDesiredSpeed(commandReceiver.fval_1);
+			reactionwheelControl.setSetpoint(commandReceiver.fval_1);
+			break;
 		case SetControlDesired_pos:
-			positionControl.setDesiredAngle(commandReceiver.fval_1);
+			positionControl.setSetpoint(commandReceiver.fval_1);
+			break;
 		case SetControlDesired_vel:
-			velocitycontrol.setDesiredAngularVelocity(commandReceiver.fval_1);
+			velocitycontrol.setSetpoint(commandReceiver.fval_1);
+			break;
 		/*----------------------------Telemtry--------------------------*/
 		case SendCalibTelemetry:
 			telemetry.send_CalibIMU();
+			break;
 		case SendControlTelemetry:
 			telemetry.send_ControlParams();
+			break;
 		case ToggleExtendedTelemetry:
 			telemetry.enable_ExtendedTelemetry(commandReceiver.fval_1 > 0);
+			break;
 		/*-----------------------------Camera---------------------------*/
 		// TODO
 		default:

@@ -1,5 +1,5 @@
-#ifndef FLOATSAT_THREADS_MODES_HPP_
-#define FLOATSAT_THREADS_MODES_HPP_
+#ifndef FLOATSAT_MODES_HPP_
+#define FLOATSAT_MODES_HPP_
 
 #include "rodos.h"
 

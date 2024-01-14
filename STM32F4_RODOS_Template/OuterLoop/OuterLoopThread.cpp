@@ -1,17 +1,12 @@
 #include "OuterLoopThread.hpp"
 
 
-static CommBuffer<TimestampedData<Attitude_Data>> AttitudeDataBuffer;
-static Subscriber AttitudeDataSubsciber(AttitudeDataTopic, AttitudeDataBuffer, "Control Thread");
-
-static CommBuffer<TimestampedData<float>> EncoderDataBuffer;
-static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Control Thread");
-
 static CommBuffer<TelemetryCamera> CameraDataBuffer;
 static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Control Thread");
-
+static TelemetryCamera CameraDataReceiver;
 
 HAL_GPIO ledorange(GPIO_061);
+
 
 void OuterLoopThread::init()
 {
@@ -25,8 +20,8 @@ void OuterLoopThread::run()
 	using namespace config;
 	{
 		// Thread
-		this->period = control_thread_period;
-		if (!control_thread_enable) suspendCallerUntil(END_OF_TIME);
+		this->period = outerloop_thread_period;
+		if (!outerloop_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		//IMU 
 		imu.initialization();
@@ -41,8 +36,8 @@ void OuterLoopThread::run()
 		qekf.config(sigma_gyro, sigma_accel, sigma_yaw, sigma_gyro_drift);
 
 		// Controllers
-		positionControl.init(paramsPosController, limitPosController, backcalculationPosController, derivativofmeasurmentPosController);
-		velocitycontrol.init(paramsVelController, limitVelController, maxVelocity, backcalculationVelController, derivativofmeasurmentVelController);
+		positionControl.config(paramsPosController, limitPosController, backcalculationPosController, derivativofmeasurmentPosController);
+		velocitycontrol.config(paramsVelController, limitVelController, backcalculationVelController, derivativofmeasurmentVelController);
 
 	}
 
@@ -68,32 +63,36 @@ void OuterLoopThread::run()
 			break;
 
 		case Calib_Mag:
-			velocitycontrol.setDesiredAngularVelocity(M_PI / 16.f);
-			publishSpeed(velocitycontrol.update(qekf.estimate());
+			velocitycontrol.setSetpoint(M_PI / 16.f);
+			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			if (!imucalib.calibrateMag(imu.getDataRaw())) break;
 			setMode(Idle);
 			break;
 
 		/* ---------------------------- Controller ---------------------------- */
 		case Control_Vel:
-			publishSpeed(velocitycontrol.update(qekf.estimate());
+			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			break;
 
 		case Control_Pos:
-			publishSpeed(positionControl.update(qekf.estimate());
+			publishSpeed(positionControl.update(qekf.getestimit()));
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
-			velocitycontrol.setDesiredAngularVelocity(M_PI / 16.f);
-			publishSpeed(velocitycontrol.update(qekf.estimate());
+			velocitycontrol.setSetpoint(M_PI / 16.f);
+			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			break;
 
 		case Mission_Point:
 		case Mission_Dock_initial:
 		case Mission_Dock_final:
-			positionControl.setDesiredAngle(CameraDataReceiver.getYawtoMockup() + AttitudeDataReceiver.data.attitude.toYPR().yaw);
-			publishSpeed(positionControl.update(qekf.estimate());
+
+			// Get new Cameradata if availible
+			CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
+
+			positionControl.setSetpoint(CameraDataReceiver.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+			publishSpeed(positionControl.update(qekf.getestimit()));
 			break;
 
 		default:
@@ -111,4 +110,4 @@ void OuterLoopThread::publishSpeed(float speed)
 	innerLoopThread.resume();
 }
 
-ControlThread controlthread;
+OuterLoopThread outerLoopThread;

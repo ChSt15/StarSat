@@ -1,11 +1,11 @@
-#ifndef FLOATSAT_THREADS_COMMUNICATIONTHREAD_HPP_
-#define FLOATSAT_THREADS_COMMUNICATIONTHREAD_HPP_
+#ifndef FLOATSAT_COMMUNICATION_COMMUNICATIONTHREAD_HPP_
+#define FLOATSAT_COMMUNICATION_COMMUNICATIONTHREAD_HPP_
 
 #include "rodos.h"
 
-#include "../Communication/Telemetry.hpp"
-#include "../Communication/Telecomand.hpp"
-#include "Config.hpp"
+#include "Telemetry.hpp"
+#include "Telecomand.hpp"
+#include "../Config.hpp"
 
 
 class CommunicationThread : public Thread

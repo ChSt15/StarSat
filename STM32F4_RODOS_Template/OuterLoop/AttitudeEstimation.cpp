@@ -2,7 +2,7 @@
 #include "matlib.h"
 
 #include "../timestamp.hpp"
-#include "../hardware/imu.hpp"
+#include "IMU.hpp"
 
 #include "AttitudeEstimation.hpp"
 
@@ -131,6 +131,12 @@ TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& i
 	data.timestamp = last_t;
 	data.data.attitude = Quaternion(q0, q1, q2, q3);
 	data.data.angularVelocity = Vector3D(wx, wy, wz);
+	return data;
+}
+
+
+TimestampedData<Attitude_Data>& QEKF::getestimit()
+{
 	return data;
 }
 

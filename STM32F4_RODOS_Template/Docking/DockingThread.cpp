@@ -1,8 +1,16 @@
 #include "DockingThread.hpp"
 
 
+// Subscriber for cameradata
+static CommBuffer<TelemetryCamera> cameraBuffer;
+static Subscriber cameraSubsciber(cameraDataTopic, cameraBuffer, "Docking Thread");
+
+HAL_GPIO ledblue(GPIO_063);
+
+
 void DockingThread::init()
 {
+	ledblue.init(true, 1, 0);
 }
 
 void DockingThread::run()
@@ -11,8 +19,8 @@ void DockingThread::run()
 	using namespace config;
 	{
 		// Thread
-		this->period = control_thread_period;
-		if (!control_thread_enable) suspendCallerUntil(END_OF_TIME);
+		this->period = docking_thread_period;
+		if (!docking_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		// ArmController
 		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
@@ -20,6 +28,9 @@ void DockingThread::run()
 
 	while (true)
 	{
+		// Get new Cameradata if availible
+		cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera);
+
 		switch (getMode())
 		{
 		case Idle:
@@ -27,7 +38,7 @@ void DockingThread::run()
 			break;
 
 		/* ---------------------------- Calib ---------------------------- */
-		case: Calib_Arm:
+		case Calib_Arm:
 			if (!armController.Calibrate()) break;
 
 			setMode(Idle);
@@ -35,15 +46,15 @@ void DockingThread::run()
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
-			if (!CameraDataReceiver.validFrame(frameCnt)) break;
+			if (!cameraData.validFrame()) break;
 
 			setMode(Mission_Point);
 			break;
 
 		case Mission_Dock_initial:
-			if (!armController.InitialExtension(CameraDataReceiver))
+			if (!armController.InitialExtension(cameraData.telemetryCamera))
 			{
-				armController.CalcAngularVelocity(CameraDataReceiver);
+				if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData.telemetryCamera);
 				break;
 			}
 
@@ -51,7 +62,8 @@ void DockingThread::run()
 			break;
 
 		case Mission_Dock_final:
-			if (!armController.FinalExtension(CameraDataReceiver)) break;
+			if (!cameraData.validFrame()) break;
+			if (!armController.FinalExtension(cameraData.telemetryCamera)) break;
 
 			setMode(Idle);
 			break;
@@ -60,6 +72,7 @@ void DockingThread::run()
 			break;
 		}
 
+		ledblue.setPins(~ledblue.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }
