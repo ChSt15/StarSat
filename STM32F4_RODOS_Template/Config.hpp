@@ -15,23 +15,23 @@ namespace config
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Inner Loop
     inline const bool innerloop_thread_enable = true;
-    inline const int  innerloop_thread_period = 20;     // [ms]
+    inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
     inline const bool outerloop_thread_enable = true;
-    inline const int  outerloop_thread_period = 100;      // [ms]
+    inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
     inline const bool docking_thread_enable = true;
-    inline const int  docking_thread_period = 250;      // [ms]
+    inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
     inline const bool com_thread_enable = false;
-    inline const int  com_thread_period = 1000;        // [ms]
+    inline const int  com_thread_period = 1000;             // [ms]
 
     // Debug
     inline const bool debug_thread_enable = true;
-    inline const int  debug_thread_period = 250;      // [ms]
+    inline const int  debug_thread_period = 1000;           // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
     inline const bool electrical_monitoring_thread_enable = true; //DO NOT DISABLE THIS THREAD. IT IS NEEDED TO PROTECT THE BATTERY! ONLY DISABLE IF YOU KNOW WHAT YOU ARE DOING AND REALLY NEED TO!

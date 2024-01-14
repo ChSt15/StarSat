@@ -22,7 +22,14 @@ class PID {
         Semaphore sem;
 
         /// @brief Controller parameters
-        PIDParams parameters;
+        PIDParams params;
+        PIDParams params_buffer;
+
+        /// @brief Limits for control signal
+        float lim = 0.f;
+        float lim_buffer = 0.f;
+
+        bool new_params = false;
 
         /// @brief Desired value the controller should achieve
         float setpoint = 0.f;
@@ -39,8 +46,6 @@ class PID {
         /// @brief Timestamp of last control signal determination in seconds            
         float lastTimestamp = 0.f;
 
-        /// @brief Limits for control signal
-        float limit = 0.f;
 
         /// @brief Indicates if derivation and integration term can be included -> after lastTimestamp is initialized
         bool flagInitialized = false;

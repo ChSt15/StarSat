@@ -3,21 +3,23 @@
 
 void PID::config(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment)
 {
-    this->parameters = params;
-    this->limit = limit;
+    this->params = params;
+    this->lim = limit;
     this->use_BackCalculation = use_BackCalculation;
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
 
 float PID::calculate(float measurement, float timestamp)
 {   
-    // Save locally to avoid changes during calculations
-    PIDParams params = this->getParams();
-    float lim = this->getLimit();
-    float setp = this->getSetpoint();
+    if (new_params)
+    {
+        params = getParams();
+        lim = getLimit();
+        new_params = false;
+    }
 
     // Error
-    float error = setp - measurement;
+    float error = setpoint - measurement;
 
     // Proportional term
     float propTerm = params.kp * error;
@@ -91,54 +93,54 @@ float PID::calculate(float measurement, float timestamp)
     
 }
 
-
-
 void PID::setParams(const PIDParams &params)
 {
-    PROTECT_WITH_SEMAPHORE(sem) this->parameters = params;
+    PROTECT_WITH_SEMAPHORE(sem)
+    {
+        this->params_buffer = params;
+        new_params = true;
+    }
 }
-
 
 
 PIDParams PID::getParams()
 {
     PIDParams params;
-    PROTECT_WITH_SEMAPHORE(sem) params = this->parameters;
+    PROTECT_WITH_SEMAPHORE(sem) params = this->params_buffer;
     return params;
 }
 
 
 void PID::setSetpoint(float setpoint)
 {
-    PROTECT_WITH_SEMAPHORE(sem)
-    {
-        this->setpoint = setpoint;
-        this->settled = false;
-    }
+
+    this->setpoint = setpoint;
+    this->settled = false;
 }
 
 
 float PID::getSetpoint()
 {
-    float setp;
-    PROTECT_WITH_SEMAPHORE(sem) setp = this->setpoint;
-    return setp;
-}
-
-
-float PID::getLimit()
-{
-    return 0.f;
+    return this->setpoint;
 }
 
 void PID::setLimit(float limit)
 {
+    PROTECT_WITH_SEMAPHORE(sem)
+    {
+        this->lim_buffer = limit;
+        new_params = true;
+    }
+}
 
+float PID::getLimit()
+{
+    float limit;
+    PROTECT_WITH_SEMAPHORE(sem) limit = this->lim_buffer;
+    return limit;
 }
 
 bool PID::isSettled()
 {
-    bool settled;
-    PROTECT_WITH_SEMAPHORE(sem) settled = this->settled;
     return settled;
 }
