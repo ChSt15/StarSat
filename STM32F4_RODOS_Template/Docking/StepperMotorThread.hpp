@@ -21,7 +21,7 @@ public:
                 {
                     status.stepCounter = 0;
                     instructions.period = 0;
-                    status.status_execution = true;
+                    status.status_execution = false;
                     status.status_calib = false;
                 }
 

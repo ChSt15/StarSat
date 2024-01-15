@@ -18,11 +18,11 @@ namespace config
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = false;
+    inline const bool outerloop_thread_enable = true;
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = false;
+    inline const bool docking_thread_enable = true;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
@@ -51,7 +51,7 @@ namespace config
 
     // HBridge
     inline const int pwmFrequency = 2000;       // [Hz]
-    inline const int pwmIncrements = 500;
+    inline const int pwmIncrements = 1000;
 
     // Stepper  
     inline const int microstepping = 16;        // Number of steps to make for a full step
@@ -66,9 +66,9 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float limitSpeedController = 7.2f;                           // [V]
-    inline const PIDParams paramsSpeedControl{ 0.6f, 0.0f, 0.0f };          // P, I, D
-    inline const bool backcalculationSpeedController = true;
+    inline const float limitSpeedController = 12.f;                         // [V]
+    inline const PIDParams paramsSpeedControl{ 1.0f, 0.03f, 0.05f };        // P, I, D
+    inline const bool backcalculationSpeedController = false;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
@@ -84,7 +84,7 @@ namespace config
     // Arm Controller
     inline const int max_vel = 50;			// [step/s]
     inline const int min_vel = 1;			// [step/s]
-    inline const int max_accel = 5;		    // [step/s^2]
+    inline const int max_accel = 5;	   	    // [step/s^2]
     inline const int deccel_margin = 50;    // [step]
 
     // IMU Calibration

@@ -22,7 +22,7 @@ private:
 	int pwmIncrements;
 
 	// @brief Maximum output voltage percentage of HBridge output.
-	float MAX_OUTPUT_PERCENTAGE = 0.5f;
+	float MAX_OUTPUT_PERCENTAGE = 0.6f;
 	
 	/**
 	 * @brief Check if desired percentage of max. voltage exceeds limits and if so, adjust

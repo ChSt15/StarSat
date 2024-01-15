@@ -30,28 +30,33 @@ float PID::calculate(float measurement, float timestamp)
         // Delta t in seconds
         float dt = timestamp - this->lastTimestamp;
      
-
         // Integral term
         float integTerm = 0;
-        if (!use_BackCalculation)
+        if (params.ki == 0.f)
         {
+            if (!use_BackCalculation)
+            {
             this->integError += error * dt;
             integTerm = params.ki * this->integError;
-        }
-        else 
-        {
+            }
+            else 
+            {
             integTerm = this->integError;
+            }
         }
 
         // Derivation term
         float derivTerm = 0;
-        if (use_DerivativofMeasurment)
+        if (params.kd == 0.f)
         {
-            derivTerm = params.kd * (measurement - this->lastMeasurment) / dt;
-        }
-        else
-        {
-            derivTerm = params.kd * (error - this->lastError) / dt;
+            if (use_DerivativofMeasurment)
+            {
+                derivTerm = params.kd * (measurement - this->lastMeasurment) / dt;
+            }
+            else
+            {
+                derivTerm = params.kd * (error - this->lastError) / dt;
+            }
         }
 
 
