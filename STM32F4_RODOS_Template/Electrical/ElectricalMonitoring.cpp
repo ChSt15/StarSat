@@ -10,7 +10,12 @@ ElectricalMonitoring::BeeperThread::BeeperThread(RODOS::PWM_IDX beeper) :
 void ElectricalMonitoring::BeeperThread::beepForTime_ns(int64_t time_ns) {
 
     beepSem_.enter();
-    beepTime_ns = time_ns + NOW();
+    beepTime_ns = time_ns;
+    beeper.write(50);
+    //this->suspendCallerUntil(NOW() + beepTime_ns);
+    if (!isBeeping_)
+        this->resume();
+
     beepSem_.leave();
 
 }
@@ -25,20 +30,17 @@ void ElectricalMonitoring::BeeperThread::run()
 {
 
     while(1)
-    {
-        int64_t val;
+    {   
+
+        suspendCallerUntil(END_OF_TIME);
+
         beepSem_.enter();
-        val = beepTime_ns;
+        auto val = beepTime_ns;
         beepSem_.leave();
 
-        if (val > NOW()) {
-            beeper.write(50);
-        } else {
-            beeper.write(0);
-        }
+        suspendCallerUntil(NOW() + beepTime_ns);
 
-        suspendCallerUntil(NOW() + 100*MILLISECONDS);
-        //suspendCallerUntil(NOW() + beepTime_ns);
+        beeper.write(0);
     
     }
 
@@ -103,8 +105,9 @@ void ElectricalMonitoring::update()
             }
 
             //Check if battery is low
-            if (voltageBattery_ < batteryWarningVoltage) {
-                beeperThread_.beepForTime_ns(100*MILLISECONDS);
+            if (voltageBattery_ < batteryWarningVoltage && voltageBattery_ > 6.0f) {
+                beeperThread_.beepForTime_ns(50*MILLISECONDS);
+                //beeperThread_.resume();
             }
 
             //Check if we can turn on the RPI
@@ -179,6 +182,8 @@ void ElectricalMonitoring::update()
             chipPower_.setPins(0); //Power off
             chipResetStartTime_ns_ = NOW();
             chipResetState_ = ChipResetState_t::CHIP_WAIT;
+
+            beeperThread_.beepForTime_ns(200*MILLISECONDS);
         }
 
         break;
@@ -232,7 +237,7 @@ void ElectricalMonitoring::readValues(bool setValue) {
     rpiRunning_ = (currentRPI_ > RPI_RUNNING_CURRENT);
 
     //Print everything
-    PRINTF("VBAT: %f V, 5V: %f V, Stepper: %f A, Aux: %f A, RPI: %f A, RW: %f A, PowerGood: %d, RPI Running: %d\n", voltageBattery_, voltage5VBus_, currentStepper_, currentAux_, currentRPI_, currentReactionWheel_, powerGood_, rpiRunning_);
+    //PRINTF("VBAT: %f V, 5V: %f V, Stepper: %f A, Aux: %f A, RPI: %f A, RW: %f A, PowerGood: %d, RPI Running: %d\n", voltageBattery_, voltage5VBus_, currentStepper_, currentAux_, currentRPI_, currentReactionWheel_, powerGood_, rpiRunning_);
 
 }
 
