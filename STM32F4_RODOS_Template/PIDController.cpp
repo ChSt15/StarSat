@@ -1,11 +1,11 @@
 #include "PIDController.hpp"
 
 
-void PID::config(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment)
+void PID::config(const PIDParams &params, float limit, bool use_Antiwindup, bool use_DerivativofMeasurment)
 {
     this->params = params;
     this->lim = limit;
-    this->use_BackCalculation = use_BackCalculation;
+    this->use_Antiwindup = use_Antiwindup;
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
 
@@ -34,15 +34,8 @@ float PID::calculate(float measurement, float timestamp)
         float integTerm = 0;
         if (params.ki == 0.f)
         {
-            if (!use_BackCalculation)
-            {
-            this->integError += error * dt;
+            if (!use_Antiwindup || (use_Antiwindup && !saturated)) this->integError += error * dt;
             integTerm = params.ki * this->integError;
-            }
-            else 
-            {
-            integTerm = this->integError;
-            }
         }
 
         // Derivation term
@@ -74,15 +67,18 @@ float PID::calculate(float measurement, float timestamp)
 
         // Limit control signal
         float controlSignalSaturated = controlSignal;
-        if(controlSignalSaturated > lim) controlSignalSaturated = lim;
-        else if (controlSignalSaturated < -lim) controlSignalSaturated = -lim;
-        
-        // Backcalculation
-        if (use_BackCalculation)
+        if (controlSignalSaturated > lim)
         {
-            this->integError += (params.ki * error + controlSignalSaturated - controlSignal) * dt;
+            controlSignalSaturated = lim;
+            saturated = true;
         }
-
+        else if (controlSignalSaturated < -lim)
+        {
+            controlSignalSaturated = -lim;
+            saturated = true;
+        }
+        else saturated = false;
+        
         return controlSignalSaturated;
     } 
     else 
