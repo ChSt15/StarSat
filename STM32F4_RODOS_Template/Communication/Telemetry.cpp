@@ -17,9 +17,9 @@ static Subscriber EncoderDataSubsciber(EncoderDataTopic, EncoderDataBuffer, "Tel
 TimestampedData<float> EncoderDataReceiver;
 
 // Docking topic subscriber setup
-static CommBuffer<DockingTememetry> DockingDataBuffer;
-static Subscriber DockingDataSubsciber(dockingTelemetryTopic, DockingDataBuffer, "Telemetry Class");
-DockingTememetry DockingDataReceiver;
+//static CommBuffer<DockingTememetry> DockingDataBuffer;
+//static Subscriber DockingDataSubsciber(dockingTelemetryTopic, DockingDataBuffer, "Telemetry Class");
+//DockingTememetry DockingDataReceiver;
 
 
 // Countinuos telemetry topic
@@ -65,8 +65,8 @@ void Telemetry::send_Continuous()
 	telemetry_continuous.speed = EncoderDataReceiver.data;
 
 	// Arm
-	DockingDataBuffer.getOnlyIfNewData(DockingDataReceiver);
-	telemetry_continuous.arm_extension = DockingDataReceiver.armExtention;
+	//DockingDataBuffer.getOnlyIfNewData(DockingDataReceiver);
+	//telemetry_continuous.arm_extension = DockingDataReceiver.armExtention;
 
 	// Electrical
 	// TODO: not thread safe yet

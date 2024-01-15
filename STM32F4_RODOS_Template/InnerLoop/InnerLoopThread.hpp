@@ -18,7 +18,7 @@ class InnerLoopThread : public Thread
 public:
 
 	// Set name, prio and stack size
-	InnerLoopThread() : Thread("Inner Loop Thread", 120, 20000) {}
+	InnerLoopThread() : Thread("Inner Loop Thread", 120, 1000) {}
 
 	void init();
 	void run();

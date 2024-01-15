@@ -77,6 +77,9 @@ void StepperMotorThread::run()
             // Wait until woken up
             suspendCallerUntil(END_OF_TIME);
         }
+
+        // Wait until woken up
+        suspendCallerUntil(END_OF_TIME);
     }
 }
 

@@ -159,7 +159,8 @@ void ArmController::updateTelemetry(TelemetryCamera& camera)
 
 void ArmController::Stop()
 {
-	steppermotorthread.suspendCallerUntil(END_OF_TIME);
+	instructions.period = 0;
+	stepperInstructionsTopic.publish(instructions);
 	moving = false;
 }
 

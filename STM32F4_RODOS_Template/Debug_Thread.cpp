@@ -47,6 +47,7 @@ void DebugThread::run()
 		{
 			if (!visual)
 			{
+				PRINTF("Mode: %d\n", getMode());
 				PRINTF("Reactionwheel Speed: %f\n", EncoderDataReceiver.data);
 
 				PRINTF("Gyro: %f, %f, %f\n", IMUDataReceiver.data.angularVelocity.x, IMUDataReceiver.data.angularVelocity.y, IMUDataReceiver.data.angularVelocity.z);

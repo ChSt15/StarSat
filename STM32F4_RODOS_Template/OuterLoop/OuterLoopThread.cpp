@@ -7,11 +7,11 @@ static TelemetryCamera CameraDataReceiver;
 
 static CommBuffer<float> VelocitySetpointBuffer;
 static Subscriber VelocitySetpointSubsciber(AngularVelocitySetpointTopic, VelocitySetpointBuffer, "Control Thread");
-static TelemetryCamera VelocitySetpointReceiver;
+static float VelocitySetpointReceiver;
 
 static CommBuffer<float> PositionSetpointBuffer;
 static Subscriber PositionSetpointSubsciber(AngularPositionSetpointTopic, PositionSetpointBuffer, "Control Thread");
-static TelemetryCamera PositionSetpointReceiver;
+static float PositionSetpointReceiver;
 
 HAL_GPIO ledorange(GPIO_061);
 

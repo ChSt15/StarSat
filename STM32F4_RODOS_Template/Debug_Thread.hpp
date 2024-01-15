@@ -9,6 +9,7 @@
 #include "OuterLoop/IMU.hpp"
 #include "timestamp.hpp"
 #include "Config.hpp"
+#include "Modes.hpp"
 
 
 // WARNING: just a temporary solution, will be deleted once TTC is implemented

@@ -14,7 +14,7 @@ class CommunicationThread : public Thread
 public:
 
 	// Set name, prio and stack size
-	CommunicationThread() : Thread("Communication Thread", 100, 2000) {}
+	CommunicationThread() : Thread("Communication Thread", 100, 1000) {}
 
 	void init();
 	void run();
