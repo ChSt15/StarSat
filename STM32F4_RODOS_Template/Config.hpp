@@ -88,8 +88,8 @@ namespace config
     inline const int deccel_margin = 50;    // [step]
 
     // IMU Calibration
-    inline const int gyro_maxsamples = 200;
-    inline const int accel_maxsamples = 200;
+    inline const int gyro_maxsamples = 40;
+    inline const int accel_maxsamples = 40;
     inline const int mag_maxsamples = 500;
 
     // QEKF

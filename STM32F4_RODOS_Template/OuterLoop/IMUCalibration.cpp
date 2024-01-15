@@ -37,7 +37,7 @@ bool CalibrationIMU::calibrateAccel(TimestampedData<IMUData>& imurawdata)
 {
 	if (accel_samples <= accel_maxsamples)
 	{
-		accel_sum = accel_sum + imurawdata.data.acceleration;
+		accel_sum = accel_sum + imurawdata.data.acceleration + Vector3D_F(0, 0, 1);
 		accel_samples++;
 		return false;
 	}
