@@ -55,6 +55,8 @@ private:
 
 		int64_t beepTime_ns;
 
+        bool isBeeping_ = false;
+
 	public:
 
 		BeeperThread(RODOS::PWM_IDX beeper);
