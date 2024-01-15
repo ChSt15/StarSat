@@ -4,6 +4,7 @@
 #include "rodos.h"
 #include "matlib.h"
 #include "../timestamp.hpp"
+#include "../i2c_init.hpp"
 
 struct IMUData 
 {

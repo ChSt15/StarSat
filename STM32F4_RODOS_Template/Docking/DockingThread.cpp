@@ -73,7 +73,6 @@ void DockingThread::run()
 		}
 
 		ledblue.setPins(~ledblue.readPins());
-		PRINTF("hello world\n");
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }

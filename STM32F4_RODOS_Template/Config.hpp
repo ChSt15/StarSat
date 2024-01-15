@@ -18,11 +18,11 @@ namespace config
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = true;
+    inline const bool outerloop_thread_enable = false;
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = true;
+    inline const bool docking_thread_enable = false;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
@@ -66,8 +66,8 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float limitSpeedController = 6.f;                           // [V]
-    inline const PIDParams paramsSpeedControl{ 0.75f, 0.2f, 0.0f };          // P, I, D 0.01 before
+    inline const float limitSpeedController = 7.2f;                           // [V]
+    inline const PIDParams paramsSpeedControl{ 0.6f, 0.0f, 0.0f };          // P, I, D
     inline const bool backcalculationSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller

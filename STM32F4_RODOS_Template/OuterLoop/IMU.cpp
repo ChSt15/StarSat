@@ -118,7 +118,7 @@ void IMU::Check_WHOAMI()
 
 void IMU::initialization()
 {
-	i2c.init(400000);
+	init_i2c();
 	gyroInit();
 	magInit();
 	accelInit();
