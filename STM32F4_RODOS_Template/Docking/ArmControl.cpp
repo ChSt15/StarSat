@@ -69,7 +69,6 @@ bool ArmController::InitialExtension(TelemetryCamera& camera)
 		if (period > 1.f/max_vel * 1000 * 1000)
 		{
 			float t = (1.f / (1.f / period * 1000.f * 1000.f + max_accel * dt));
-			PRINTF("%f\n",t);
 			(t > 1.f / max_vel) ? instructions.period = (int) (t * 1000.f * 1000.f) : instructions.period = (int) (1.f / max_vel * 1000.f * 1000.f);
 			stepperInstructionsTopic.publish(instructions);
 			updateTelemetry(camera);
