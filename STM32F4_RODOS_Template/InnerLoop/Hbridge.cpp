@@ -26,7 +26,7 @@ void HBridge::setVoltage(float voltagePercentage)
     float voltagePercentageDesired = checkVoltagePercentage(voltagePercentage);
     
     // Set increments accordingly
-    uint16_t increments = pwmIncrements * voltagePercentageDesired;
+    int increments = pwmIncrements * voltagePercentageDesired;
     if (increments >= 0) {
         pwm1.write(increments);
         pwm2.write(0);

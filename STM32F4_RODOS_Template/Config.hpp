@@ -14,7 +14,7 @@ namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Inner Loop
-    inline const bool innerloop_thread_enable = true;
+    inline const bool innerloop_thread_enable = false;
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
