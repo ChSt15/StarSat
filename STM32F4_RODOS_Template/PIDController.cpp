@@ -32,7 +32,7 @@ float PID::calculate(float measurement, float timestamp)
      
         // Integral term
         float integTerm = 0;
-        if (params.ki == 0.f)
+        if (params.ki != 0.f)
         {
             if (!use_Antiwindup || (use_Antiwindup && !saturated)) this->integError += error * dt;
             integTerm = params.ki * this->integError;
@@ -40,7 +40,7 @@ float PID::calculate(float measurement, float timestamp)
 
         // Derivation term
         float derivTerm = 0;
-        if (params.kd == 0.f)
+        if (params.kd != 0.f)
         {
             if (use_DerivativofMeasurment)
             {
