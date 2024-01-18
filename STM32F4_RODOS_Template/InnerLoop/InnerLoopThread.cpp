@@ -29,7 +29,7 @@ void InnerLoopThread::run()
 		hbridge.initialization(pwmFrequency, pwmIncrements);
 
 		// Controller
-		reactionwheelControl.config(paramsSpeedControl, limitSpeedController, backcalculationSpeedController, derivativofmeasurmentSpeedController);
+		reactionwheelControl.config(paramsSpeedControl, limitSpeedController, antiwindupSpeedController, derivativofmeasurmentSpeedController);
 	}
 
 

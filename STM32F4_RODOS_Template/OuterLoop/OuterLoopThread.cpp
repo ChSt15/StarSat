@@ -44,8 +44,8 @@ void OuterLoopThread::run()
 		qekf.config(sigma_gyro, sigma_accel, sigma_yaw, sigma_gyro_drift);
 
 		// Controllers
-		positionControl.config(paramsPosController, limitPosController, backcalculationPosController, derivativofmeasurmentPosController);
-		velocitycontrol.config(paramsVelController, limitVelController, backcalculationVelController, derivativofmeasurmentVelController);
+		positionControl.config(paramsPosController, limitPosController, antiwindupPosController, derivativofmeasurmentPosController);
+		velocitycontrol.config(paramsVelController, limitVelController, antiwindupVelController, derivativofmeasurmentVelController);
 
 	}
 
