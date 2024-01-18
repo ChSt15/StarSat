@@ -57,6 +57,8 @@ void QEKF::config(Vector3D_F sigma_gyro, Vector3D_F sigma_accel, float sigma_yaw
 	R.r[1][1] = sigma_accel.y * sigma_accel.y;
 	R.r[2][2] = sigma_accel.z * sigma_accel.z;
 	R.r[3][3] = sigma_yaw * sigma_yaw;
+
+	is_initialized = false;
 }
 
 void QEKF::init(const TimestampedData<IMUData>& imudata)
@@ -140,7 +142,10 @@ TimestampedData<Attitude_Data>& QEKF::getestimit()
 	return data;
 }
 
-
+void QEKF::reset()
+{
+	is_initialized = false;
+}
 
 void QEKF::propagate(const Vector3D_F& w, const float& t)
 {

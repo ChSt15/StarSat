@@ -41,7 +41,7 @@ void DebugThread::run()
 		AttitudeDataBuffer.get(AttitudeDataReceiver);
 		EncoderDataBuffer.get(EncoderDataReceiver);
 
-		//PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
+		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
 
 		if (!calib)
 		{

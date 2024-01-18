@@ -71,14 +71,16 @@ bool CalibrationIMU::calibrateMag(TimestampedData<IMUData>& imurawdata)
 	else
 	{
 		IMUCalib mag_calib;
-		mag_calib.bias.x = mag_maxx - mag_minx;
-		mag_calib.bias.y = mag_maxy - mag_miny;
+		mag_calib.bias.x = (mag_maxx + mag_minx)/2.f;
+		mag_calib.bias.y = (mag_maxy + mag_miny)/2.f;
 		mag_calib.bias.z = 0.0f;
 		mag_calib.scale = Matrix3D_F();
 		mag_calib.scale.r[0][0] = 1.0;
 		mag_calib.scale.r[1][1] = 1.0;
 		mag_calib.scale.r[2][2] = 1.0;
 		imu.setMagCalib(mag_calib);
+
+		//PRINTF("x = %f,y = %f\n", mag_calib.bias.x, mag_calib.bias.y);
 
 		mag_minx = mag_miny =  42000.0f;
 		mag_maxx = mag_maxy = -42000.0f;

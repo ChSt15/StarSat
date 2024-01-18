@@ -35,7 +35,7 @@ void StepperMotorThread::run()
             // If not, then break inner while loop and indicate status as ready
             if (0 < instructions.stepTarget && instructions.stepTarget < max_steps)
             {
-                if (instructions.stepTarget > status.stepCounter)       // Positive direction
+                if (instructions.stepTarget > status.stepCounter) 
                 {
                     DirectionPin.setPins(1);
 
@@ -49,7 +49,7 @@ void StepperMotorThread::run()
                     // Update current position
                     status.stepCounter++;
                 }
-                else                                                    // Negative direction
+                else
                 {
                     DirectionPin.setPins(0);
 
@@ -76,7 +76,8 @@ void StepperMotorThread::run()
             // Update status after execution of all commaned steps
             status.status_execution = true;
 
-            // Wait until woken up
+            // NOTE:5 sec are temporary
+            // Wait until woken up 
             suspendCallerUntil(NOW() + 5 * SECONDS);
     }
 }
@@ -93,7 +94,7 @@ bool StepperMotorThread::calibrate()
             StepPin.setPins(0);
             suspendCallerUntil(NOW() + 100 * MICROSECONDS);
             StepPin.setPins(1);
-            suspendCallerUntil(NOW() + 500 * MICROSECONDS);
+            suspendCallerUntil(NOW() + 100 * MILLISECONDS);
         } 
         else status.status_calib = true;            // Pin is high -> calibration completed
     }

@@ -14,15 +14,15 @@ namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Inner Loop
-    inline const bool innerloop_thread_enable = true;
+    inline const bool innerloop_thread_enable = false;      // keep in mind it gets woke up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = true;
-    inline const int  outerloop_thread_period = 200;        // [ms]
+    inline const bool outerloop_thread_enable = false;
+    inline const int  outerloop_thread_period = 100;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = true;
+    inline const bool docking_thread_enable = false;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
@@ -54,9 +54,9 @@ namespace config
     inline const int pwmIncrements = 1000;
 
     // Stepper  
-    inline const int microstepping = 16;        // Number of steps to make for a full step
+    inline const int microstepping = 2;         // Number of steps to make for a full step
     inline const int stepsPerRevolution = 200;  // Number of steps for a full revolution of the motor shaft
-    inline const float steps2mm = 1.f;          // Convertion from steps to mm Arm extention PLEASE CHANGE THIS TO THE CORRECT VALUE!
+    inline const float steps2mm = 0.015625;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
     inline const bool invertStepper = false;    // Invert stepper direction
     inline const bool enableStepper = true;     // Disable stepper (Enable pin i set to keeped high to disable driver)
 
@@ -72,25 +72,25 @@ namespace config
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsPosController{ 1.0f, 1.0f, 1.0f };         // P, I, D
+    inline const PIDParams paramsPosController{ 1.0f, 0.0f, 0.0f };         // P, I, D
     inline const bool backcalculationPosController = false;
     inline const bool derivativofmeasurmentPosController = false;
     // Velocity Controller  
     inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsVelController{ 1.0f, 1.0f, 1.0f };         // P, I, D
+    inline const PIDParams paramsVelController{ 1.0f, 0.0f, 0.0f };         // P, I, D
     inline const bool backcalculationVelController = false;
     inline const bool derivativofmeasurmentVelController = false;
 
     // Arm Controller
-    inline const int max_vel = 50;			// [step/s]
-    inline const int min_vel = 1;			// [step/s]
-    inline const int max_accel = 5;	   	    // [step/s^2]
-    inline const int deccel_margin = 50;    // [step]
+    inline const int max_vel = 100;			// [step/s]
+    inline const int min_vel = 10;			// [step/s]
+    inline const int max_accel = 20;	   	// [step/s^2]
+    inline const int deccel_margin = 10;    // [step]
 
     // IMU Calibration
     inline const int gyro_maxsamples = 40;
     inline const int accel_maxsamples = 40;
-    inline const int mag_maxsamples = 500;
+    inline const int mag_maxsamples = 300;
 
     // QEKF
     inline const Vector3D_F sigma_gyro = Vector3D_F(0.0027728, 0.0023483, 0.0018954);      // [rad/s]

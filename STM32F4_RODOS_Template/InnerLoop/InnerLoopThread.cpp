@@ -32,6 +32,10 @@ void InnerLoopThread::run()
 		reactionwheelControl.config(paramsSpeedControl, limitSpeedController, backcalculationSpeedController, derivativofmeasurmentSpeedController);
 	}
 
+
+	setMode(Control_Speed);
+	reactionwheelControl.setSetpoint(100.f);
+
 	while (true)
 	{
 		// Update setPoint if changed
