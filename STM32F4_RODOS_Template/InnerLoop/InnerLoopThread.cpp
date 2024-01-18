@@ -33,11 +33,13 @@ void InnerLoopThread::run()
 	}
 
 
-	setMode(Control_Speed);
-	reactionwheelControl.setSetpoint(100.f);
+	//setMode(Control_Speed);
+	//reactionwheelControl.setSetpoint(0.f);
 
 	while (true)
 	{
+		if (SECONDS_NOW() > 10.f) reactionwheelControl.setSetpoint(100.f);
+		
 		// Update setPoint if changed
 		if (setPointBuffer.getOnlyIfNewData(setPointReceiver)) reactionwheelControl.setSetpoint(setPointReceiver);
 

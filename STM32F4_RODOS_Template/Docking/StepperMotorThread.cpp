@@ -16,7 +16,8 @@ void StepperMotorThread::run()
 {
     DirectionPin.init(true, 1, 1);
     StepPin.init(true, 1, 0);
-    CalibPin.init(false, 0, 0);
+    CalibPin.init(false, 0, 1);
+    CalibPin.config(GPIO_CFG_PULLUP_ENABLE, 1);
     EnablePin.init(true, 1, 0);
 
     while(true)
@@ -37,7 +38,7 @@ void StepperMotorThread::run()
             {
                 if (instructions.stepTarget > status.stepCounter) 
                 {
-                    DirectionPin.setPins(1);
+                    DirectionPin.setPins(0);
 
                     // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
                     StepPin.setPins(0);
@@ -51,7 +52,7 @@ void StepperMotorThread::run()
                 }
                 else
                 {
-                    DirectionPin.setPins(0);
+                    DirectionPin.setPins(1);
 
                     // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
                     StepPin.setPins(0);
@@ -84,13 +85,14 @@ void StepperMotorThread::run()
 
 bool StepperMotorThread::calibrate()
 {
+
     status.status_calib = false;
 
     while(!status.status_calib)
     {
-        if(CalibPin.readPins() == 0)                // Check if Pin is low -> then execute step backwards
+        if(CalibPin.readPins() == 1)                // Check if Pin is low -> then execute step backwards
         {
-            DirectionPin.setPins(0);
+            DirectionPin.setPins(1);
             StepPin.setPins(0);
             suspendCallerUntil(NOW() + 100 * MICROSECONDS);
             StepPin.setPins(1);
@@ -100,7 +102,7 @@ bool StepperMotorThread::calibrate()
     }
 
     StepPin.setPins(0);
-    DirectionPin.setPins(1);
+    DirectionPin.setPins(0);
     status.stepCounter = 0;
 
     return status.status_calib;

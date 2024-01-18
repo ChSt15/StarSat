@@ -49,8 +49,6 @@ void OuterLoopThread::run()
 
 	}
 
-	setMode(Calib_Mag);
-
 	while (true)
 	{
 		// IMU

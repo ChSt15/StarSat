@@ -19,10 +19,10 @@ namespace config
 
     // Outer Loop
     inline const bool outerloop_thread_enable = false;
-    inline const int  outerloop_thread_period = 100;        // [ms]
+    inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = false;
+    inline const bool docking_thread_enable = true;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
@@ -40,13 +40,13 @@ namespace config
     /* ---------------------------------------- Hardware ---------------------------------------  */
     // IMU
     inline const IMUCalib gyroCalib{
-        Vector3D_F(0.011274, 0.018649, -0.021776),                              // Offset [rad/s]
+        Vector3D_F(-0.00979, 0.01382, 0.03997),                                 // Offset [rad/s]
         Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1))};  
     inline const IMUCalib accelCalib{
-        Vector3D_F(-0.025037, -0.0051067, -0.0089848),                          // Offset [g]
+        Vector3D_F(-0.00616, -0.03305, -0.03945),                               // Offset [g]
         Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1)) };  
     inline const IMUCalib magCalib{
-        Vector3D_F(-0.025, 0.2625, -0.0495),                                    // Offset [gauss]
+        Vector3D_F(0.20510, 0.46420, 0.0),                                    // Offset [gauss]
         Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1)) };
 
     // HBridge
@@ -66,18 +66,18 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float limitSpeedController = 12.f;                         // [V]
-    inline const PIDParams paramsSpeedControl{ 1.0f, 0.03f, 0.05f };        // P, I, D
-    inline const bool antiwindupSpeedController = false;
+    inline const float limitSpeedController = 6.f;                         // [V]
+    inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };        // P, I, D
+    inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsPosController{ 1.0f, 0.0f, 0.0f };         // P, I, D
+    inline const PIDParams paramsPosController{ 0.1f, 0.05f, 0.0f };         // P, I, D
     inline const bool antiwindupPosController = false;
     inline const bool derivativofmeasurmentPosController = false;
     // Velocity Controller  
     inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsVelController{ 1.0f, 0.0f, 0.0f };         // P, I, D
+    inline const PIDParams paramsVelController{ 0.2f, 0.05f, 0.05f };         // P, I, D
     inline const bool antiwindupVelController = false;
     inline const bool derivativofmeasurmentVelController = false;
 
@@ -90,7 +90,7 @@ namespace config
     // IMU Calibration
     inline const int gyro_maxsamples = 40;
     inline const int accel_maxsamples = 40;
-    inline const int mag_maxsamples = 300;
+    inline const int mag_maxsamples = 200;
 
     // QEKF
     inline const Vector3D_F sigma_gyro = Vector3D_F(0.0027728, 0.0023483, 0.0018954);      // [rad/s]

@@ -26,8 +26,6 @@ void DockingThread::run()
 		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
 	}
 
-	setMode(Mission_Dock_initial);
-
 	while (true)
 	{
 		// Get new Cameradata if availible
