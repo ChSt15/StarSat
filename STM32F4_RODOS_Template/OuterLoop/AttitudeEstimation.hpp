@@ -101,7 +101,6 @@ public:
 
 	TimestampedData<Attitude_Data>& getestimit();
 
-	
 	void reset();
 
 private:
