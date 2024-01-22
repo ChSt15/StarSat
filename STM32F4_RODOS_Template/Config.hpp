@@ -30,7 +30,7 @@ namespace config
     inline const int  com_thread_period = 1000;             // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = false;
+    inline const bool debug_thread_enable = true;
     inline const int  debug_thread_period = 1000;           // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
@@ -71,15 +71,15 @@ namespace config
     inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
-    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsPosController{ 0.1f, 0.05f, 0.0f };         // P, I, D
+    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;  // [rad/s]
+    inline const PIDParams paramsPosController{ -20.0f, -20.0f, 0.0f };         // P, I, D
     inline const bool antiwindupPosController = false;
     inline const bool derivativofmeasurmentPosController = false;
     // Velocity Controller  
-    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2;  // [rad/s]
+    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;  // [rad/s]
     //inline const float limitVelController = 1000; // [rad/s]
-    inline const PIDParams paramsVelController{ -10.0f, -40.0f, 0.0f };         // P, I, D
-    inline const bool antiwindupVelController = false;
+    inline const PIDParams paramsVelController{ -5.0f, -20.0f, 0.0f };         // P, I, D
+    inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;
 
     // Arm Controller

@@ -49,9 +49,11 @@ void OuterLoopThread::run()
 
 	}
 
-	setMode(Control_Vel);
-	float temp = M_PI / 1.0;
-	AngularVelocitySetpointTopic.publish(temp);
+	setMode(Control_Pos);
+	float temp = M_PI;
+	//AngularVelocitySetpointTopic.publish(temp);
+	AngularPositionSetpointTopic.publish(temp);
+
 
 	suspendCallerUntil(NOW() + 5 * SECONDS);
 	float output = 0.0;
@@ -94,11 +96,11 @@ void OuterLoopThread::run()
 
 			//PRINTF("%f\n", VelocitySetpointReceiver);
 
-			output = velocitycontrol.update(qekf.getestimit());
-			publishSpeed(output);
-			//publishSpeed(velocitycontrol.update(qekf.getestimit()));
+			//output = velocitycontrol.update(qekf.getestimit());
+			//publishSpeed(output);
+			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 
-			PRINTF("Output Velocity controller: %f\n", output);
+			//PRINTF("Output Velocity controller: %f\n", output);
 			//PRINTF("Measured Angular Velocity: %f\n", qekf.getestimit().data.angularVelocity.z);
 			break;
 
@@ -106,7 +108,10 @@ void OuterLoopThread::run()
 			PositionSetpointBuffer.getOnlyIfNewData(PositionSetpointReceiver);
 			positionControl.setSetpoint(PositionSetpointReceiver);
 
-			publishSpeed(positionControl.update(qekf.getestimit()));
+			output = positionControl.update(qekf.getestimit());
+			publishSpeed(output);
+
+			PRINTF("%f, %f\n\n", PositionSetpointReceiver, output);
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
