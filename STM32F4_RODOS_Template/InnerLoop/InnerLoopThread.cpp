@@ -38,11 +38,11 @@ void InnerLoopThread::run()
 
 	while (true)
 	{
-		if (SECONDS_NOW() > 10.f) reactionwheelControl.setSetpoint(100.f);
+		//if (SECONDS_NOW() > 10.f) reactionwheelControl.setSetpoint(100.f);
 		
 		// Update setPoint if changed
 		if (setPointBuffer.getOnlyIfNewData(setPointReceiver)) reactionwheelControl.setSetpoint(setPointReceiver);
-
+		
 		// Encoder measurment
 		TimestampedData<float> encoder_speed = encoder.getSpeed();
 

@@ -49,6 +49,13 @@ void OuterLoopThread::run()
 
 	}
 
+	setMode(Control_Vel);
+	float temp = M_PI / 1.0;
+	AngularVelocitySetpointTopic.publish(temp);
+
+	suspendCallerUntil(NOW() + 5 * SECONDS);
+	float output = 0.0;
+
 	while (true)
 	{
 		// IMU
@@ -82,10 +89,17 @@ void OuterLoopThread::run()
 
 		/* ---------------------------- Controller ---------------------------- */
 		case Control_Vel:
-			VelocitySetpointBuffer.get(VelocitySetpointReceiver);
+			VelocitySetpointBuffer.getOnlyIfNewData(VelocitySetpointReceiver);
 			velocitycontrol.setSetpoint(VelocitySetpointReceiver);
 
-			publishSpeed(velocitycontrol.update(qekf.getestimit()));
+			//PRINTF("%f\n", VelocitySetpointReceiver);
+
+			output = velocitycontrol.update(qekf.getestimit());
+			publishSpeed(output);
+			//publishSpeed(velocitycontrol.update(qekf.getestimit()));
+
+			PRINTF("Output Velocity controller: %f\n", output);
+			//PRINTF("Measured Angular Velocity: %f\n", qekf.getestimit().data.angularVelocity.z);
 			break;
 
 		case Control_Pos:

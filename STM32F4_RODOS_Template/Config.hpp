@@ -14,15 +14,15 @@ namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Inner Loop
-    inline const bool innerloop_thread_enable = false;      // keep in mind it gets woke up by outer loop
+    inline const bool innerloop_thread_enable = true;      // keep in mind it gets woke up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = false;
+    inline const bool outerloop_thread_enable = true;
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = true;
+    inline const bool docking_thread_enable = false;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
@@ -76,8 +76,9 @@ namespace config
     inline const bool antiwindupPosController = false;
     inline const bool derivativofmeasurmentPosController = false;
     // Velocity Controller  
-    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsVelController{ 0.2f, 0.05f, 0.05f };         // P, I, D
+    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2;  // [rad/s]
+    //inline const float limitVelController = 1000; // [rad/s]
+    inline const PIDParams paramsVelController{ -10.0f, -40.0f, 0.0f };         // P, I, D
     inline const bool antiwindupVelController = false;
     inline const bool derivativofmeasurmentVelController = false;
 
