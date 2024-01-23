@@ -67,12 +67,13 @@ namespace config
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
     inline const float limitSpeedController = 6.f;                         // [V]
-    inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };        // P, I, D
+    //inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };        // P, I, D
+    inline const PIDParams paramsSpeedControl{ 0.15f, 0.05f, 0.0f };        // P, I, D
     inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;  // [rad/s]
-    inline const PIDParams paramsPosController{ -20.0f, -20.0f, 0.0f };         // P, I, D
+    inline const PIDParams paramsPosController{ -30.0f, -5.0f, 0.0f };         // P, I, D
     inline const bool antiwindupPosController = false;
     inline const bool derivativofmeasurmentPosController = false;
     // Velocity Controller  

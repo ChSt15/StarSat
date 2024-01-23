@@ -333,6 +333,10 @@ void QEKF::update(const Vector3D_F& a, const Vector3D_F& m)
 	// Measurment innovation
 	v = y - z;
 
+	// Limit yaw error to +/- pi
+	while (v.r[3][0] >  M_PI ) v.r[3][0] -= 2.f * M_PI;
+	while (v.r[3][0] < -M_PI ) v.r[3][0] += 2.f * M_PI;
+
 	// Covariance innovation
 	S = C * P * C.transpose() + R;
 

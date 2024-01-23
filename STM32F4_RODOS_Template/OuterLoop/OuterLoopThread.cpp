@@ -49,10 +49,12 @@ void OuterLoopThread::run()
 
 	}
 
-	setMode(Control_Pos);
-	float temp = M_PI;
-	//AngularVelocitySetpointTopic.publish(temp);
-	AngularPositionSetpointTopic.publish(temp);
+	setMode(Control_Vel);
+	float temp1 = M_PI/2.f;
+	float temp2 = M_PI/8.f;
+
+	AngularPositionSetpointTopic.publish(temp1);
+	AngularVelocitySetpointTopic.publish(temp2);
 
 
 	suspendCallerUntil(NOW() + 5 * SECONDS);
