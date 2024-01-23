@@ -13,8 +13,10 @@
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
+    inline const bool skip_init = false;                     // skips init routine
+
     // Inner Loop
-    inline const bool innerloop_thread_enable = true;      // keep in mind it gets woke up by outer loop
+    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woke up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
@@ -22,7 +24,7 @@ namespace config
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = false;
+    inline const bool docking_thread_enable = true;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
@@ -66,20 +68,20 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float limitSpeedController = 6.f;                         // [V]
-    //inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };        // P, I, D
-    inline const PIDParams paramsSpeedControl{ 0.15f, 0.05f, 0.0f };        // P, I, D
+    inline const float reactionwheelbase_vel = 300.f;  
+    inline const float limitSpeedController = 12.f / 2.f;                           // [V]
+    //inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };              // P, I, D
+    inline const PIDParams paramsSpeedControl{ 0.15f, 0.05f, 0.0f };                // P, I, D
     inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
-    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;  // [rad/s]
-    inline const PIDParams paramsPosController{ -30.0f, -5.0f, 0.0f };         // P, I, D
+    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
+    inline const PIDParams paramsPosController{ -30.0f, -10.0f, -5.0f };            // P, I, D
     inline const bool antiwindupPosController = false;
     inline const bool derivativofmeasurmentPosController = false;
-    // Velocity Controller  
-    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;  // [rad/s]
-    //inline const float limitVelController = 1000; // [rad/s]
-    inline const PIDParams paramsVelController{ -5.0f, -20.0f, 0.0f };         // P, I, D
+    // Velocity Controller                                           
+    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
+    inline const PIDParams paramsVelController{ -5.0f, -20.0f, 0.0f };              // P, I, D
     inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;
 
@@ -90,8 +92,8 @@ namespace config
     inline const int deccel_margin = 10;    // [step]
 
     // IMU Calibration
-    inline const int gyro_maxsamples = 40;
-    inline const int accel_maxsamples = 40;
+    inline const int gyro_maxsamples = 80;
+    inline const int accel_maxsamples = 80;
     inline const int mag_maxsamples = 200;
 
     // QEKF

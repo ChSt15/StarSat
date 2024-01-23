@@ -33,8 +33,6 @@ float AngularPositionControl::update(TimestampedData<Attitude_Data> attitude_mea
     while (set_pos < measured_pos - M_PI) set_pos += 2 * M_PI;
     PID::setSetpoint(set_pos);
 
-    PRINTF("%f, %f\n", measured_pos, set_pos);
-
     return PID::calculate(measured_pos, attitude_measured.timestamp);
 }
 

@@ -24,6 +24,9 @@ void OuterLoopThread::init()
 
 void OuterLoopThread::run()
 {
+	// Wait for Electrical
+	while (getMode() == Electrical_Startup) suspendCallerUntil(NOW() + 200 * MILLISECONDS);
+
 	// Config
 	using namespace config;
 	{
@@ -49,27 +52,45 @@ void OuterLoopThread::run()
 
 	}
 
-	setMode(Control_Vel);
-	float temp1 = M_PI/2.f;
+	//setMode(Control_Vel);
+	float temp1 = grad2Rad(170);
 	float temp2 = M_PI/8.f;
 
 	AngularPositionSetpointTopic.publish(temp1);
 	AngularVelocitySetpointTopic.publish(temp2);
 
 
-	suspendCallerUntil(NOW() + 5 * SECONDS);
-	float output = 0.0;
-
+	float out;
+	int meas_cnt = 0;
 	while (true)
-	{
+	{	
+		if (SECONDS_NOW() > 120)
+		{
+			temp1 = grad2Rad(20);
+			AngularPositionSetpointTopic.publish(temp1);
+		}
+
 		// IMU
 		IMUDataTopic.publish(imu.readData());
 
 		// Atitude estimation
 		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
 
+		// Skip fist IMU values
+		if (meas_cnt < 2 ) 
+		{
+			meas_cnt++;
+			suspendCallerUntil(NOW() + period * MILLISECONDS);
+			continue;
+		}
+
 		switch (getMode())
 		{
+		case Standby:
+			// just for tests
+			//suspendCallerUntil(NOW() + 10 * SECONDS);
+			//setMode(Calib_Mag);
+			break;
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Gyro:
 			if (!imucalib.calibrateGyro(imu.getDataRaw())) break;
@@ -96,24 +117,14 @@ void OuterLoopThread::run()
 			VelocitySetpointBuffer.getOnlyIfNewData(VelocitySetpointReceiver);
 			velocitycontrol.setSetpoint(VelocitySetpointReceiver);
 
-			//PRINTF("%f\n", VelocitySetpointReceiver);
-
-			//output = velocitycontrol.update(qekf.getestimit());
-			//publishSpeed(output);
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
-
-			//PRINTF("Output Velocity controller: %f\n", output);
-			//PRINTF("Measured Angular Velocity: %f\n", qekf.getestimit().data.angularVelocity.z);
 			break;
 
 		case Control_Pos:
 			PositionSetpointBuffer.getOnlyIfNewData(PositionSetpointReceiver);
 			positionControl.setSetpoint(PositionSetpointReceiver);
 
-			output = positionControl.update(qekf.getestimit());
-			publishSpeed(output);
-
-			PRINTF("%f, %f\n\n", PositionSetpointReceiver, output);
+			publishSpeed(positionControl.update(qekf.getestimit()));
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */

@@ -15,6 +15,9 @@ void DockingThread::init()
 
 void DockingThread::run()
 {
+	// Wait for Electrical
+	while (getMode() == Electrical_Startup) suspendCallerUntil(NOW() + 200 * MILLISECONDS);
+
 	// Config
 	using namespace config;
 	{
@@ -34,6 +37,7 @@ void DockingThread::run()
 		switch (getMode())
 		{
 		case Idle:
+		case Standby:
 			armController.Stop();
 			break;
 

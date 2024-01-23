@@ -63,7 +63,7 @@ float PID::calculate(float measurement, float timestamp)
 
         // WARNING
         // temporary values, should be changed
-        if (!settled && abs((error - this->lastError) / dt) < 0.1f && abs(error) < 0.1f) settled = true;
+        if (!settled && abs((error - this->lastError) / dt) < 0.5f && abs(error) < 3.f) settled = true;
 
         // Limit control signal
         float controlSignalSaturated = controlSignal;

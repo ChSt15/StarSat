@@ -14,6 +14,9 @@ void StepperMotorThread::init()
 
 void StepperMotorThread::run()
 {
+	// Wait for Electrical
+	while (getMode() == Electrical_Startup) suspendCallerUntil(NOW() + 200 * MILLISECONDS);
+
     DirectionPin.init(true, 1, 1);
     StepPin.init(true, 1, 0);
     CalibPin.init(false, 0, 1);
@@ -77,9 +80,8 @@ void StepperMotorThread::run()
             // Update status after execution of all commaned steps
             status.status_execution = true;
 
-            // NOTE:5 sec are temporary
             // Wait until woken up 
-            suspendCallerUntil(NOW() + 5 * SECONDS);
+            suspendCallerUntil(END_OF_TIME);
     }
 }
 
@@ -94,9 +96,9 @@ bool StepperMotorThread::calibrate()
         {
             DirectionPin.setPins(1);
             StepPin.setPins(0);
-            suspendCallerUntil(NOW() + 100 * MICROSECONDS);
+            //suspendCallerUntil(NOW() + 100 * MICROSECONDS);
             StepPin.setPins(1);
-            suspendCallerUntil(NOW() + 100 * MILLISECONDS);
+            suspendCallerUntil(NOW() + 10 * MILLISECONDS);
         } 
         else status.status_calib = true;            // Pin is high -> calibration completed
     }

@@ -26,7 +26,6 @@ bool CalibrationIMU::calibrateGyro(TimestampedData<IMUData>& imurawdata)
 		gyro_calib.scale.r[1][1] = 1.0;
 		gyro_calib.scale.r[2][2] = 1.0;
 		imu.setGyroCalib(gyro_calib);
-		gyro_calib.bias.print();
 
 		gyro_sum = Vector3D_F(0, 0, 0);
 		gyro_samples = 0;
@@ -51,7 +50,6 @@ bool CalibrationIMU::calibrateAccel(TimestampedData<IMUData>& imurawdata)
 		accel_calib.scale.r[1][1] = 1.0;
 		accel_calib.scale.r[2][2] = 1.0;
 		imu.setAccelCalib(accel_calib);
-		accel_calib.bias.print();
 
 		accel_sum = Vector3D_F(0, 0, 0);
 		accel_samples = 0;
@@ -81,9 +79,6 @@ bool CalibrationIMU::calibrateMag(TimestampedData<IMUData>& imurawdata)
 		mag_calib.scale.r[1][1] = 1.0;
 		mag_calib.scale.r[2][2] = 1.0;
 		imu.setMagCalib(mag_calib);
-		mag_calib.bias.print();
-
-		//PRINTF("x = %f,y = %f\n", mag_calib.bias.x, mag_calib.bias.y);
 
 		mag_minx = mag_miny =  42000.0f;
 		mag_maxx = mag_maxy = -42000.0f;

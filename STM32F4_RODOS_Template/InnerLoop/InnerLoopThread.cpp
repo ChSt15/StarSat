@@ -15,6 +15,9 @@ void InnerLoopThread::init()
 
 void InnerLoopThread::run()
 {
+	// Wait for Electrical
+	while (getMode() == Electrical_Startup) suspendCallerUntil(NOW() + 200 * MILLISECONDS);
+
 	// Config
 	using namespace config;
 	{
@@ -29,7 +32,8 @@ void InnerLoopThread::run()
 		hbridge.initialization(pwmFrequency, pwmIncrements);
 
 		// Controller
-		reactionwheelControl.config(paramsSpeedControl, limitSpeedController, antiwindupSpeedController, derivativofmeasurmentSpeedController);
+		if (skip_init) reactionwheelControl.config(paramsSpeedControl, limitSpeedController, antiwindupSpeedController, derivativofmeasurmentSpeedController, 0.f);
+		else reactionwheelControl.config(paramsSpeedControl, limitSpeedController, antiwindupSpeedController, derivativofmeasurmentSpeedController, reactionwheelbase_vel);
 	}
 
 
@@ -51,7 +55,18 @@ void InnerLoopThread::run()
 		case Idle:
 			hbridge.setVoltage(0.f);
 			break;
+		case Standby:
+			reactionwheelControl.setSetpoint(0.f);
+			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
+			break;
+		case Reactionwheel_Spinup:
+			reactionwheelControl.setSetpoint(0.f);
+			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
 
+			if (!reactionwheelControl.isSettled()) break;
+
+			setMode(Standby);
+			break;
 		default:
 			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
 			break;

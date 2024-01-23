@@ -3,7 +3,7 @@
 #include "ElectricalMonitoring.hpp"
 
 ElectricalMonitoring::BeeperThread::BeeperThread(RODOS::PWM_IDX beeper) :
-    Thread("BeeperThread"),
+    Thread("BeeperThread", 100),
     beeper(beeper)
 {}
 
@@ -89,6 +89,8 @@ void ElectricalMonitoring::update()
             readValues(true);
             state_ = SystemState_t::CONV_INIT;
 
+            setMode(Idle);
+
             //suspendCallerUntil(END_OF_TIME);
         }
         break;
@@ -98,6 +100,8 @@ void ElectricalMonitoring::update()
         {
             //Read values
             readValues(false);
+
+
 
             //Check if power should be turned off
             if (voltageBattery_ < batteryCutoffVoltage) {
