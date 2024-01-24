@@ -44,7 +44,7 @@ float PID::calculate(float measurement, float timestamp)
         {
             if (use_DerivativofMeasurment)
             {
-                derivTerm = params.kd * (measurement - this->lastMeasurment) / dt;
+                derivTerm = params.kd * -(measurement - this->lastMeasurment) / dt;
             }
             else
             {
