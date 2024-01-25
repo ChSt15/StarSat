@@ -95,12 +95,14 @@ void OuterLoopThread::run()
 		case Calib_Gyro:
 			if (!imucalib.calibrateGyro(imu.getDataRaw())) break;
 			qekf.reset();
+			telemetry.send_CalibIMU();
 			setMode(Idle);
 			break;
 
 		case Calib_Accel:
 			if (!imucalib.calibrateAccel(imu.getDataRaw())) break;
 			qekf.reset();
+			telemetry.send_CalibIMU();
 			setMode(Idle);
 			break;
 
@@ -108,6 +110,7 @@ void OuterLoopThread::run()
 			velocitycontrol.setSetpoint(M_PI / 16.f);
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			if (!imucalib.calibrateMag(imu.getDataRaw())) break;
+			telemetry.send_CalibIMU();
 			qekf.reset();
 			setMode(Idle);
 			break;
