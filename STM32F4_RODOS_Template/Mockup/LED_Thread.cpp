@@ -28,18 +28,18 @@ ORPE_LEDControl::ORPE_LEDControl(int64_t frameInterval_ns) :
     this->setupLED(10, LEDPIN_11, 0b00000001, 11);
 	this->setupLED(11, LEDPIN_12, 0b00000001, 12);*/
 
-	this->setupLED(0, LEDPIN_6, 0b00000001, 1);
-	this->setupLED(1, LEDPIN_8, 0b00000001, 2);
-	this->setupLED(2, LEDPIN_10, 0b00000001, 3);
-	this->setupLED(3, LEDPIN_1, 0b00000001, 4);
-	this->setupLED(4, LEDPIN_4, 0b00000001, 5);
-	this->setupLED(5, LEDPIN_11, 0b00000001, 6);
-	this->setupLED(6, LEDPIN_9, 0b00000001, 7);
-	this->setupLED(7, LEDPIN_5, 0b00000001, 8);
-    this->setupLED(8, LEDPIN_3, 0b00000001, 9);
-	this->setupLED(9, LEDPIN_7, 0b00000001, 10);
-    this->setupLED(10, LEDPIN_2, 0b00000001, 11);
-	this->setupLED(11, LEDPIN_12, 0b00000001, 12);
+	this->setupLED(0, LEDPIN_6, 1, 0);
+	this->setupLED(1, LEDPIN_8, 2, 5);
+	this->setupLED(2, LEDPIN_10, 3, 10);
+	this->setupLED(3, LEDPIN_1, 4, 15);
+	this->setupLED(4, LEDPIN_4, 5, 20);
+	this->setupLED(5, LEDPIN_11, 6, 25);
+	this->setupLED(6, LEDPIN_9, 7, 30);
+	this->setupLED(7, LEDPIN_5, 8, 35);
+    this->setupLED(8, LEDPIN_3, 9, 40);
+	this->setupLED(9, LEDPIN_7, 10, 45);
+    this->setupLED(10, LEDPIN_2, 11, 50);
+	this->setupLED(11, LEDPIN_12, 12, 55);
 
     // Set coding
     this->setCoding(true);
@@ -138,4 +138,4 @@ void ORPE_LEDControl::setPower(bool power) {
 /**
  * @todo set correct frameInterval 
 */
-ORPE_LEDControl LED_THREAD(SECONDS);
+ORPE_LEDControl LED_THREAD(SECONDS/20);

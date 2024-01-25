@@ -27,7 +27,7 @@ void ControlThread::run()
 	while(true)
 	{
 		desiredVoltage = adc.getVoltage();
-		hbridge.setVoltage(desiredVoltage);
+		// hbridge.setVoltage(desiredVoltage);
 
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
