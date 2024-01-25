@@ -100,7 +100,7 @@ void ElectricalMonitoring::update()
             readValues(false);
 
             //Check if power should be turned off
-            if (voltageBattery_ < batteryCutoffVoltage) {
+            if (!powerGood_) {
                 openExtSwitch();
             }
 
@@ -137,7 +137,7 @@ void ElectricalMonitoring::update()
         {
             readValues(false);
 
-            if (voltageBattery_ < batteryCutoffVoltage) {
+            if (!powerGood_) {
                 openExtSwitch();
             } 
 
@@ -231,7 +231,7 @@ void ElectricalMonitoring::readValues(bool setValue) {
     currentReactionWheel_ = float(adcWheel_.read(adcWheelPin_)) / 1023 * 3.3f / HBRIDGE_I_FACTOR;
 
     //Check if power is good
-    powerGood_ = (voltage5VBus_ < 5.0f + BUS_VOLTAGE_TOLERANCE) && (voltage5VBus_ >  5.0f - BUS_VOLTAGE_TOLERANCE);
+    powerGood_ = (voltage5VBus_ < 5.0f + BUS_VOLTAGE_TOLERANCE) && (voltage5VBus_ >  5.0f - BUS_VOLTAGE_TOLERANCE) && (voltageBattery_ > batteryCutoffVoltage);
 
     //Check if RPI is running
     rpiRunning_ = (currentRPI_ > RPI_RUNNING_CURRENT);
