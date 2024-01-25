@@ -58,7 +58,7 @@ bool ArmController::InitialExtension(TelemetryCamera& camera)
 		if (deccel || (instructions.stepTarget - status.stepCounter - deccel_margin) < deccel_distance)
 		{
 			float t = (1.f / (1.f / period * 1000.f * 1000.f - max_accel * dt));
-			(t < 1.f / min_vel && t > 0) ? instructions.period = (int) t * 1000.f * 1000.f : instructions.period = (int) (1.f / min_vel * 1000.f * 1000.f);
+			(t < 1.f / min_vel && t > 0) ? instructions.period = (int) (t * 1000.f * 1000.f) : instructions.period = (int) (1.f / min_vel * 1000.f * 1000.f);
 			stepperInstructionsTopic.publish(instructions);
 			updateTelemetry(camera);
 			deccel = true;
@@ -69,7 +69,7 @@ bool ArmController::InitialExtension(TelemetryCamera& camera)
 		if (period > 1.f/max_vel * 1000 * 1000)
 		{
 			float t = (1.f / (1.f / period * 1000.f * 1000.f + max_accel * dt));
-			(t > 1.f / max_vel) ? instructions.period = (int) t * 1000.f * 1000.f : instructions.period = (int) (1.f / max_vel * 1000.f * 1000.f);
+			(t > 1.f / max_vel) ? instructions.period = (int) (t * 1000.f * 1000.f) : instructions.period = (int) (1.f / max_vel * 1000.f * 1000.f);
 			stepperInstructionsTopic.publish(instructions);
 			updateTelemetry(camera);
 			return false;

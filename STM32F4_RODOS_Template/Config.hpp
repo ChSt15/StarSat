@@ -13,16 +13,18 @@
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
+    inline const bool skip_init = false;                     // skips init routine
+
     // Inner Loop
-    inline const bool innerloop_thread_enable = true;
+    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woke up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = false;
+    inline const bool outerloop_thread_enable = true;
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = false;
+    inline const bool docking_thread_enable = true;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Coms
@@ -30,7 +32,7 @@ namespace config
     inline const int  com_thread_period = 1000;             // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = false;
+    inline const bool debug_thread_enable = true;
     inline const int  debug_thread_period = 1000;           // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
@@ -40,23 +42,23 @@ namespace config
     /* ---------------------------------------- Hardware ---------------------------------------  */
     // IMU
     inline const IMUCalib gyroCalib{
-        Vector3D_F(0.011274, 0.018649, -0.021776),                              // Offset [rad/s]
+        Vector3D_F(-0.00979, 0.01382, 0.03997),                                 // Offset [rad/s]
         Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1))};  
     inline const IMUCalib accelCalib{
-        Vector3D_F(-0.025037, -0.0051067, -0.0089848),                          // Offset [g]
+        Vector3D_F(-0.00616, -0.03305, -0.03945),                               // Offset [g]
         Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1)) };  
     inline const IMUCalib magCalib{
-        Vector3D_F(-0.025, 0.2625, -0.0495),                                    // Offset [gauss]
+        Vector3D_F(0.20510, 0.46420, 0.0),                                    // Offset [gauss]
         Matrix3D_F(Vector3D_F(1,0,0), Vector3D_F(0,1,0), Vector3D_F(0,0,1)) };
 
     // HBridge
     inline const int pwmFrequency = 2000;       // [Hz]
-    inline const int pwmIncrements = 500;
+    inline const int pwmIncrements = 1000;
 
     // Stepper  
-    inline const int microstepping = 16;        // Number of steps to make for a full step
+    inline const int microstepping = 2;         // Number of steps to make for a full step
     inline const int stepsPerRevolution = 200;  // Number of steps for a full revolution of the motor shaft
-    inline const float steps2mm = 1.f;          // Convertion from steps to mm Arm extention PLEASE CHANGE THIS TO THE CORRECT VALUE!
+    inline const float steps2mm = 0.015625;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
     inline const bool invertStepper = false;    // Invert stepper direction
     inline const bool enableStepper = true;     // Disable stepper (Enable pin i set to keeped high to disable driver)
 
@@ -66,31 +68,33 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float limitSpeedController = 7.2f;                           // [V]
-    inline const PIDParams paramsSpeedControl{ 0.6f, 0.0f, 0.0f };          // P, I, D
-    inline const bool backcalculationSpeedController = true;
+    inline const float reactionwheelbase_vel = 300.f;  
+    inline const float limitSpeedController = 12.f / 2.f;                           // [V]
+    //inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };              // P, I, D
+    inline const PIDParams paramsSpeedControl{ 0.15f, 0.05f, 0.0f };                // P, I, D
+    inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
-    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsPosController{ 1.0f, 1.0f, 1.0f };         // P, I, D
-    inline const bool backcalculationPosController = false;
+    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
+    inline const PIDParams paramsPosController{ -30.0f, -10.0f, -5.0f };            // P, I, D
+    inline const bool antiwindupPosController = false;
     inline const bool derivativofmeasurmentPosController = false;
-    // Velocity Controller  
-    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsVelController{ 1.0f, 1.0f, 1.0f };         // P, I, D
-    inline const bool backcalculationVelController = false;
+    // Velocity Controller                                           
+    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
+    inline const PIDParams paramsVelController{ -5.0f, -20.0f, 0.0f };              // P, I, D
+    inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;
 
     // Arm Controller
-    inline const int max_vel = 50;			// [step/s]
-    inline const int min_vel = 1;			// [step/s]
-    inline const int max_accel = 5;		    // [step/s^2]
-    inline const int deccel_margin = 50;    // [step]
+    inline const int max_vel = 100;			// [step/s]
+    inline const int min_vel = 10;			// [step/s]
+    inline const int max_accel = 20;	   	// [step/s^2]
+    inline const int deccel_margin = 10;    // [step]
 
     // IMU Calibration
-    inline const int gyro_maxsamples = 200;
-    inline const int accel_maxsamples = 200;
-    inline const int mag_maxsamples = 500;
+    inline const int gyro_maxsamples = 80;
+    inline const int accel_maxsamples = 80;
+    inline const int mag_maxsamples = 200;
 
     // QEKF
     inline const Vector3D_F sigma_gyro = Vector3D_F(0.0027728, 0.0023483, 0.0018954);      // [rad/s]

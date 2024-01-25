@@ -5,6 +5,7 @@
 
 #include "ina3221/Beastdevices_INA3221.hpp"
 #include "../i2c_init.hpp"
+#include "../Modes.hpp"
 
 
 /**

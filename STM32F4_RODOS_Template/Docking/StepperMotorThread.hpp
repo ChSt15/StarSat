@@ -4,6 +4,7 @@
 #include "rodos.h"
 
 #include "StepperMotorTopics.hpp"
+#include "../Modes.hpp"
 
 
 class StepperMotorThread : public Thread
@@ -21,7 +22,7 @@ public:
                 {
                     status.stepCounter = 0;
                     instructions.period = 0;
-                    status.status_execution = true;
+                    status.status_execution = false;
                     status.status_calib = false;
                 }
 
@@ -47,7 +48,7 @@ private:
     StepperInstruction instructions;
  
     /// @todo ADJUST VALUE
-    const uint16_t max_steps = 10000;                       // Max. number of steps the motor can execute
+    const uint16_t max_steps = 500;                       // Max. number of steps the motor can execute
 
 };
 

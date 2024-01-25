@@ -20,7 +20,7 @@ void DebugThread::init()
 }
 
 void DebugThread::run()
-{
+{	
 	// Config
 	using namespace config;
 	{
@@ -37,11 +37,11 @@ void DebugThread::run()
 
 	while (true)
 	{
-		IMUDataBuffer.get(IMUDataReceiver);
-		AttitudeDataBuffer.get(AttitudeDataReceiver);
-		EncoderDataBuffer.get(EncoderDataReceiver);
+		IMUDataBuffer.getOnlyIfNewData(IMUDataReceiver);
+		AttitudeDataBuffer.getOnlyIfNewData(AttitudeDataReceiver);
+		EncoderDataBuffer.getOnlyIfNewData(EncoderDataReceiver);
 
-		//PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
+		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
 
 		if (!calib)
 		{

@@ -101,6 +101,8 @@ public:
 
 	TimestampedData<Attitude_Data>& getestimit();
 
+	void reset();
+
 private:
 
 	// @brief Propagation step using only gyro
@@ -116,7 +118,6 @@ private:
 	void update_mag(const Vector3D_F& m);
 
 	void update(const Vector3D_F& a, const Vector3D_F& m);
-
 };
 
 

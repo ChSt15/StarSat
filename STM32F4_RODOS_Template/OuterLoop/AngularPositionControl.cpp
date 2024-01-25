@@ -27,7 +27,7 @@ float AngularPositionControl::update(TimestampedData<Attitude_Data> attitude_mea
 {
     float measured_pos = attitude_measured.data.attitude.toYPR().yaw;
 
-    // make sure the angle "warps around" by limiting set angle to measured angle +/- pi;
+    // make sure the angle "warp around" by limiting set angle to measured angle +/- pi;
     float set_pos = PID::getSetpoint();
     while (set_pos > measured_pos + M_PI) set_pos -= 2 * M_PI;
     while (set_pos < measured_pos - M_PI) set_pos += 2 * M_PI;

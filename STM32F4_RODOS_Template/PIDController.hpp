@@ -50,18 +50,20 @@ class PID {
         /// @brief Indicates if derivation and integration term can be included -> after lastTimestamp is initialized
         bool flagInitialized = false;
          
-        bool use_BackCalculation = false;
+        bool use_Antiwindup = false;
 
         bool use_DerivativofMeasurment = false;
 
         bool settled = false;
+
+        bool saturated = false;
   
     public:
 
        /**
         * @brief Initialize parameters
         */
-       void config(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment);
+       void config(const PIDParams &params, float limit, bool use_Antiwindup, bool use_DerivativofMeasurment);
 
 
         /**

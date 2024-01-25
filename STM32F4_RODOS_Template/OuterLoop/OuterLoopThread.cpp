@@ -24,6 +24,9 @@ void OuterLoopThread::init()
 
 void OuterLoopThread::run()
 {
+	// Wait for Electrical
+	while (getMode() == Electrical_Startup) suspendCallerUntil(NOW() + 200 * MILLISECONDS);
+
 	// Config
 	using namespace config;
 	{
@@ -44,29 +47,60 @@ void OuterLoopThread::run()
 		qekf.config(sigma_gyro, sigma_accel, sigma_yaw, sigma_gyro_drift);
 
 		// Controllers
-		positionControl.config(paramsPosController, limitPosController, backcalculationPosController, derivativofmeasurmentPosController);
-		velocitycontrol.config(paramsVelController, limitVelController, backcalculationVelController, derivativofmeasurmentVelController);
+		positionControl.config(paramsPosController, limitPosController, antiwindupPosController, derivativofmeasurmentPosController);
+		velocitycontrol.config(paramsVelController, limitVelController, antiwindupVelController, derivativofmeasurmentVelController);
 
 	}
 
+	//setMode(Control_Vel);
+	float temp1 = grad2Rad(170);
+	float temp2 = M_PI/8.f;
+
+	AngularPositionSetpointTopic.publish(temp1);
+	AngularVelocitySetpointTopic.publish(temp2);
+
+
+	float out;
+	int meas_cnt = 0;
 	while (true)
-	{
+	{	
+		if (SECONDS_NOW() > 120)
+		{
+			temp1 = grad2Rad(20);
+			AngularPositionSetpointTopic.publish(temp1);
+		}
+
 		// IMU
 		IMUDataTopic.publish(imu.readData());
 
 		// Atitude estimation
 		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
 
+		// Skip fist IMU values
+		if (meas_cnt < 2 ) 
+		{
+			meas_cnt++;
+			suspendCallerUntil(NOW() + period * MILLISECONDS);
+			continue;
+		}
+
 		switch (getMode())
 		{
+		case Standby:
+			// just for tests
+			//suspendCallerUntil(NOW() + 10 * SECONDS);
+			//setMode(Calib_Mag);
+			break;
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Gyro:
 			if (!imucalib.calibrateGyro(imu.getDataRaw())) break;
+			qekf.reset();
 			setMode(Idle);
 			break;
 
 		case Calib_Accel:
 			if (!imucalib.calibrateAccel(imu.getDataRaw())) break;
+			qekf.reset();
 			setMode(Idle);
 			break;
 
@@ -74,12 +108,13 @@ void OuterLoopThread::run()
 			velocitycontrol.setSetpoint(M_PI / 16.f);
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			if (!imucalib.calibrateMag(imu.getDataRaw())) break;
+			qekf.reset();
 			setMode(Idle);
 			break;
 
 		/* ---------------------------- Controller ---------------------------- */
 		case Control_Vel:
-			VelocitySetpointBuffer.get(VelocitySetpointReceiver);
+			VelocitySetpointBuffer.getOnlyIfNewData(VelocitySetpointReceiver);
 			velocitycontrol.setSetpoint(VelocitySetpointReceiver);
 
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
