@@ -14,6 +14,7 @@ ORPE_LEDControl::ORPE_LEDControl(int64_t frameInterval_ns) :
     /**
      * @todo Specify last two parameters: ledID and startFrame
     */
+   /*
     this->setupLED(0, LEDPIN_1, 0b00000001, 1);
 	this->setupLED(1, LEDPIN_2, 0b00000001, 2);
 	this->setupLED(2, LEDPIN_3, 0b00000001, 3);
@@ -25,6 +26,19 @@ ORPE_LEDControl::ORPE_LEDControl(int64_t frameInterval_ns) :
     this->setupLED(8, LEDPIN_9, 0b00000001, 9);
 	this->setupLED(9, LEDPIN_10, 0b00000001, 10);
     this->setupLED(10, LEDPIN_11, 0b00000001, 11);
+	this->setupLED(11, LEDPIN_12, 0b00000001, 12);*/
+
+	this->setupLED(0, LEDPIN_6, 0b00000001, 1);
+	this->setupLED(1, LEDPIN_8, 0b00000001, 2);
+	this->setupLED(2, LEDPIN_10, 0b00000001, 3);
+	this->setupLED(3, LEDPIN_1, 0b00000001, 4);
+	this->setupLED(4, LEDPIN_4, 0b00000001, 5);
+	this->setupLED(5, LEDPIN_11, 0b00000001, 6);
+	this->setupLED(6, LEDPIN_9, 0b00000001, 7);
+	this->setupLED(7, LEDPIN_5, 0b00000001, 8);
+    this->setupLED(8, LEDPIN_3, 0b00000001, 9);
+	this->setupLED(9, LEDPIN_7, 0b00000001, 10);
+    this->setupLED(10, LEDPIN_2, 0b00000001, 11);
 	this->setupLED(11, LEDPIN_12, 0b00000001, 12);
 
     // Set coding
