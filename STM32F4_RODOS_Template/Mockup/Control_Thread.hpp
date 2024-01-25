@@ -7,7 +7,7 @@
 #include "../timestamp.hpp"
 #include "../InnerLoop/Hbridge.hpp"
 #include "Adc.hpp"
-#include "Config.hpp"
+#include "../Config.hpp"
 
 
 class ControlThread : public Thread

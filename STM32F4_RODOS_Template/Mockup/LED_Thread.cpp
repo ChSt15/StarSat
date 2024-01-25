@@ -4,7 +4,9 @@
 using namespace ORPE;
 
 
-ORPE_LEDControl::ORPE_LEDControl(int64_t frameInterval_ns) {
+ORPE_LEDControl::ORPE_LEDControl(int64_t frameInterval_ns) : 
+    Thread("LED Thread",100, 5000)
+    {
 	frameInterval_ns_ = frameInterval_ns;
 	for (size_t i = 0; i < NUMLEDS; i++) {
 		ledActive_[i] = false;
@@ -29,11 +31,11 @@ ORPE_LEDControl::ORPE_LEDControl(int64_t frameInterval_ns) {
     this->setCoding(true);
 }
 
-void ORPE_LEDControl::setupLED(size_t ledIndex, const HAL_GPIO& ledGPIO, uint8_t ledID, size_t startFrame) {
+void ORPE_LEDControl::setupLED(size_t ledIndex, GPIO_PIN ledGPIO, uint8_t ledID, size_t startFrame) {
     //return;
 	//Setup gpio
-	gpio_[ledIndex] = ledGPIO;
-	gpio_[ledIndex].init(true, 1, 0);
+	gpio_[ledIndex] = HAL_GPIO(ledGPIO);
+	//gpio_[ledIndex].init(true, 1, 0);
 
 	//Set coding begin
 	code_[ledIndex][startFrame] = false;
@@ -77,6 +79,9 @@ void ORPE_LEDControl::run() {
 
     // Setup LEDs
     
+    for (size_t i = 0; i < NUMLEDS; i++) {
+        gpio_[i].init(true, 1, 0);
+    }
 
 	int64_t deadline = NOW();
 
@@ -119,4 +124,4 @@ void ORPE_LEDControl::setPower(bool power) {
 /**
  * @todo set correct frameInterval 
 */
-ORPE_LEDControl LED_THREAD(SECONDS/20);
+ORPE_LEDControl LED_THREAD(SECONDS);

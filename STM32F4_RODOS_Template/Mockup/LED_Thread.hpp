@@ -58,7 +58,7 @@ public:
 	 * @param ledID What ID to give this LED.
 	 * @param startFrame How many frames to wait before starting first code.
 	 */
-	void setupLED(size_t ledIndex, const HAL_GPIO& ledGPIO, uint8_t ledID, size_t startFrame);
+	void setupLED(size_t ledIndex, GPIO_PIN ledGPIO, uint8_t ledID, size_t startFrame);
 
 	/**
 	 * @brief Starts the led coding.
