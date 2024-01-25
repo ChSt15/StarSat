@@ -5,11 +5,11 @@
 #include "Camera.hpp"
 
 // UART setup
-static HAL_UART uart(UART_IDX3);
+static HAL_UART uart(UART_IDX2);
 static int init_dummy = uart.init(115200);
 
 // Gateway setup
-static LinkinterfaceUART uart_linkinterface(&uart);
+static LinkinterfaceUART uart_linkinterface(&uart, 115200);
 static Gateway uart_gateway(&uart_linkinterface);
 
 // Init before scheduling (dont know why, taken from examples -Max)
