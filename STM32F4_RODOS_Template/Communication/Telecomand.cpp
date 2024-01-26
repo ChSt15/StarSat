@@ -60,6 +60,7 @@ void Telecommand::processNewCommand()
 			calib.bias.z = commandReceiver.fval_3;
 			calib.scale = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, 1));
 			imu.setGyroCalib(calib);
+			telemetry.send_CalibIMU();
 			break;
 		case SetCalibParams_accel:
 			calib.bias.x = commandReceiver.fval_1;
@@ -67,6 +68,7 @@ void Telecommand::processNewCommand()
 			calib.bias.z = commandReceiver.fval_3;
 			calib.scale = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, 1));
 			imu.setGyroCalib(calib);
+			telemetry.send_CalibIMU();
 			break;
 		case SetCalibParams_mag:
 			calib.bias.x = commandReceiver.fval_1;
@@ -74,6 +76,7 @@ void Telecommand::processNewCommand()
 			calib.bias.z = commandReceiver.fval_3;
 			calib.scale = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, 1));
 			imu.setGyroCalib(calib);
+			telemetry.send_CalibIMU();			
 			break;
 		/*-------------------------Control Parms------------------------*/
 		case SetControlParams_speed:
@@ -81,27 +84,33 @@ void Telecommand::processNewCommand()
 			params.ki = commandReceiver.fval_2;
 			params.kd = commandReceiver.fval_3;
 			reactionwheelControl.setParams(params);
+			telemetry.send_ControlParams();
 			break;
 		case SetControlLimit_speed:
 			reactionwheelControl.setLimit(commandReceiver.fval_1);
+			telemetry.send_ControlParams();
 			break;
 		case SetControlParams_pos:
 			params.kp = commandReceiver.fval_1;
 			params.ki = commandReceiver.fval_2;
 			params.kd = commandReceiver.fval_3;
 			positionControl.setParams(params);
+			telemetry.send_ControlParams();
 			break;
 		case SetControlLimit_pos:
 			positionControl.setLimit(commandReceiver.fval_1);
+			telemetry.send_ControlParams();
 			break;
 		case SetControlParams_vel:
 			params.kp = commandReceiver.fval_1;
 			params.ki = commandReceiver.fval_2;
 			params.kd = commandReceiver.fval_3;
 			velocitycontrol.setParams(params);
+			telemetry.send_ControlParams();
 			break;
 		case SetControlLimit_vel:
 			velocitycontrol.setLimit(commandReceiver.fval_1);
+			telemetry.send_ControlParams();
 			break;
 		/*-----------------------Control Setpoint----------------------*/
 		case SetControlDesired_speed:
