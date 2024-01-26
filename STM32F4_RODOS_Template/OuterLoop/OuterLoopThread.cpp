@@ -138,10 +138,14 @@ void OuterLoopThread::run()
 		case Mission_Dock_final:
 
 			// Get new Cameradata if availible
-			CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
+			{
+                CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
+                CameraData camera;
+                camera.telemetryCamera = CameraDataReceiver;
 
-			positionControl.setSetpoint(CameraDataReceiver.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
-			publishSpeed(positionControl.update(qekf.getestimit()));
+                positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                publishSpeed(positionControl.update(qekf.getestimit()));
+            }
 			break;
 
 		default:

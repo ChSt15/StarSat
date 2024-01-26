@@ -3,6 +3,7 @@
 #include "rodos.h"
 #include "matlib.h"
 
+#include "Communication/Camera.hpp"
 
 static CommBuffer<TimestampedData<IMUData>> IMUDataBuffer;
 static Subscriber IMUDataSubsciber(IMUDataTopic, IMUDataBuffer, "Debug Thread");
@@ -40,6 +41,15 @@ void DebugThread::run()
 		IMUDataBuffer.getOnlyIfNewData(IMUDataReceiver);
 		AttitudeDataBuffer.getOnlyIfNewData(AttitudeDataReceiver);
 		EncoderDataBuffer.getOnlyIfNewData(EncoderDataReceiver);
+
+        //float time = SECONDS_NOW();
+        //cameraTest.publish(time);
+
+        //PRINTF("Time: %f\n", time);
+
+        //suspendCallerUntil(NOW() + SECONDS);
+
+        //continue;
 
 		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
 

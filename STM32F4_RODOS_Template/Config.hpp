@@ -24,15 +24,15 @@ namespace config
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = true;
+    inline const bool docking_thread_enable = false;
     inline const int  docking_thread_period = 500;          // [ms]
 
-    // Coms
-    inline const bool com_thread_enable = false;
+    // Comms
+    inline const bool com_thread_enable = true;
     inline const int  com_thread_period = 1000;             // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = true;
+    inline const bool debug_thread_enable = false;
     inline const int  debug_thread_period = 1000;           // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
@@ -63,7 +63,7 @@ namespace config
     inline const bool enableStepper = true;     // Disable stepper (Enable pin i set to keeped high to disable driver)
 
     // Raspberry Pi
-    inline const bool enable_rpi = false;       // Will not turn on rpi if true
+    inline const bool enable_rpi = true;       // Will not turn on rpi if true
 
 
     /* ---------------------------------------- Control ----------------------------------------  */

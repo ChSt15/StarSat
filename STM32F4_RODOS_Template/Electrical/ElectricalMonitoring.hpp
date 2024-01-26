@@ -30,7 +30,7 @@ private:
 	/// @brief Factor used to convert H-Bridge current output to amps in Volts per Amp
 	static constexpr float HBRIDGE_I_FACTOR = 0.5f;
     /// @brief Current threshold for the rpi to be considered running in Amps.
-    static constexpr float RPI_RUNNING_CURRENT = 0.08f;
+    static constexpr float RPI_RUNNING_CURRENT = 0.310f;
     /// @brief How much the 5V bus voltage can deviate from 5V before it is considered bad.
     static constexpr float BUS_VOLTAGE_TOLERANCE = 0.2f;
     /// @brief How long to wait after powering the chips off before powering them back on.

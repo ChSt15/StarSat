@@ -1,5 +1,7 @@
 #include "../Config.hpp"
 
+#include "../Communication/Camera.hpp"
+
 #include "ElectricalMonitoring.hpp"
 
 ElectricalMonitoring::BeeperThread::BeeperThread(RODOS::PWM_IDX beeper) :
@@ -115,7 +117,7 @@ void ElectricalMonitoring::update()
             }
 
             //Check if we can turn on the RPI
-            if (!rpiPowerOn_ && powerGood_ && config::enable_rpi) {
+            if (!rpiPowerOn_ && (powerGood_ || voltageBattery_ < 7.0f) && config::enable_rpi) {
                 rpiPowerOn_ = true;
                 rpiPower_.setPins(1);
             }
@@ -140,6 +142,9 @@ void ElectricalMonitoring::update()
     case SystemState_t::POWERDOWN_INIT :
         {
             readValues(false);
+
+            bool b = true;
+            cameraShutdownTopic.publish(b); //Send powerdown signal to camera
 
             if (!powerGood_) {
                 openExtSwitch();
@@ -314,9 +319,17 @@ void ElectricalMonitoring::run() {
         }
     }
 
+
+    bool shutingDown = false;
+
     while (1) {
 
         update();
+
+        if (SECONDS_NOW() > 10) {
+            powerDown();
+            shutingDown = true;
+        }
 
         suspendCallerUntil(NOW() + config::electrical_monitoring_thread_period*MILLISECONDS);
 

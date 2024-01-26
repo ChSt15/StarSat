@@ -15,7 +15,7 @@ void ArmController::config(int max_vel, int min_vel, int max_accel, int deccel_m
 	this->steps2mm = steps2mm;
 }
 
-bool ArmController::InitialExtension(TelemetryCamera& camera)
+bool ArmController::InitialExtension(CameraData& camera)
 {
 	// Get new status if available
 	statusBuffer.getOnlyIfNewData(status);
@@ -78,7 +78,7 @@ bool ArmController::InitialExtension(TelemetryCamera& camera)
 	return false;
 }
 
-bool ArmController::FinalExtension(TelemetryCamera& camera)
+bool ArmController::FinalExtension(CameraData& camera)
 {
 	if (moving)
 	{
@@ -131,7 +131,7 @@ bool ArmController::FinalExtension(TelemetryCamera& camera)
 }
 
 
-void ArmController::CalcAngularVelocity(TelemetryCamera& camera)
+void ArmController::CalcAngularVelocity(CameraData& camera)
 {
 	float time = SECONDS_NOW();
 	float yaw = camera.getYawofMockup();
@@ -147,7 +147,7 @@ void ArmController::CalcAngularVelocity(TelemetryCamera& camera)
 
 }
 
-void ArmController::updateTelemetry(TelemetryCamera& camera)
+void ArmController::updateTelemetry(CameraData& camera)
 {
 	telemetry.mockupDistance = camera.getDistance();
 	telemetry.armVelocity = 1.f / instructions.period * 1000.f * 1000.f;

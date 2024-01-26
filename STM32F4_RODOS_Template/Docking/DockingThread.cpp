@@ -32,7 +32,13 @@ void DockingThread::run()
 	while (true)
 	{
 		// Get new Cameradata if availible
-		cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera);
+		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
+        {
+            //Print all data from struct
+            auto &data = cameraData.telemetryCamera;
+            PRINTF("CameraData: %d %d %d \n %d %d %d \n%d %d\n",
+                   data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);
+        }
 
 		switch (getMode())
 		{
@@ -56,9 +62,9 @@ void DockingThread::run()
 			break;
 
 		case Mission_Dock_initial:
-			if (!armController.InitialExtension(cameraData.telemetryCamera))
+			if (!armController.InitialExtension(cameraData))
 			{
-				if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData.telemetryCamera);
+				if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
 				break;
 			}
 
@@ -67,7 +73,7 @@ void DockingThread::run()
 
 		case Mission_Dock_final:
 			if (!cameraData.validFrame()) break;
-			if (!armController.FinalExtension(cameraData.telemetryCamera)) break;
+			if (!armController.FinalExtension(cameraData)) break;
 
 			setMode(Idle);
 			break;
