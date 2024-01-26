@@ -23,4 +23,4 @@ float ADC::getVoltage(){
 }
 
 
-ADC adc(ADC_IDX0, ADC_CH_011);
+ADC adc(ADC_IDX1, ADC_CH_011);

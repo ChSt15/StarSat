@@ -114,8 +114,6 @@ void ORPE_LEDControl::run() {
 
 		suspendCallerUntil(deadline);
 
-        PRINTF("LED Thread\n");
-
 		codeBit_++;
 		if (codeBit_ == codeRepeat) codeBit_ = 0;
 
