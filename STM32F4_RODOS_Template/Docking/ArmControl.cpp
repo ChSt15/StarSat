@@ -120,8 +120,9 @@ bool ArmController::FinalExtension(CameraData& camera)
 		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
 		stepperInstructionsTopic.publish(instructions);
 
+		// cant call suspend directly ?!
+		Thread::suspendCallerUntil(NOW() + (time_to_target_mockup - time_to_target_arm) * SECONDS);
 		steppermotorthread.resume();
-		steppermotorthread.suspendCallerUntil(NOW() + (time_to_target_mockup - time_to_target_arm) * SECONDS);
 
 		updateTelemetry(camera);
 		moving = true;

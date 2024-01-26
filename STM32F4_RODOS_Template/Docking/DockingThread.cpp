@@ -56,8 +56,8 @@ void DockingThread::run()
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
+			cameraPwrCmdTopic.publishConst(true);
 			if (!cameraData.validFrame()) break;
-
 			setMode(Mission_Point);
 			break;
 
