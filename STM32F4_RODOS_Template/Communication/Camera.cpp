@@ -10,8 +10,8 @@ Topic<bool> cameraShutdownTopic(403, "Camera Shutdown Command");
 Topic<float> cameraTest(402, "OrpeTesting");
 
 // everthing in mm
-Matrix3D_F Camera2Arm_Rot;
-Vector3D_F Camera2Arm_Trans;
+const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(YPR_F(0, 0, 0));
+const Vector3D_F Camera2Arm_Trans = Vector3D_F(0, 0, 0) - Vector3D_F(0, 0, 95);
 
 Vector3D_F Camera2Arm(Vector3D_F Vec_C)
 {
