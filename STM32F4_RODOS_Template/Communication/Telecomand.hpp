@@ -30,7 +30,7 @@ public:
 	int getCommandCounter();
 
 	int getLastCommand();
-};
+} __attribute__ ((packed));
 
 // @brief Global telecommand object
 extern Telecommand telecommand;
