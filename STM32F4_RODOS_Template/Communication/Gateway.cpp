@@ -20,7 +20,7 @@ class GatewayInitiator : public Initiator
 
         //uart_linkinterface.init();
         // Add Topic to forward
-        uart_gateway.resetTopicsToForward();
+        //uart_gateway.resetTopicsToForward();
         uart_gateway.addTopicsToForward(&telecommandTopic);
         uart_gateway.addTopicsToForward(&telemetryContinuousTopic);
         uart_gateway.addTopicsToForward(&telemetryExtendedContinuousTopic);

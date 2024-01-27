@@ -58,7 +58,7 @@ namespace config
     // Stepper  
     inline const int microstepping = 2;         // Number of steps to make for a full step
     inline const int stepsPerRevolution = 200;  // Number of steps for a full revolution of the motor shaft
-    inline const float steps2mm = 0.015625;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
+    inline const float steps2mm = 0.1335;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
     inline const bool invertStepper = false;    // Invert stepper direction
     inline const bool enableStepper = true;     // Disable stepper (Enable pin i set to keeped high to disable driver)
 
@@ -76,7 +76,7 @@ namespace config
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
-    inline const PIDParams paramsPosController{ -30.0f, -10.0f, -5.0f };            // P, I, D
+    inline const PIDParams paramsPosController{ -20.0f, -30.0f, -5.0f };            // P, I, D
     inline const bool antiwindupPosController = false;
     inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           

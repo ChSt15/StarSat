@@ -88,8 +88,8 @@ void OuterLoopThread::run()
 		{
 		case Standby:
 			// just for tests
-			suspendCallerUntil(NOW() + 10 * SECONDS);
-			setMode(Mission_Locate);
+			//suspendCallerUntil(NOW() + 10 * SECONDS);
+			//setMode(Mission_Locate);
 			break;
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Gyro:
@@ -142,7 +142,7 @@ void OuterLoopThread::run()
                 CameraData camera;
                 camera.telemetryCamera = CameraDataReceiver;
 
-                positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
                 publishSpeed(positionControl.update(qekf.getestimit()));
 
                 if (camera.getYawtoMockup() < 0.1) break;
@@ -160,7 +160,7 @@ void OuterLoopThread::run()
                 CameraData camera;
                 camera.telemetryCamera = CameraDataReceiver;
 
-                positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                if (camera.validFrame())  positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
                 publishSpeed(positionControl.update(qekf.getestimit()));
             }
 			break;

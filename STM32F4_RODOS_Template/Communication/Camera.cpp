@@ -24,7 +24,7 @@ Matrix3D_F Camera2Arm(Matrix3D_F orientation_C)
 float CameraData::getDistance()
 {
 	Vector3D_F Mockup_C(telemetryCamera.px, telemetryCamera.py, telemetryCamera.pz);
-	return Camera2Arm(Mockup_C).getLen();
+	return Camera2Arm(Mockup_C).getLen() - 200;
 }
 
 float CameraData::getYawtoMockup()

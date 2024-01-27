@@ -40,10 +40,13 @@ void DockingThread::run()
 		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
         {
             //Print all data from struct
-            auto &data = cameraData.telemetryCamera;
+            /*auto &data = cameraData.telemetryCamera;
             PRINTF("CameraData: %f %f %f \n %f %f %f \n%d %d\n",
-                   data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);
+                   data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);*/
         }
+
+        //auto yawToMockup = cameraData.getYawtoMockup();
+        //PRINTF("Yaw to mockup: %f\n", yawToMockup);
 
 		switch (getMode())
 		{
