@@ -127,7 +127,7 @@ void OuterLoopThread::run()
 			PositionSetpointBuffer.getOnlyIfNewData(PositionSetpointReceiver);
 			positionControl.setSetpoint(PositionSetpointReceiver);
 
-			publishSpeed(positionControl.update(qekf.getestimit()));
+			publishSpeed(velocitycontrol.update(positionControl.update(qekf.getestimit())));
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
@@ -147,7 +147,7 @@ void OuterLoopThread::run()
                 camera.telemetryCamera = CameraDataReceiver;
 
                 positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
-                publishSpeed(positionControl.update(qekf.getestimit()));
+                publishSpeed(velocitycontrol.update(positionControl.update(qekf.getestimit())));
             }
 			break;
 
@@ -165,5 +165,6 @@ void OuterLoopThread::publishSpeed(float speed)
 	speedSetpointTopic.publish(speed);
 	innerLoopThread.resume();
 }
+
 
 OuterLoopThread outerLoopThread;

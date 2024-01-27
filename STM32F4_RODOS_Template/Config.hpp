@@ -16,7 +16,7 @@ namespace config
     inline const bool skip_init = false;                     // skips init routine
 
     // Inner Loop
-    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woke up by outer loop
+    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woken up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
@@ -70,19 +70,18 @@ namespace config
     // Speed Controller
     inline const float reactionwheelbase_vel = 300.f;  
     inline const float limitSpeedController = 12.f / 2.f;                           // [V]
-    //inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };              // P, I, D
     inline const PIDParams paramsSpeedControl{ 0.15f, 0.05f, 0.0f };                // P, I, D
     inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
-    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
-    inline const PIDParams paramsPosController{ -30.0f, -10.0f, -5.0f };            // P, I, D
+    inline const float limitPosController = (6 * 2 * M_PI) / 60.0f / 2.f;           // [rad/s]
+    inline const PIDParams paramsPosController{ 1.2f, 0.f, 0.2f };                  // P, I, D
     inline const bool antiwindupPosController = false;
-    inline const bool derivativofmeasurmentPosController = false;
+    inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           
     inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
     inline const PIDParams paramsVelController{ -5.0f, -20.0f, 0.0f };              // P, I, D
-    inline const bool antiwindupVelController = true;
+    inline const bool antiwindupVelController = false;
     inline const bool derivativofmeasurmentVelController = false;
 
     // Arm Controller
