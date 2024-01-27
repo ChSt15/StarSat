@@ -24,7 +24,7 @@ void ElectricalMonitoring::BeeperThread::beepForTime_ns(int64_t time_ns) {
 
 void ElectricalMonitoring::BeeperThread::init()
 {
-    beeper.init(1000, 100);
+    beeper.init(2000, 100);
     beeper.write(0);
 }
 
@@ -327,7 +327,7 @@ void ElectricalMonitoring::run() {
         update();
 
         if (SECONDS_NOW() > 10) {
-            powerDown();
+            //powerDown();
             shutingDown = true;
         }
 
