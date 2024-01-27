@@ -143,7 +143,7 @@ void OuterLoopThread::run()
                 camera.telemetryCamera = CameraDataReceiver;
 
                 if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
-                publishSpeed(positionControl.update(qekf.getestimit()));
+				publishSpeed(velocitycontrol.update(positionControl.update(qekf.getestimit())));
 
                 if (camera.getYawtoMockup() < 0.1) break;
 
