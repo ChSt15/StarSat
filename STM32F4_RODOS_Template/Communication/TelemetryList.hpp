@@ -11,9 +11,9 @@
 struct TelemetryContinuous
 {
     // Status
-    int modeid;
-    int cmdCnt;
-    int lastcmdid;
+    int16_t modeid;
+    int16_t cmdCnt;
+    int16_t lastcmdid;
     float time;             // [sec]
     // IMU
     float wx, wy, wz;       // [rad/s]

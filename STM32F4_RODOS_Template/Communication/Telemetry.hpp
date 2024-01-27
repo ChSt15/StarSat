@@ -46,7 +46,7 @@ public:
 	void send_ControlParams();
 
 	void enable_ExtendedTelemetry(bool enable);
-} __attribute__ ((packed));;
+};
 
 // @brief Global telemetry object
 extern Telemetry telemetry;
