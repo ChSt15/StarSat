@@ -29,6 +29,9 @@ void DockingThread::run()
 		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
 	}
 
+    int64_t lastToggle = 0;
+    bool toggle = false;
+
 	while (true)
 	{
 		// Get new Cameradata if availible
@@ -38,6 +41,13 @@ void DockingThread::run()
             auto &data = cameraData.telemetryCamera;
             PRINTF("CameraData: %d %d %d \n %d %d %d \n%d %d\n",
                    data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);
+        }
+
+        if (NOW() - lastToggle > 5 * SECONDS)
+        {
+            lastToggle = NOW();
+            toggle = !toggle;
+            cameraPwrCmdTopic.publish(toggle);
         }
 
 		switch (getMode())
