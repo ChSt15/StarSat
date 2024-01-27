@@ -1,17 +1,15 @@
 #include "Camera.hpp"
 
-#define CameraTopicId 400
 
-
-Topic<TelemetryCamera> cameraDataTopic(CameraTopicId, "Camera Topic");
+Topic<TelemetryCamera> cameraDataTopic(400, "Camera Topic");
 Topic<bool> cameraPwrCmdTopic(401, "Camera Power Command");
 Topic<bool> cameraShutdownTopic(403, "Camera Shutdown Command");
 
 Topic<float> cameraTest(402, "OrpeTesting");
 
-// everthing in mm
+// everything in mm
 const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(YPR_F(0, 0, 0));
-const Vector3D_F Camera2Arm_Trans = Vector3D_F(0, 0, 0) - Vector3D_F(0, 0, 95);
+const Vector3D_F Camera2Arm_Trans = Vector3D_F(0, 0, 0);// - Vector3D_F(0, 0, 0);
 
 Vector3D_F Camera2Arm(Vector3D_F Vec_C)
 {
@@ -26,7 +24,7 @@ Matrix3D_F Camera2Arm(Matrix3D_F orientation_C)
 float CameraData::getDistance()
 {
 	Vector3D_F Mockup_C(telemetryCamera.px, telemetryCamera.py, telemetryCamera.pz);
-	return Camera2Arm(Mockup_C).getLen();
+	return Camera2Arm(Mockup_C).getLen() - 200;
 }
 
 float CameraData::getYawtoMockup()
@@ -45,7 +43,7 @@ float CameraData::getYawofMockup()
 
 bool CameraData::validFrame()
 {
-	bool valid = (this->telemetryCamera.MeasurmentCnt == this->last_frame + 1);
+	bool valid = this->telemetryCamera.MeasurmentCnt != this->last_frame;
 	this->last_frame = this->telemetryCamera.MeasurmentCnt;
 	return valid;
 }

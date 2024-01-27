@@ -24,7 +24,7 @@ void ElectricalMonitoring::BeeperThread::beepForTime_ns(int64_t time_ns) {
 
 void ElectricalMonitoring::BeeperThread::init()
 {
-    beeper.init(1000, 100);
+    beeper.init(2000, 100);
     beeper.write(0);
 }
 
@@ -58,7 +58,7 @@ ElectricalMonitoring::ElectricalMonitoring(RODOS::GPIO_PIN rpiPowerPin, RODOS::G
     extPower_(powerOffPin),
     adcWheelPin_(adcWheelPin),
     beeperIDX_(beeperPin),
-    adcWheel_(RODOS::ADC_IDX0),
+    adcWheel_(RODOS::ADC_IDX1),
     beeper_(beeperPin),
     i2cBus_(ina3221_i2cBus)
 {}
@@ -327,7 +327,7 @@ void ElectricalMonitoring::run() {
         update();
 
         if (SECONDS_NOW() > 10) {
-            powerDown();
+            //powerDown();
             shutingDown = true;
         }
 

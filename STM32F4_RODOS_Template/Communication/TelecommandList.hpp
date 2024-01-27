@@ -16,7 +16,7 @@ enum CommandIds
 {
 	/*-----------------------------Modes----------------------------*/
 	// Changes mode to Idle
-	SetMode_Idle = 1,
+	SetMode_Idle = 0,
 	// Changes mode to Calib_Gyro
 	SetMode_CalibGyro,	
 	// Changes mode to Calib_Accel

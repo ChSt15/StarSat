@@ -24,7 +24,7 @@ namespace config
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
-    inline const bool docking_thread_enable = false;
+    inline const bool docking_thread_enable = true;
     inline const int  docking_thread_period = 500;          // [ms]
 
     // Comms
@@ -58,7 +58,7 @@ namespace config
     // Stepper  
     inline const int microstepping = 2;         // Number of steps to make for a full step
     inline const int stepsPerRevolution = 200;  // Number of steps for a full revolution of the motor shaft
-    inline const float steps2mm = 0.015625;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
+    inline const float steps2mm = 0.1335;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
     inline const bool invertStepper = false;    // Invert stepper direction
     inline const bool enableStepper = true;     // Disable stepper (Enable pin i set to keeped high to disable driver)
 

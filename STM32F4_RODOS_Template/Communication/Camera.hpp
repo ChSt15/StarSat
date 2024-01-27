@@ -8,15 +8,15 @@
 
 struct TelemetryCamera
 {
-    float rx, ry, rz;       // [Rodriguez Rot]
     float px, py, pz;       // [mm]
-    uint32_t MeasurmentCnt;
+    float rx, ry, rz;       // [Rodriguez Rot]
+    uint32_t MeasurmentCnt = 0;
 
     uint8_t numLEDs;
 
     uint16_t numPoints;
     
-} __attribute__ ((packed));
+};// __attribute__ ((packed));
 
 struct CameraData
 {

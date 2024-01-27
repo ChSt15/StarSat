@@ -22,7 +22,11 @@ bool ArmController::InitialExtension(CameraData& camera)
 
 	if (!moving)
 	{
-		instructions.stepTarget = (int)(0.95f * camera.getDistance() * steps2mm);
+        if (!camera.validFrame()) return false;
+
+        PRINTF("dis: %f\n",camera.getDistance());
+
+		instructions.stepTarget = (int)(0.95f * camera.getDistance() / steps2mm);
 		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
 		stepperInstructionsTopic.publish(instructions);
 		steppermotorthread.resume();

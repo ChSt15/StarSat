@@ -89,7 +89,7 @@ void OuterLoopThread::run()
 		case Standby:
 			// just for tests
 			//suspendCallerUntil(NOW() + 10 * SECONDS);
-			//setMode(Calib_Mag);
+			//setMode(Mission_Locate);
 			break;
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Gyro:
@@ -132,11 +132,25 @@ void OuterLoopThread::run()
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
-			velocitycontrol.setSetpoint(M_PI / 16.f);
+			velocitycontrol.setSetpoint(M_PI / 32.f);
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			break;
 
 		case Mission_Point:
+            {
+                CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
+                CameraData camera;
+                camera.telemetryCamera = CameraDataReceiver;
+
+                if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                publishSpeed(positionControl.update(qekf.getestimit()));
+
+                if (camera.getYawtoMockup() < 0.1) break;
+
+                setMode(Mission_Dock_initial);
+            }
+            break;
+
 		case Mission_Dock_initial:
 		case Mission_Dock_final:
 

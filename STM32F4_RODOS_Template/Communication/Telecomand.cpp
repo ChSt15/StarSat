@@ -8,7 +8,7 @@ Topic<Command> telecommandTopic(TelecommandTopicId, "Telecomand Topic");
 Topic<Command> EchoTopic(TelecommandEchoTopicId, "Echo Topic");
 
 // Telecomand topic subscriber setup
-static Fifo<Command, 10> commandFIFO;
+static CommBuffer<Command> commandFIFO;
 static Subscriber telecommandSubsciber(telecommandTopic, commandFIFO, "Telecommand Class");
 Command commandReceiver;
 
@@ -18,9 +18,9 @@ void Telecommand::processNewCommand()
 	IMUCalib calib;
 
 	// Work through FIFO queue
-	while (commandFIFO.get(commandReceiver))
+	while (commandFIFO.getOnlyIfNewData(commandReceiver))
 	{   
-        PRINTF("Command: %d\n", commandReceiver.id);
+        //PRINTF("Command: %d\n", commandReceiver.id);
 		EchoTopic.publish(commandReceiver);
 		switch ((CommandIds) commandReceiver.id)
 		{
