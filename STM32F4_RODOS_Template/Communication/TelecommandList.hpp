@@ -7,7 +7,7 @@
 // @brief Structure of a Telecommand
 struct Command
 {
-	int16_t id;
+	int id;
 	float fval_1, fval_2, fval_3;
 };
 

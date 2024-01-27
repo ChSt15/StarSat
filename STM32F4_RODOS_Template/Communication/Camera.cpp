@@ -1,17 +1,15 @@
 #include "Camera.hpp"
 
-#define CameraTopicId 400
 
-
-Topic<TelemetryCamera> cameraDataTopic(CameraTopicId, "Camera Topic");
+Topic<TelemetryCamera> cameraDataTopic(400, "Camera Topic");
 Topic<bool> cameraPwrCmdTopic(401, "Camera Power Command");
 Topic<bool> cameraShutdownTopic(403, "Camera Shutdown Command");
 
 Topic<float> cameraTest(402, "OrpeTesting");
 
-// everthing in mm
+// everything in mm
 const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(YPR_F(0, 0, 0));
-const Vector3D_F Camera2Arm_Trans = Vector3D_F(0, 0, 0) - Vector3D_F(0, 0, 95);
+const Vector3D_F Camera2Arm_Trans = Vector3D_F(0, 0, 0);// - Vector3D_F(0, 0, 0);
 
 Vector3D_F Camera2Arm(Vector3D_F Vec_C)
 {
@@ -45,7 +43,7 @@ float CameraData::getYawofMockup()
 
 bool CameraData::validFrame()
 {
-	bool valid = (this->telemetryCamera.MeasurmentCnt == this->last_frame + 1);
+	bool valid = this->telemetryCamera.MeasurmentCnt != this->last_frame;
 	this->last_frame = this->telemetryCamera.MeasurmentCnt;
 	return valid;
 }

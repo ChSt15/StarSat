@@ -7,11 +7,11 @@
 enum modes
 {
 	Idle = 0,
-	Standby,
 	Electrical_Startup, Reactionwheel_Spinup,
 	Calib_Gyro, Calib_Accel, Calib_Mag, Calib_Arm,
 	Control_Speed, Control_Pos, Control_Vel, 
-	Mission_Locate, Mission_Point, Mission_Dock_initial, Mission_Dock_final
+	Mission_Locate, Mission_Point, Mission_Dock_initial, Mission_Dock_final,
+    Standby
 };
 
 

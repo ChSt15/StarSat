@@ -29,36 +29,34 @@ void DockingThread::run()
 		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
 	}
 
-    int64_t lastToggle = 0;
-    bool toggle = false;
+    bool cameraState = false;
 
 	while (true)
-	{
+	{   
+
+        cameraPwrCmdTopic.publishConst(cameraState);
+        //setMode(Mission_Locate);
 		// Get new Cameradata if availible
 		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
         {
             //Print all data from struct
             auto &data = cameraData.telemetryCamera;
-            PRINTF("CameraData: %d %d %d \n %d %d %d \n%d %d\n",
+            PRINTF("CameraData: %f %f %f \n %f %f %f \n%d %d\n",
                    data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);
-        }
-
-        if (NOW() - lastToggle > 5 * SECONDS)
-        {
-            lastToggle = NOW();
-            toggle = !toggle;
-            cameraPwrCmdTopic.publish(toggle);
         }
 
 		switch (getMode())
 		{
 		case Idle:
+            cameraState = false;
 		case Standby:
+            cameraState = false;
 			armController.Stop();
 			break;
 
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Arm:
+            cameraState = false;
 			if (!armController.Calibrate()) break;
 
 			setMode(Idle);
@@ -66,12 +64,14 @@ void DockingThread::run()
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
-			cameraPwrCmdTopic.publishConst(true);
+			cameraState = true;
+            PRINTF("Current frame %d, last frame %d\n", cameraData.telemetryCamera.MeasurmentCnt, cameraData.last_frame);
 			if (!cameraData.validFrame()) break;
 			setMode(Mission_Point);
 			break;
 
 		case Mission_Dock_initial:
+            cameraState = true;
 			if (!armController.InitialExtension(cameraData))
 			{
 				if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
@@ -82,6 +82,7 @@ void DockingThread::run()
 			break;
 
 		case Mission_Dock_final:
+            cameraState = true;
 			if (!cameraData.validFrame()) break;
 			if (!armController.FinalExtension(cameraData)) break;
 
@@ -89,6 +90,7 @@ void DockingThread::run()
 			break;
 
 		default:
+            cameraState = false;
 			break;
 		}
 

@@ -246,7 +246,7 @@ void ElectricalMonitoring::readValues(bool setValue) {
     rpiRunning_ = (currentRPI_ > RPI_RUNNING_CURRENT);
 
     //Print everything
-    PRINTF("VBAT: %f V, 5V: %f V, Stepper: %f A, Aux: %f A, RPI: %f A, RW: %f A, PowerGood: %d, RPI Running: %d\n", voltageBattery_, voltage5VBus_, currentStepper_, currentAux_, currentRPI_, currentReactionWheel_, powerGood_, rpiRunning_);
+    //PRINTF("VBAT: %f V, 5V: %f V, Stepper: %f A, Aux: %f A, RPI: %f A, RW: %f A, PowerGood: %d, RPI Running: %d\n", voltageBattery_, voltage5VBus_, currentStepper_, currentAux_, currentRPI_, currentReactionWheel_, powerGood_, rpiRunning_);
 
 }
 
