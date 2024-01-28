@@ -71,6 +71,7 @@ void DockingThread::run()
             PRINTF("Current frame %d, last frame %d\n", cameraData.telemetryCamera.MeasurmentCnt, cameraData.last_frame);
 			if (!cameraData.validFrame()) break;
 			setMode(Mission_Point);
+			armController.InitialExtension(cameraData);
 			break;
 
 		case Mission_Dock_initial:
