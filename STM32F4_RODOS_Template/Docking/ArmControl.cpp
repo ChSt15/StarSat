@@ -118,7 +118,7 @@ bool ArmController::FinalExtension(CameraData& camera)
 		time_to_target_mockup = yaw / w;
 	}
 	
-	if (time_to_target_mockup - time_to_target_arm < 0.2)
+	if (time_to_target_mockup - time_to_target_arm < 0.5)
 	{
 		instructions.stepTarget = (int)(0.05f * telemetry.mockupDistance / steps2mm);
 		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);

@@ -145,7 +145,7 @@ void OuterLoopThread::run()
                 if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
 				publishSpeed(velocitycontrol.update(positionControl.update(qekf.getestimit())));
 
-                if (camera.getYawtoMockup() < 0.1) break;
+                if (camera.getYawtoMockup() < 0.1 && qekf.getestimit().data.angularVelocity.z < 0.1) break;
 
                 setMode(Mission_Dock_initial);
             }
