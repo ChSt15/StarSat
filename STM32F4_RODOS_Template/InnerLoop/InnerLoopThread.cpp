@@ -50,6 +50,8 @@ void InnerLoopThread::run()
 		// Encoder measurment
 		TimestampedData<float> encoder_speed = encoder.getSpeed();
 
+        //setMode(Mission_Locate);
+
 		switch (getMode())
 		{
 		case Idle:
@@ -68,7 +70,14 @@ void InnerLoopThread::run()
 			setMode(Standby);
 			break;
 		default:
-			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
+            {
+                /*reactionwheelControl.setSetpoint(100);
+                if (SECONDS_NOW() > 10)
+                    reactionwheelControl.setSetpoint(-100);*/
+                float v = reactionwheelControl.update(encoder_speed);
+                //PRINTF("IS: %f, O: %f\n", encoder_speed.data, v);
+                hbridge.setVoltage(v);
+            }
 			break;
 		}
 

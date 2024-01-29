@@ -8,8 +8,8 @@ Topic<bool> cameraShutdownTopic(403, "Camera Shutdown Command");
 Topic<float> cameraTest(402, "OrpeTesting");
 
 // everything in mm
-const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(AngleAxis_F(grad2Rad(5), 0, 1, 0)) * Matrix3D_F(AngleAxis_F(grad2Rad(20), 1, 0, 0)) * Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 0, -1), Vector3D_F(0, 1, 0));
-const Vector3D_F Camera2Arm_Trans = Vector3D_F(20.5, -127.4, 175) + Vector3D_F(0, -95, 0);	// z offset mockup needed
+const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, -1))  * Matrix3D_F(AngleAxis_F(grad2Rad(-10), 0, 1, 0)) * Matrix3D_F(AngleAxis_F(grad2Rad(20), 1, 0, 0)) * Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 0, -1), Vector3D_F(0, 1, 0));
+const Vector3D_F Camera2Arm_Trans = Vector3D_F(20.5, -127.4, 175) + Vector3D_F(0, -95, -70);
 
 Vector3D_F Camera2Arm(Vector3D_F Vec_C)
 {
@@ -19,7 +19,7 @@ Vector3D_F Camera2Arm(Vector3D_F Vec_C)
 float CameraData::getDistance()
 {
 	Vector3D_F Mockup_C(telemetryCamera.px, telemetryCamera.py, telemetryCamera.pz);
-	return Camera2Arm(Mockup_C).getLen() - 200;
+	return Camera2Arm(Mockup_C).getLen();
 }
 
 float CameraData::getYawtoMockup()

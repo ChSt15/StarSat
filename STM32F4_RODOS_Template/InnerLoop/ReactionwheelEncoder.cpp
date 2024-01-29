@@ -77,7 +77,7 @@ void ReactionwheelEncoder::Init()
     TIM_ICInitStructure.TIM_Channel = TIM_Channel_4;
     TIM_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
     TIM_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
-    TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV8;		/*!< Capture performed once every 8 events. */
+    TIM_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV4;		/*!< Capture performed once every 8 events. */
     TIM_ICInitStructure.TIM_ICFilter = 0x0;
 
     TIM_ICInit(TIM2, &TIM_ICInitStructure);
@@ -125,7 +125,7 @@ extern "C"
                     Capture = ((0xFFFFFFFF - IC4ReadValue1) + IC4ReadValue2);
                 }
                 /* Frequency computation */
-                TIM2Freq = (uint32_t)((SystemCoreClock / 2)) * 8 / Capture;
+                TIM2Freq = (uint32_t)((SystemCoreClock / 2)) * 4 / Capture;
                 CaptureNumber = 0;
             }
         }
@@ -135,11 +135,13 @@ extern "C"
 
 TimestampedData<float>& ReactionwheelEncoder::getSpeed()
 {
-    double SensorTime = ((NOW() - CaptureTime) / (double)MILLISECONDS);
+    /*double SensorTime = ((NOW() - CaptureTime) / (double)MILLISECONDS);
     if (SensorTime > 250) //minimum measured speed is 2 RPS(120 RPM). This can give us 250ms of minimum interval between interrupts (2 interrupts every one revolution).
     {
         TIM2Freq = 0;
-    }
+    }*/
+
+    static TimestampedData<float> lastVal = Speed;
 
     Speed.timestamp = SECONDS_NOW();
     if (EncoderB)
@@ -147,6 +149,12 @@ TimestampedData<float>& ReactionwheelEncoder::getSpeed()
         Speed.data = -1 * ((float)TIM2Freq / 16) * 2 * 3.1415;  //CCW
     }
     else { Speed.data = ((float)TIM2Freq / 16) * 2 * 3.1415; }  //CW
+
+    lastVal = Speed;
+
+    if (abs(lastVal.data - Speed.data) > 10) {
+        return lastVal;
+    }
 
     return Speed;
 }

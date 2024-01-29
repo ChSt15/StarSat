@@ -45,8 +45,11 @@ void DockingThread::run()
                    data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);*/
         }
 
-        //auto yawToMockup = cameraData.getYawtoMockup();
-        //PRINTF("Yaw to mockup: %f\n", yawToMockup);
+        auto yawToMockup = rad2Grad(cameraData.getYawtoMockup());
+        PRINTF("Yaw to mockup: %f\n", yawToMockup);
+        
+        
+        PRINTF("Dis: %f\n", cameraData.getDistance());
 
 		switch (getMode())
 		{
@@ -68,10 +71,9 @@ void DockingThread::run()
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
 			cameraState = true;
-            PRINTF("Current frame %d, last frame %d\n", cameraData.telemetryCamera.MeasurmentCnt, cameraData.last_frame);
+            //PRINTF("Current frame %d, last frame %d\n", cameraData.telemetryCamera.MeasurmentCnt, cameraData.last_frame);
 			if (!cameraData.validFrame()) break;
 			setMode(Mission_Point);
-			armController.InitialExtension(cameraData);
 			break;
 
 		case Mission_Dock_initial:
