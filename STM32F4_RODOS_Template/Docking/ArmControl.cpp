@@ -100,23 +100,23 @@ bool ArmController::FinalExtension(CameraData& camera)
 		return false;
 	}
 
-	float time_to_target_arm = 0.95f * telemetry.mockupDistance / (this->min_vel * steps2mm);
+	float time_to_target_arm = 0.1f * telemetry.mockupDistance / (this->min_vel * steps2mm);
 	float time_to_target_mockup;
 	float yaw = camera.getYawofMockup();
 	float w = telemetry.mockupAngularvelocity;
 
 	if (w > 0)
 	{
-		while (yaw > 0) yaw -= 2 * M_PI;
-		time_to_target_mockup = -yaw / w;
+		while (yaw > 0) yaw	+= 2 * M_PI;
+		time_to_target_mockup = yaw / w;
 	}
 	else
 	{
-		while (yaw < 0) yaw += 2 * M_PI;
-		time_to_target_mockup = yaw / w;
+		while (yaw < 0) yaw -= 2 * M_PI;
+		time_to_target_mockup = -yaw / w;
 	}
 	
-	if (time_to_target_mockup - time_to_target_arm < 0.5)
+	if (time_to_target_mockup - time_to_target_arm < 1)
 	{
 		instructions.stepTarget = (int)(camera.getDistance()  / steps2mm);
 		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
