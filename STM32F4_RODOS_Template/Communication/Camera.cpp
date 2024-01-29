@@ -1,6 +1,15 @@
 #include "Camera.hpp"
 
 
+SyncFifo<TelemetryCamera, 4> CameraDataBuffer;
+Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Control Thread");
+TelemetryCamera CameraDataReceiver;
+
+/**
+ * To protect the camera data
+*/
+Semaphore cameraDataSem;
+
 Topic<TelemetryCamera> cameraDataTopic(400, "Camera Topic");
 Topic<bool> cameraPwrCmdTopic(401, "Camera Power Command");
 Topic<bool> cameraShutdownTopic(403, "Camera Shutdown Command");
@@ -38,8 +47,53 @@ float CameraData::getYawofMockup()
 
 bool CameraData::validFrame()
 {
-	bool valid = this->telemetryCamera.MeasurmentCnt != this->last_frame;
-	this->last_frame = this->telemetryCamera.MeasurmentCnt;
-	return valid;
+	return valid_;
+}
+
+
+CameraData getCameraData()
+{
+
+    CameraData camera;
+
+    cameraDataSem.enter();
+
+    static TelemetryCamera lastCam;
+    static bool isValid = false;
+
+    if (CameraDataBuffer.isFull()) { // Use the older element in fifo as lastCam
+
+        PRINTF("HELLOWORLD\n");
+
+        CameraDataBuffer.get(lastCam);
+
+    }
+
+    TelemetryCamera tCam;
+    if (CameraDataBuffer.get(tCam)) { 
+
+        PRINTF("Cnt: %d, %d\n", tCam.MeasurmentCnt, lastCam.MeasurmentCnt);
+
+        if (tCam.MeasurmentCnt == lastCam.MeasurmentCnt + 1) {
+
+            isValid = true;
+
+        } else {
+
+            isValid = false;
+
+        }
+
+        lastCam = tCam;
+
+    }
+
+    camera.telemetryCamera = lastCam;
+    camera.valid_ = isValid;
+
+    cameraDataSem.leave();
+
+    return camera;
+
 }
 

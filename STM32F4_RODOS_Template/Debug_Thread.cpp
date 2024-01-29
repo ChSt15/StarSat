@@ -47,9 +47,13 @@ void DebugThread::run()
 
         //PRINTF("Time: %f\n", time);
 
-        //suspendCallerUntil(NOW() + SECONDS);
+        auto cameraData = getCameraData();
 
-        //continue;
+        PRINTF("Valid: %d\n", cameraData.validFrame());
+
+        suspendCallerUntil(NOW() + SECONDS);
+
+        continue;
 
 		PRINTF("%f\n", rad2Grad(atan2(-IMUDataReceiver.data.magneticField.y, IMUDataReceiver.data.magneticField.x)));
 

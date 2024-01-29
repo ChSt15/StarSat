@@ -80,6 +80,9 @@ void StepperMotorThread::run()
             // Update status after execution of all commaned steps
             status.status_execution = true;
 
+            // Publish updated status
+            stepperStatusTopic.publish(status);
+
             // Wait until woken up 
             suspendCallerUntil(END_OF_TIME);
     }
@@ -96,7 +99,7 @@ bool StepperMotorThread::calibrate()
         {
             DirectionPin.setPins(1);
             StepPin.setPins(0);
-            //suspendCallerUntil(NOW() + 100 * MICROSECONDS);
+            suspendCallerUntil(NOW() + 100 * MICROSECONDS);
             StepPin.setPins(1);
             suspendCallerUntil(NOW() + 10 * MILLISECONDS);
         } 

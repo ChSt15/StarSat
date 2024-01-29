@@ -11,7 +11,7 @@ static modes mode = Electrical_Startup;
 /// @brief Sets mode to newmode (protected by semaphore)
 void setMode(modes newmode)
 {
-	if (!init_complete && newmode == Idle)
+	if (!init_complete && (newmode == Standby || newmode == Idle))
 	{
 		// Start up Routine
 		modes currmode;
@@ -32,7 +32,7 @@ void setMode(modes newmode)
 			break;
 		case Reactionwheel_Spinup:
 			init_complete = true;
-			newmode = Idle;
+			newmode = Standby;
 			break;
 		default:
 			break;

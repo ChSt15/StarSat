@@ -1,10 +1,5 @@
 #include "OuterLoopThread.hpp"
 
-
-static CommBuffer<TelemetryCamera> CameraDataBuffer;
-static Subscriber CameraDataSubsciber(cameraDataTopic, CameraDataBuffer, "Control Thread");
-static TelemetryCamera CameraDataReceiver;
-
 static CommBuffer<float> VelocitySetpointBuffer;
 static Subscriber VelocitySetpointSubsciber(AngularVelocitySetpointTopic, VelocitySetpointBuffer, "Control Thread");
 static float VelocitySetpointReceiver;
@@ -60,7 +55,7 @@ void OuterLoopThread::run()
 	AngularVelocitySetpointTopic.publish(temp2);
 
     //setMode(Idle);
-
+    bool once = false;
 
 	float out;
 	int meas_cnt = 0;
@@ -95,23 +90,24 @@ void OuterLoopThread::run()
 		switch (getMode())
 		{
 		case Standby:
-			// just for tests
-			suspendCallerUntil(NOW() + 10 * SECONDS);
-			setMode(Mission_Locate);
+            if (config::skip_init) setMode(Idle);
+
+			velocitycontrol.setSetpoint(0.f);
+            publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			break;
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Gyro:
 			if (!imucalib.calibrateGyro(imu.getDataRaw())) break;
 			qekf.reset();
 			telemetry.send_CalibIMU();
-			setMode(Idle);
+			setMode(Standby);
 			break;
 
 		case Calib_Accel:
 			if (!imucalib.calibrateAccel(imu.getDataRaw())) break;
 			qekf.reset();
 			telemetry.send_CalibIMU();
-			setMode(Idle);
+			setMode(Standby);
 			break;
 
 		case Calib_Mag:
@@ -120,7 +116,7 @@ void OuterLoopThread::run()
 			if (!imucalib.calibrateMag(imu.getDataRaw())) break;
 			telemetry.send_CalibIMU();
 			qekf.reset();
-			setMode(Idle);
+			setMode(Standby);
 			break;
 
 		/* ---------------------------- Controller ---------------------------- */
@@ -149,14 +145,12 @@ void OuterLoopThread::run()
 
 		case Mission_Point:
             {
-                CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
                 CameraData camera;
-                camera.telemetryCamera = CameraDataReceiver;
+                camera.telemetryCamera = getCameraData().telemetryCamera;
 
                 if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
                 velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
                 publishSpeed(velocitycontrol.update(qekf.getestimit()));
-
                 if (camera.getYawtoMockup() < 0.1 && qekf.getestimit().data.angularVelocity.z < 0.1) break;
 
                 setMode(Mission_Dock_initial);
@@ -168,11 +162,10 @@ void OuterLoopThread::run()
 
 			// Get new Cameradata if availible
 			{
-                CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
                 CameraData camera;
-                camera.telemetryCamera = CameraDataReceiver;
+                camera.telemetryCamera = getCameraData().telemetryCamera;
 
-                positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
                 velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
                 publishSpeed(velocitycontrol.update(qekf.getestimit()));
             }

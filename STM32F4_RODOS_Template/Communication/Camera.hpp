@@ -23,12 +23,20 @@ struct CameraData
     TelemetryCamera telemetryCamera;
     unsigned int last_frame = 0;
 
+    bool valid_ = false;
+
     bool validFrame();
     // WARNING: coordinate transformation not implemented
     float getDistance();
     float getYawtoMockup();
     float getYawofMockup();
 };
+
+
+/**
+ * Returns the latest camera data
+*/
+CameraData getCameraData();
 
 
 extern Topic<TelemetryCamera> cameraDataTopic;
