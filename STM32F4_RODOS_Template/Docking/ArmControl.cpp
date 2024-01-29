@@ -22,11 +22,9 @@ bool ArmController::InitialExtension(CameraData& camera)
 
 	if (!moving)
 	{
-        //PRINTF("dis: %f\n",camera.getDistance());
         if (!camera.validFrame()) return false;
 
-
-		instructions.stepTarget = (int)(0.95f * camera.getDistance() / steps2mm);
+		instructions.stepTarget = (int)(0.9f * camera.getDistance() / steps2mm);
 		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
 		stepperInstructionsTopic.publish(instructions);
 		steppermotorthread.resume();
@@ -120,7 +118,7 @@ bool ArmController::FinalExtension(CameraData& camera)
 	
 	if (time_to_target_mockup - time_to_target_arm < 0.5)
 	{
-		instructions.stepTarget = (int)(0.05f * telemetry.mockupDistance / steps2mm);
+		instructions.stepTarget = (int)(camera.getDistance()  / steps2mm);
 		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
 		stepperInstructionsTopic.publish(instructions);
 

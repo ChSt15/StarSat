@@ -13,14 +13,14 @@
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
-    inline const bool skip_init = true;                     // skips init routine
+    inline const bool skip_init = false;                     // skips init routine
 
     // Inner Loop
-    inline const bool innerloop_thread_enable = false;       // keep in mind it gets woken up by outer loop
+    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woken up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = false;
+    inline const bool outerloop_thread_enable = true;
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
@@ -37,7 +37,7 @@ namespace config
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
     inline const bool electrical_monitoring_thread_enable = true; //DO NOT DISABLE THIS THREAD. IT IS NEEDED TO PROTECT THE BATTERY! ONLY DISABLE IF YOU KNOW WHAT YOU ARE DOING AND REALLY NEED TO!
-    inline const int  electrical_monitoring_thread_period = 100;       // [ms]
+    inline const int  electrical_monitoring_thread_period = 200;       // [ms]
 
     /* ---------------------------------------- Hardware ---------------------------------------  */
     // IMU
@@ -75,13 +75,13 @@ namespace config
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (10 * 2 * M_PI) / 60.0f;                // [rad/s]
-    inline const PIDParams paramsPosController{ 1.2, 0.f, 0.2f };                  // P, I, D
-    inline const bool antiwindupPosController = false;
+    inline const PIDParams paramsPosController{ 1.0, 0.f, 0.05f };                  // P, I, D
+    inline const bool antiwindupPosController = true;
     inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           
     inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
     inline const PIDParams paramsVelController{ -20, -200, 0.0f };              // P, I, D
-    inline const bool antiwindupVelController = false;
+    inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;
 
     // Arm Controller

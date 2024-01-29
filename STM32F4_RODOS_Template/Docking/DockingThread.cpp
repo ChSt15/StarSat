@@ -35,21 +35,14 @@ void DockingThread::run()
 	{   
 
         cameraPwrCmdTopic.publishConst(cameraState);
-        //setMode(Mission_Locate);
+
 		// Get new Cameradata if availible
 		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
         {
             //Print all data from struct
-            /*auto &data = cameraData.telemetryCamera;
-            PRINTF("CameraData: %f %f %f \n %f %f %f \n%d %d\n",
-                   data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);*/
+            //auto &data = cameraData.telemetryCamera;
+            //PRINTF("CameraData: %f %f %f \n %f %f %f \n%d %d %d %d\n", data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints, data.valid);
         }
-
-        auto yawToMockup = rad2Grad(cameraData.getYawtoMockup());
-        PRINTF("Yaw to mockup: %f\n", yawToMockup);
-        
-        
-        PRINTF("Dis: %f\n", cameraData.getDistance());
 
 		switch (getMode())
 		{
@@ -65,13 +58,12 @@ void DockingThread::run()
             cameraState = false;
 			if (!armController.Calibrate()) break;
 
-			setMode(Idle);
+			setMode(Standby);
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
 			cameraState = true;
-            //PRINTF("Current frame %d, last frame %d\n", cameraData.telemetryCamera.MeasurmentCnt, cameraData.last_frame);
 			if (!cameraData.validFrame()) break;
 			setMode(Mission_Point);
 			break;
@@ -92,7 +84,7 @@ void DockingThread::run()
 			if (!cameraData.validFrame()) break;
 			if (!armController.FinalExtension(cameraData)) break;
 
-			setMode(Idle);
+			setMode(Standby);
 			break;
 
 		default:

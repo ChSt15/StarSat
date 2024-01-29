@@ -57,10 +57,6 @@ void InnerLoopThread::run()
 		case Idle:
 			hbridge.setVoltage(0.f);
 			break;
-		case Standby:
-			reactionwheelControl.setSetpoint(0.f);
-			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
-			break;
 		case Reactionwheel_Spinup:
 			reactionwheelControl.setSetpoint(0.f);
 			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
