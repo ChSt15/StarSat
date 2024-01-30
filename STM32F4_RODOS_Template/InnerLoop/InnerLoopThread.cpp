@@ -36,10 +36,6 @@ void InnerLoopThread::run()
 		else reactionwheelControl.config(paramsSpeedControl, limitSpeedController, antiwindupSpeedController, derivativofmeasurmentSpeedController, reactionwheelbase_vel);
 	}
 
-
-	//setMode(Control_Speed);
-	//reactionwheelControl.setSetpoint(0.f);
-
 	while (true)
 	{
 		//if (SECONDS_NOW() > 10.f) reactionwheelControl.setSetpoint(100.f);
@@ -49,8 +45,6 @@ void InnerLoopThread::run()
 		
 		// Encoder measurment
 		TimestampedData<float> encoder_speed = encoder.getSpeed();
-
-        //setMode(Mission_Locate);
 
 		switch (getMode())
 		{

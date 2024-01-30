@@ -31,7 +31,7 @@ bool ArmController::InitialExtension(CameraData& camera)
 
 		updateTelemetry(camera);
 
-		last_time = SECONDS_NOW();
+		last_time_dock = SECONDS_NOW();
 		moving = true;
 		deccel = false;
 
@@ -49,8 +49,8 @@ bool ArmController::InitialExtension(CameraData& camera)
 			return true;
 		}
 
-		float dt = SECONDS_NOW() - last_time;
-		last_time = SECONDS_NOW();
+		float dt = SECONDS_NOW() - last_time_dock;
+		last_time_dock = SECONDS_NOW();
 
 		int period = instructions.period;
 
@@ -99,27 +99,28 @@ bool ArmController::FinalExtension(CameraData& camera)
 		updateTelemetry(camera);
 		return false;
 	}
+	
 
-	float time_to_target_arm = 0.1f * telemetry.mockupDistance / (this->min_vel * steps2mm);
+	float time_to_target_arm = 0.1f * telemetry.mockupDistance / (this->max_vel * steps2mm);
 	float time_to_target_mockup;
 	float yaw = camera.getYawofMockup();
 	float w = telemetry.mockupAngularvelocity;
 
 	if (w > 0)
 	{
-		while (yaw > 0) yaw	+= 2 * M_PI;
-		time_to_target_mockup = yaw / w;
+		if (yaw > 0) yaw -= 2 * M_PI;
+		time_to_target_mockup = -yaw / w;
 	}
 	else
 	{
-		while (yaw < 0) yaw -= 2 * M_PI;
-		time_to_target_mockup = -yaw / w;
+		if (yaw < 0) yaw += 2 * M_PI;
+		time_to_target_mockup = yaw / -w;
 	}
-	
+
 	if (time_to_target_mockup - time_to_target_arm < 1)
 	{
-		instructions.stepTarget = (int)(camera.getDistance()  / steps2mm);
-		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
+		instructions.stepTarget = (int)(telemetry.mockupDistance / steps2mm + 15);
+		instructions.period = (int)(1.f / max_vel * 1000.f * 1000.f);
 		stepperInstructionsTopic.publish(instructions);
 
 		// cant call suspend directly ?!
@@ -136,18 +137,33 @@ bool ArmController::FinalExtension(CameraData& camera)
 
 void ArmController::CalcAngularVelocity(CameraData& camera)
 {
+	static bool first = false;
+
 	float time = SECONDS_NOW();
 	float yaw = camera.getYawofMockup();
 
 	if (!isnan(last_yaw))
+	{	
+		float dyaw = (yaw - last_yaw);
+		float dt = time - last_time_w;
+		while (dyaw >  M_PI) dyaw -= 2 * M_PI;
+		while (dyaw < -M_PI) dyaw += 2 * M_PI;
+		if (first)
+		{
+			telemetry.mockupAngularvelocity = dyaw / dt;
+		}
+		else 
+		{
+			float w = dyaw / dt;
+			telemetry.mockupAngularvelocity = telemetry.mockupAngularvelocity * 0.01 + 0.99 * w;
+		}
+	}
+	else 
 	{
-		float w = yaw - last_yaw / (time - last_time);
-		telemetry.mockupAngularvelocity = telemetry.mockupAngularvelocity * 0.1 + 0.9 * w;
+		first = true;
 	}
 
-	PRINTF("%f \n", telemetry.mockupAngularvelocity);
-
-	last_time = time;
+	last_time_w = time;
 	last_yaw = yaw;
 
 }

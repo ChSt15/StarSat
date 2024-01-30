@@ -21,7 +21,8 @@ private:
 	float steps2mm;			// [mm/steps]
 
 	float last_yaw = NAN;
-	float last_time;
+	float last_time_dock;
+	float last_time_w;
 
 	StepperInstruction instructions;
 	StepperStatus status;

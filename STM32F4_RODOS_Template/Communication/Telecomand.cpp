@@ -28,6 +28,9 @@ void Telecommand::processNewCommand()
 		case SetMode_Idle:
 			setMode(Idle);
 			break;
+		case SetMode_Standby:
+			setMode(Standby);
+			break;
 		case SetMode_CalibGyro:
 			setMode(Calib_Gyro);
 			break;

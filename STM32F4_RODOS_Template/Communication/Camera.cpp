@@ -46,7 +46,7 @@ float CameraData::getYawtoMockup()
 float CameraData::getYawofMockup()
 {
 	Matrix3D_F Camera2Mockup = AngleAxis_F(sqrtf(telemetryCamera.rx * telemetryCamera.rx + telemetryCamera.ry * telemetryCamera.ry + telemetryCamera.rz * telemetryCamera.rz), telemetryCamera.rx, telemetryCamera.ry, telemetryCamera.rz).toMatrix3D().transpose();
-	Matrix3D_F Arm2Mockup =  Camera2Arm_Rot.transpose() * Camera2Mockup;
+	Matrix3D_F Arm2Mockup =  Camera2Mockup * Camera2Arm_Rot.transpose();
 	return YPR_F(Arm2Mockup).yaw;
 }
 

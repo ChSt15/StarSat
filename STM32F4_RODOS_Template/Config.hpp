@@ -13,14 +13,14 @@
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
-    inline const bool skip_init = true;                     // skips init routine
+    inline const bool skip_init = false;                     // skips init routine
 
     // Inner Loop
-    inline const bool innerloop_thread_enable = false;       // keep in mind it gets woken up by outer loop
+    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woken up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = false;
+    inline const bool outerloop_thread_enable = true;
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop

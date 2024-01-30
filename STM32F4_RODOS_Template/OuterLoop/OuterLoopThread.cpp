@@ -52,32 +52,18 @@ void OuterLoopThread::run()
 
 	}
 
-	//setMode(Control_Vel);
 	float temp1 = grad2Rad(0);
 	float temp2 = M_PI/8.f;
 
 	AngularPositionSetpointTopic.publish(temp1);
 	AngularVelocitySetpointTopic.publish(temp2);
 
-    //setMode(Idle);
     bool once = false;
 
 	float out;
 	int meas_cnt = 0;
 	while (true)
 	{	
-		/*if (SECONDS_NOW() > 15)
-		{
-			temp1 = grad2Rad(180);
-			AngularPositionSetpointTopic.publish(temp1);
-            setMode(Control_Pos);
-		} else if (SECONDS_NOW() > 5)
-		{
-			//temp1 = grad2Rad(180);
-			//AngularPositionSetpointTopic.publish(temp1);
-            setMode(Control_Pos);
-		}*/
-
 		// IMU
 		IMUDataTopic.publish(imu.readData());
 
@@ -157,9 +143,9 @@ void OuterLoopThread::run()
                 if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
                 velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
                 publishSpeed(velocitycontrol.update(qekf.getestimit()));
-                if (camera.getYawtoMockup() < 0.1 && qekf.getestimit().data.angularVelocity.z < 0.1) break;
 
-                setMode(Mission_Dock_initial);
+                if (abs(camera.getYawtoMockup()) < 0.1 && abs(qekf.getestimit().data.angularVelocity.z) < 0.1) setMode(Mission_Dock_initial);
+	
             }
             break;
 

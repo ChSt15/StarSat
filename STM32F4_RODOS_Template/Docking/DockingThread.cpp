@@ -41,8 +41,7 @@ void DockingThread::run()
         {	
 			//cameraData.getDistance();
 			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
-
-			if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
+			//if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
 
 			//PRINTF("%f, %f\n\n", rad2Grad(cameraData.getYawtoMockup()), cameraData.getDistance());
             //Print all data from struct
@@ -91,6 +90,8 @@ void DockingThread::run()
 			if (!cameraData.validFrame()) break;
 			if (!armController.FinalExtension(cameraData)) break;
 
+
+			suspendCallerUntil(NOW() + 2 * SECONDS);
 			setMode(Idle);
 			break;
 
