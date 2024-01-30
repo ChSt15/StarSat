@@ -28,7 +28,6 @@ struct CameraData
     //bool valid_ = false;
 
     bool validFrame();
-    // WARNING: coordinate transformation not implemented
     float getDistance();
     float getYawtoMockup();
     float getYawofMockup();
