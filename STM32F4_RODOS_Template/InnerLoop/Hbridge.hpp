@@ -22,7 +22,11 @@ private:
 	int pwmIncrements;
 
 	// @brief Maximum output voltage percentage of HBridge output.
-	float MAX_OUTPUT_PERCENTAGE = 0.5f;
+	float MAX_OUTPUT_PERCENTAGE = 1;
+
+    // @brief A dynamic output limiter that uses the current reaction wheel speed to roughly limit the output current.
+    float DYNAMIC_OUTPUT_LIMIT_BAND = 0.2;
+    float DYNAMIC_REACTIONWHEEL_VOLTAGE_FACTOR = 0.0007;
 	
 	/**
 	 * @brief Check if desired percentage of max. voltage exceeds limits and if so, adjust
@@ -30,6 +34,13 @@ private:
 	 * @return adjusted value
 	*/
 	float checkVoltagePercentage(float voltagePercentage);
+
+    /**
+     * @brief Dynamically limit the output voltage based on the current reaction wheel speed
+     * @param voltagePercentage 
+     * @return adjusted value
+    */
+    float checkDynamicOutputLimit(float voltagePercentage);
 
 public:
 
