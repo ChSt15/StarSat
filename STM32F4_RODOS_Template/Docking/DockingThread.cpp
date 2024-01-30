@@ -38,10 +38,17 @@ void DockingThread::run()
 
 		// Get new Cameradata if availible
 		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
-        {
+        {	
+			//cameraData.getDistance();
+			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
+
+			if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
+
+			//PRINTF("%f, %f\n\n", rad2Grad(cameraData.getYawtoMockup()), cameraData.getDistance());
             //Print all data from struct
             //auto &data = cameraData.telemetryCamera;
             //PRINTF("CameraData: %f %f %f \n %f %f %f \n%d %d %d %d\n", data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints, data.valid);
+
         }
 
 		switch (getMode())
@@ -84,7 +91,7 @@ void DockingThread::run()
 			if (!cameraData.validFrame()) break;
 			if (!armController.FinalExtension(cameraData)) break;
 
-			setMode(Standby);
+			setMode(Idle);
 			break;
 
 		default:

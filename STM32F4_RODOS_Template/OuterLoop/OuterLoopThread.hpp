@@ -23,7 +23,7 @@ class OuterLoopThread : public Thread
 public:
 
 	// Set name, prio and stack size
-	OuterLoopThread() : Thread("Outer Loop Thread", 120, 20000) {}
+	OuterLoopThread() : Thread("Outer Loop Thread", 120, 18000) {}
 
 	void init();
 	void run();

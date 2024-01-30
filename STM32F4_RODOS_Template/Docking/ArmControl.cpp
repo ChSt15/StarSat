@@ -142,8 +142,10 @@ void ArmController::CalcAngularVelocity(CameraData& camera)
 	if (!isnan(last_yaw))
 	{
 		float w = yaw - last_yaw / (time - last_time);
-		telemetry.mockupAngularvelocity = (telemetry.mockupAngularvelocity + w) / 2.f;
+		telemetry.mockupAngularvelocity = telemetry.mockupAngularvelocity * 0.1 + 0.9 * w;
 	}
+
+	PRINTF("%f \n", telemetry.mockupAngularvelocity);
 
 	last_time = time;
 	last_yaw = yaw;
