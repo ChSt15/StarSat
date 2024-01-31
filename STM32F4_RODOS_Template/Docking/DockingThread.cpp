@@ -69,30 +69,25 @@ void DockingThread::run()
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
+
 			cameraState = true;
-			if (!cameraData.validFrame()) break;
-			setMode(Mission_Point);
+			if (cameraData.validFrame()) setMode(Mission_Point);;
 			break;
 
 		case Mission_Dock_initial:
-            cameraState = true;
-			if (!armController.InitialExtension(cameraData))
-			{
-				if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
-				break;
-			}
 
-			setMode(Mission_Dock_final);
+            cameraState = true;
+			if (armController.InitialExtension(cameraData)) setMode(Mission_Dock_final);		
 			break;
 
 		case Mission_Dock_final:
+
             cameraState = true;
-			if (!cameraData.validFrame()) break;
-			if (!armController.FinalExtension(cameraData)) break;
-
-
-			suspendCallerUntil(NOW() + 2 * SECONDS);
-			setMode(Idle);
+			if (armController.FinalExtension(cameraData))
+			{
+				suspendCallerUntil(NOW() + 2 * SECONDS);
+				setMode(Idle);
+			}
 			break;
 
 		default:

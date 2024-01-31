@@ -39,14 +39,16 @@ public:
 
 	bool FinalExtension(CameraData& camera);
 
-	void CalcAngularVelocity(CameraData& camera);
-
-	void updateTelemetry(CameraData& camera);
+	bool Calibrate();
 
 	// Hard stop, use not recommended. Its there to make sure theres no dual input
 	void Stop();
 
-	bool Calibrate();
+private:
+
+	void updateTelemetryMockup(CameraData& camera);
+
+	void updateTelemetryArm();
 };
 
 
