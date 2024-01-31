@@ -18,7 +18,11 @@ void ArmController::config(int max_vel, int min_vel, int max_accel, int deccel_m
 bool ArmController::InitialExtension(CameraData& camera)
 {
 	// update Mockup data
-	if (camera.validFrame()) updateTelemetryMockup(camera);
+	if (camera.validFrame())
+	{
+		updateTelemetryMockup(camera);
+		instructions.stepTarget = (int)(0.9f * telemetry.mockupDistance / steps2mm);
+	}
 
 	// Get new status if available
 	statusBuffer.getOnlyIfNewData(status);
