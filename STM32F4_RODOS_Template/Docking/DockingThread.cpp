@@ -32,7 +32,6 @@ void DockingThread::run()
     bool cameraState = false;
 	while (true)
 	{   
-
         cameraPwrCmdTopic.publishConst(cameraState);
 
 		// Get new Cameradata if availible
@@ -41,7 +40,7 @@ void DockingThread::run()
 			//cameraData.getDistance();
 			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
 			//if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
-
+            //PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
 			//PRINTF("%f, %f\n\n", rad2Grad(cameraData.getYawtoMockup()), cameraData.getDistance());
             //Print all data from struct
             //auto &data = cameraData.telemetryCamera;
@@ -70,7 +69,8 @@ void DockingThread::run()
 		case Mission_Locate:
 
 			cameraState = true;
-			if (cameraData.validFrame()) setMode(Mission_Point);;
+			if (cameraData.validFrame()) setMode(Mission_Point);
+            armController.Calibrate();
 			break;
 
 		case Mission_Dock_initial:

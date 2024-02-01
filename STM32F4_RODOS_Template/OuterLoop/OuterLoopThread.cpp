@@ -129,6 +129,8 @@ void OuterLoopThread::run()
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
             {   
+                mission_timeout = SECONDS_NOW();
+
                 CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
                 CameraData camera;
                 camera.telemetryCamera = CameraDataReceiver;
@@ -142,12 +144,18 @@ void OuterLoopThread::run()
             }
 
 		case Mission_Point:
-            {
+            {   
+                if (SECONDS_NOW() - mission_timeout > 2) setMode(Mission_Locate);
+
                 CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
                 CameraData camera;
                 camera.telemetryCamera = CameraDataReceiver;
 
-                if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                if (camera.validFrame())
+                {
+                    positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                    mission_timeout = SECONDS_NOW();
+                }
                 velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
                 publishSpeed(velocitycontrol.update(qekf.getestimit()));
 
@@ -158,14 +166,19 @@ void OuterLoopThread::run()
 
 		case Mission_Dock_initial:
 		case Mission_Dock_final:
+			{   
+                if (SECONDS_NOW() - mission_timeout > 2) setMode(Mission_Locate);
 
-			// Get new Cameradata if availible
-			{
+                // Get new Cameradata if availible
                 CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
                 CameraData camera;
                 camera.telemetryCamera = CameraDataReceiver;
 
-                if (camera.validFrame()) positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                if (camera.validFrame())
+                {
+                    positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                    mission_timeout = SECONDS_NOW();
+                }
                 velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
                 publishSpeed(velocitycontrol.update(qekf.getestimit()));
             }

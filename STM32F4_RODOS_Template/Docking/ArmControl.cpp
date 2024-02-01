@@ -171,7 +171,7 @@ void ArmController::updateTelemetryMockup(CameraData& camera)
 		else
 		{
 			float w = dyaw / dt;
-			telemetry.mockupAngularvelocity = telemetry.mockupAngularvelocity * 0.1 + 0.90 * w;
+			telemetry.mockupAngularvelocity = telemetry.mockupAngularvelocity * 0.1 + 0.9 * w;
 		}
 	}
 	else
@@ -183,6 +183,8 @@ void ArmController::updateTelemetryMockup(CameraData& camera)
 	last_yaw = yaw;
 
 	telemetry.mockupDistance = telemetry.mockupDistance * 0.1 + camera.getDistance() * 0.9;
+
+    //PRINTF("%f, %f\n", telemetry.mockupDistance, telemetry.mockupAngularvelocity);
 
 	dockingTelemetryTopic.publish(telemetry);
 }
