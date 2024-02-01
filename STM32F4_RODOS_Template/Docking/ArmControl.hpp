@@ -16,6 +16,7 @@ private:
 
 	int max_vel;			// [step/s]
 	int min_vel;			// [step/s]
+    int dock_vel;           // [step/s]
 	int max_accel;			// [step/s^2]
 	int deccel_margin;		// [steps]
 	float steps2mm;			// [mm/steps]
@@ -33,7 +34,7 @@ private:
 
 public:
 
-	void config(int max_vel, int min_vel, int max_accel, int deccel_margin, float steps2mm);
+	void config(int max_vel, int min_vel, int dock_vel, int max_accel, int deccel_margin, float steps2mm);
 
 	bool InitialExtension(CameraData& camera);
 

@@ -6,10 +6,11 @@ static CommBuffer<StepperStatus> statusBuffer;
 static Subscriber statusSubsciber(stepperStatusTopic, statusBuffer, "Arm Control");
 
 
-void ArmController::config(int max_vel, int min_vel, int max_accel, int deccel_margin, float steps2mm)
+void ArmController::config(int max_vel, int min_vel, int dock_vel, int max_accel, int deccel_margin, float steps2mm)
 {
 	this->max_vel = max_vel;
 	this->min_vel = min_vel;
+    this->dock_vel = dock_vel;
 	this->max_accel = max_accel;
 	this->deccel_margin = deccel_margin;
 	this->steps2mm = steps2mm;
@@ -21,15 +22,16 @@ bool ArmController::InitialExtension(CameraData& camera)
 	if (camera.validFrame())
 	{
 		updateTelemetryMockup(camera);
-		instructions.stepTarget = (int)(0.9f * telemetry.mockupDistance / steps2mm);
+		instructions.stepTarget = (int)(0.85f * telemetry.mockupDistance / steps2mm);
 	}
+    // skip if no measurment is available and no distance is set
+    else if (!moving) return false;
 
 	// Get new status if available
 	statusBuffer.getOnlyIfNewData(status);
 
 	if (!moving)
 	{
-		instructions.stepTarget = (int)(0.9f * telemetry.mockupDistance / steps2mm);
 		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
 		stepperInstructionsTopic.publish(instructions);
 		steppermotorthread.resume();
@@ -110,7 +112,7 @@ bool ArmController::FinalExtension(CameraData& camera)
 	{
 		updateTelemetryMockup(camera);
 
-		float time_to_target_arm = 0.1f * telemetry.mockupDistance / (this->max_vel * steps2mm);
+		float time_to_target_arm = 0.15f * telemetry.mockupDistance / (this->dock_vel * steps2mm);
 		float time_to_target_mockup;
 		float yaw = camera.getYawofMockup();
 		float w = telemetry.mockupAngularvelocity;
@@ -128,8 +130,8 @@ bool ArmController::FinalExtension(CameraData& camera)
 
 		if (time_to_target_mockup - time_to_target_arm < 1)
 		{
-			instructions.stepTarget = (int)(telemetry.mockupDistance / steps2mm + 15);
-			instructions.period = (int)(1.f / max_vel * 1000.f * 1000.f);
+			instructions.stepTarget = (int)(telemetry.mockupDistance / steps2mm);
+			instructions.period = (int)(1.f / dock_vel * 1000.f * 1000.f);
 			stepperInstructionsTopic.publish(instructions);
 			updateTelemetryArm();
 

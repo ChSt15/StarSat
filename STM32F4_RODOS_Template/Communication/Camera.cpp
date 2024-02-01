@@ -40,7 +40,7 @@ float CameraData::getYawtoMockup()
 	Vector3D_F Mockup_C(telemetryCamera.px, telemetryCamera.py, telemetryCamera.pz);
 	Vector3D_F Mockup_A = Camera2Arm(Mockup_C);
     Vector3D_F Mockup_IMU = Mockup_A + Arm2IMU_Trans;
-	return atan2f(Mockup_IMU.x, Mockup_IMU.y) - grad2Rad(4.f);
+	return atan2f(Mockup_IMU.x, Mockup_IMU.y) - atan2f(Arm2IMU_Trans.x, Mockup_IMU.y); //- grad2Rad(4.f);
 }
 
 float CameraData::getYawofMockup()

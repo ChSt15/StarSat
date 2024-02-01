@@ -26,11 +26,10 @@ void DockingThread::run()
 		if (!docking_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		// ArmController
-		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
+		armController.config(max_vel, min_vel, dock_vel, max_accel, deccel_margin, steps2mm);
 	}
 
     bool cameraState = false;
-
 	while (true)
 	{   
 
