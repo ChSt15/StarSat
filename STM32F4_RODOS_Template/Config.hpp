@@ -14,11 +14,11 @@ namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
     // Inner Loop
-    inline const bool innerloop_thread_enable = false;
+    inline const bool innerloop_thread_enable = true;
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
-    inline const bool outerloop_thread_enable = false;
+    inline const bool outerloop_thread_enable = true;
     inline const int  outerloop_thread_period = 200;        // [ms]
 
     // Docking Loop
@@ -66,19 +66,23 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float limitSpeedController = 7.2f;                           // [V]
-    inline const PIDParams paramsSpeedControl{ 0.6f, 0.0f, 0.0f };          // P, I, D
+    inline const float reactionwheelbase_vel = 300.f;  
+    inline const float limitSpeedController = 12;                           // [V]
+    inline const PIDParams paramsSpeedControl{ 0.15f, 0.03f, 0.0f };                // P, I, D
     inline const bool backcalculationSpeedController = true;
+    inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
-    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsPosController{ 1.0f, 1.0f, 1.0f };         // P, I, D
-    inline const bool backcalculationPosController = false;
-    inline const bool derivativofmeasurmentPosController = false;
-    // Velocity Controller  
-    inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f;  // [rad/s]
-    inline const PIDParams paramsVelController{ 1.0f, 1.0f, 1.0f };         // P, I, D
-    inline const bool backcalculationVelController = false;
+    inline const float limitPosController = (10 * 2 * M_PI) / 60.0f;                // [rad/s]
+    inline const PIDParams paramsPosController{ 1.0, 0.f, 0.05f };                  // P, I, D
+    inline const bool backcalculationPosController = true;
+    inline const bool antiwindupPosController = true;
+    inline const bool derivativofmeasurmentPosController = true;
+    // Velocity Controller                                           
+    inline const float limitVelController = (3000.0f * 2 * M_PI) / 60.0f;    // [rad/s]
+    inline const PIDParams paramsVelController{ -5, -100, 0.0f };              // P, I, D
+    inline const bool backcalculationVelController = true;
+    inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;
 
     // Arm Controller
@@ -95,7 +99,7 @@ namespace config
     // QEKF
     inline const Vector3D_F sigma_gyro = Vector3D_F(0.0027728, 0.0023483, 0.0018954);      // [rad/s]
     inline const Vector3D_F sigma_accel = Vector3D_F(0.0014530, 0.0017393, 0.0044343);     // [g]
-    inline const float sigma_yaw = 0.018469;                                               // [rad]
+    inline const float sigma_yaw = 1000;                                               // [rad]
     inline const float sigma_gyro_drift = 1.0f * powf(10, -6);                              // [rad/s^2]
 
     /* ------------------------------------------ Com -----------------------------------------  */

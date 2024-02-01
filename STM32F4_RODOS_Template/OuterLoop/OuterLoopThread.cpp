@@ -49,6 +49,8 @@ void OuterLoopThread::run()
 
 	}
 
+    suspendCallerUntil(NOW() + 5*SECONDS);
+
 	while (true)
 	{
 		// IMU
@@ -56,6 +58,8 @@ void OuterLoopThread::run()
 
 		// Atitude estimation
 		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
+
+        //setMode(Control_Vel);
 
 		switch (getMode())
 		{
@@ -110,6 +114,7 @@ void OuterLoopThread::run()
 			break;
 
 		default:
+
 			break;
 		}
 

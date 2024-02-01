@@ -3,6 +3,8 @@
 #include "rodos.h"
 #include "matlib.h"
 
+#include "../Modes.hpp"
+#include "../OuterLoop/AngularVelocityControl.hpp"
 #include "../InnerLoop/Hbridge.hpp"
 #include "Adc.hpp"
 
@@ -28,19 +30,26 @@ void ControlThread::run()
 	{
 		desiredVoltage_percent = adc.getVoltage() / 3000.f;
 
-		if (desiredVoltage_percent > 0.95) desiredVoltage_percent = 1.f;
-		else if (desiredVoltage_percent > 0.75) desiredVoltage_percent = 0.8f;
-		else if (desiredVoltage_percent > 0.55) desiredVoltage_percent = 0.6f;
-		else if (desiredVoltage_percent > 0.35) desiredVoltage_percent = 0.4f;
-		else if (desiredVoltage_percent > 0.15) desiredVoltage_percent = 0.2f;
-		else desiredVoltage_percent = 0.f;
+		int percent = int(desiredVoltage_percent * 100);
 
-		desiredVoltage_percent *= 0.2;
+        int incrementsSize = 20;
+        // Make percent in increments of 20
+        percent = (percent / incrementsSize) * incrementsSize;
 
+		//percent *= 2000/100;
 
-
-		hbridge.setVoltage(desiredVoltage_percent);
+		//hbridge.setVoltage(desiredVoltage_percent);
 		//PRINTF("Desired Voltage:    %f\n", desiredVoltage_percent);
+
+        //speedSetpointTopic.publish(desiredVoltage_percent);
+        float out = float(desiredVoltage_percent)/100*2*3/6;// percent;
+        AngularVelocitySetpointTopic.publish(out);
+
+        if (percent < 1) {
+            setMode(Control_Vel);
+        } else {
+            setMode(Idle);
+        }
 
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}

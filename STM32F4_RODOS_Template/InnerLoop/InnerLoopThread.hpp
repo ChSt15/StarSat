@@ -31,4 +31,6 @@ private:
 
 extern InnerLoopThread innerLoopThread;
 
+extern Topic<float> mockupSpeedSetpointTopic;
+
 #endif 

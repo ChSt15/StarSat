@@ -6,6 +6,7 @@ static CommBuffer<float> setPointBuffer;
 static Subscriber setPointSubsciber(speedSetpointTopic, setPointBuffer, "Inner Loop Thread");
 static float setPointReceiver = 0.f;
 
+
 HAL_GPIO ledred(GPIO_062);
 
 void InnerLoopThread::init()
@@ -35,6 +36,7 @@ void InnerLoopThread::run()
 	setMode(Control_Speed);
 	reactionwheelControl.setSetpoint(200.f);
 
+
 	while (true)
 	{
 		// Update setPoint if changed
@@ -43,21 +45,15 @@ void InnerLoopThread::run()
 		// Encoder measurment
 		TimestampedData<float> encoder_speed = encoder.getSpeed();
 
-		switch (getMode())
-		{
-		case Idle:
-			hbridge.setVoltage(0.f);
-			break;
-
-		default:
-			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
-			break;
-		}
+        if (getMode() != Idle)
+            hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
+        else 
+            hbridge.setVoltage(0);
 
 		// Publish Encoder measurment
 		EncoderDataTopic.publish(encoder_speed);
 
-		ledred.setPins(~ledred.readPins());
+		//ledred.setPins(~ledred.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }
