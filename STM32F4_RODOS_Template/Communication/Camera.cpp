@@ -20,7 +20,7 @@ Topic<float> cameraTest(402, "OrpeTesting");
 //const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 1, 0), Vector3D_F(0, 0, -1))  * Matrix3D_F(AngleAxis_F(grad2Rad(-10), 0, 1, 0)) * Matrix3D_F(AngleAxis_F(grad2Rad(20), 1, 0, 0)) * Matrix3D_F(Vector3D_F(1, 0, 0), Vector3D_F(0, 0, -1), Vector3D_F(0, 1, 0));
 const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(YPR_F(grad2Rad(-3.75), grad2Rad(2.4), grad2Rad(100.5))).transpose();
 //const Vector3D_F Camera2Arm_Trans = Vector3D_F(20.5, -127.4, 175) + Vector3D_F(0, -95, -70);
-const Vector3D_F Camera2Arm_Trans = Vector3D_F(9.5, -141.4, 117) + Vector3D_F(0, -105, -55);
+const Vector3D_F Camera2Arm_Trans = Vector3D_F(9.5, -141.4, 117) + Vector3D_F(0, -105, -60);
 const Vector3D_F Arm2IMU_Trans = Vector3D_F(12, 129, 0);
 
 Vector3D_F Camera2Arm(Vector3D_F Vec_C)

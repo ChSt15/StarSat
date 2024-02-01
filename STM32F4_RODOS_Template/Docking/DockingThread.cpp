@@ -71,6 +71,7 @@ void DockingThread::run()
 			cameraState = true;
 			if (cameraData.validFrame()) setMode(Mission_Point);
             armController.Calibrate();
+            armController.reset();
 			break;
 
 		case Mission_Dock_initial:

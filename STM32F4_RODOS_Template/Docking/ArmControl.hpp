@@ -32,6 +32,9 @@ private:
 	bool moving = false;
 	bool deccel = false;
 
+    bool valid_CameraData = false;
+    bool valid_LastYaw = false;
+
 public:
 
 	void config(int max_vel, int min_vel, int dock_vel, int max_accel, int deccel_margin, float steps2mm);
@@ -45,11 +48,15 @@ public:
 	// Hard stop, use not recommended. Its there to make sure theres no dual input
 	void Stop();
 
+    void reset();
+
 private:
 
-	void updateTelemetryMockup(CameraData& camera);
+	bool updateTelemetryMockup(CameraData& camera);
 
 	void updateTelemetryArm();
+
+
 };
 
 
