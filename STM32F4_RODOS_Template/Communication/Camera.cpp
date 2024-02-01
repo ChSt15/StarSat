@@ -30,6 +30,8 @@ const Matrix3D_F Camera2Arm_Rot = Rot_X_minus90deg * Rot_Y_minus5deg * Rot_X_min
 
 const Vector3D_F Camera2Arm_Trans = Vector3D_F(20.5, -128, 157);
 
+const float MockupToDockingPort = 105;
+
 // const Matrix3D_F Camera2Arm_Rot = Matrix3D_F(YPR_F(grad2Rad(-3.75), grad2Rad(2.4), grad2Rad(100.5))).transpose();
 // const Vector3D_F Camera2Arm_Trans = Vector3D_F(20.5, -127.4, 175) + Vector3D_F(0, -95, -70);
 // const Vector3D_F Camera2Arm_Trans = Vector3D_F(9.5, -141.4, 117) + Vector3D_F(0, -105, -70);
@@ -44,21 +46,18 @@ float CameraData::getDistance()
 {
 	Vector3D_F Mockup_C(telemetryCamera.px, telemetryCamera.py, telemetryCamera.pz);
     Vector3D_F Mockup_A = Camera2Arm(Mockup_C);
-	return sqrt(Mockup_A.x * Mockup_A.x + Mockup_A.y * Mockup_A.y);
+    float distance = sqrt(Mockup_A.x * Mockup_A.x + Mockup_A.y * Mockup_A.y) - MockupToDockingPort;
+	return distance;
 }
 
 float CameraData::getYawtoMockup()
 {
-    /*
-    Matrix3D_F Mockup2Camera = AngleAxis_F(sqrtf(telemetryCamera.rx * telemetryCamera.rx + telemetryCamera.ry * telemetryCamera.ry + telemetryCamera.rz * telemetryCamera.rz), telemetryCamera.rx, telemetryCamera.ry, telemetryCamera.rz).toMatrix3D();
-    Vector3D_F Camera_M(telemetryCamera.px, telemetryCamera.py, telemetryCamera.pz);
-    Vector3D_F Mockup_C = Camera_M.scale(-1).matVecMult(Mockup2Camera);
-    */
-
 	Vector3D_F Mockup_C(telemetryCamera.px, telemetryCamera.py, telemetryCamera.pz);
 	Vector3D_F Mockup_A = Camera2Arm(Mockup_C);
     Vector3D_F Mockup_IMU = Mockup_A + Arm2IMU_Trans;
-	return atan2f(Mockup_IMU.x, Mockup_IMU.y) - grad2Rad(4.f);
+	// CHANGED
+    // return atan2f(Mockup_IMU.x, Mockup_IMU.y) - grad2Rad(4.f);
+    return atan2f(Mockup_IMU.x, Mockup_IMU.y);
 }
 
 float CameraData::getYawofMockup()
