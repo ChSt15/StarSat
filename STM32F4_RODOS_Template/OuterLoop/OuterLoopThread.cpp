@@ -118,7 +118,7 @@ void OuterLoopThread::run()
 			break;
 		}
 
-		ledorange.setPins(~ledorange.readPins());
+		//ledorange.setPins(~ledorange.readPins());
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }

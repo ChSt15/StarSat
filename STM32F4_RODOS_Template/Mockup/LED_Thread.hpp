@@ -35,7 +35,7 @@ class ORPE_LEDControl : public Thread {
 private:
 
 	///@brief Number of frames untill the code repeats.
-	static constexpr size_t codeRepeat = 60;
+	static constexpr size_t codeRepeat = 47;
 
 	bool ledActive_[NUMLEDS];
 	HAL_GPIO gpio_[NUMLEDS];
