@@ -34,13 +34,13 @@ public:
 
 	void config(int max_vel, int min_vel, int max_accel, int deccel_margin, float steps2mm);
 
-	bool InitialExtension(TelemetryCamera& camera);
+	bool InitialExtension(CameraData& camera);
 
-	bool FinalExtension(TelemetryCamera& camera);
+	bool FinalExtension(CameraData& camera);
 
-	void CalcAngularVelocity(TelemetryCamera& camera);
+	void CalcAngularVelocity(CameraData& camera);
 
-	void updateTelemetry(TelemetryCamera& camera);
+	void updateTelemetry(CameraData& camera);
 
 	// Hard stop, use not recommended. Its there to make sure theres no dual input
 	void Stop();

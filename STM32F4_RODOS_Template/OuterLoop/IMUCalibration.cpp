@@ -37,7 +37,7 @@ bool CalibrationIMU::calibrateAccel(TimestampedData<IMUData>& imurawdata)
 {
 	if (accel_samples <= accel_maxsamples)
 	{
-		accel_sum = accel_sum + imurawdata.data.acceleration;
+		accel_sum = accel_sum + imurawdata.data.acceleration + Vector3D_F(0, 0, 1);
 		accel_samples++;
 		return false;
 	}
@@ -71,8 +71,8 @@ bool CalibrationIMU::calibrateMag(TimestampedData<IMUData>& imurawdata)
 	else
 	{
 		IMUCalib mag_calib;
-		mag_calib.bias.x = mag_maxx - mag_minx;
-		mag_calib.bias.y = mag_maxy - mag_miny;
+		mag_calib.bias.x = (mag_maxx + mag_minx)/2.f;
+		mag_calib.bias.y = (mag_maxy + mag_miny)/2.f;
 		mag_calib.bias.z = 0.0f;
 		mag_calib.scale = Matrix3D_F();
 		mag_calib.scale.r[0][0] = 1.0;

@@ -1,9 +1,11 @@
 #include "../Config.hpp"
 
+#include "../Communication/Camera.hpp"
+
 #include "ElectricalMonitoring.hpp"
 
 ElectricalMonitoring::BeeperThread::BeeperThread(RODOS::PWM_IDX beeper) :
-    Thread("BeeperThread"),
+    Thread("BeeperThread", 100),
     beeper(beeper)
 {}
 
@@ -22,7 +24,7 @@ void ElectricalMonitoring::BeeperThread::beepForTime_ns(int64_t time_ns) {
 
 void ElectricalMonitoring::BeeperThread::init()
 {
-    beeper.init(1000, 100);
+    beeper.init(2000, 100);
     beeper.write(0);
 }
 
@@ -56,7 +58,7 @@ ElectricalMonitoring::ElectricalMonitoring(RODOS::GPIO_PIN rpiPowerPin, RODOS::G
     extPower_(powerOffPin),
     adcWheelPin_(adcWheelPin),
     beeperIDX_(beeperPin),
-    adcWheel_(RODOS::ADC_IDX0),
+    adcWheel_(RODOS::ADC_IDX1),
     beeper_(beeperPin),
     i2cBus_(ina3221_i2cBus)
 {}
@@ -89,6 +91,8 @@ void ElectricalMonitoring::update()
             readValues(true);
             state_ = SystemState_t::CONV_INIT;
 
+            setMode(Idle);
+
             //suspendCallerUntil(END_OF_TIME);
         }
         break;
@@ -99,8 +103,10 @@ void ElectricalMonitoring::update()
             //Read values
             readValues(false);
 
+
+
             //Check if power should be turned off
-            if (voltageBattery_ < batteryCutoffVoltage) {
+            if (!powerGood_) {
                 openExtSwitch();
             }
 
@@ -111,7 +117,7 @@ void ElectricalMonitoring::update()
             }
 
             //Check if we can turn on the RPI
-            if (!rpiPowerOn_ && powerGood_ && config::enable_rpi) {
+            if (!rpiPowerOn_ && (powerGood_ || voltageBattery_ < 7.0f) && config::enable_rpi) {
                 rpiPowerOn_ = true;
                 rpiPower_.setPins(1);
             }
@@ -137,7 +143,10 @@ void ElectricalMonitoring::update()
         {
             readValues(false);
 
-            if (voltageBattery_ < batteryCutoffVoltage) {
+            bool b = true;
+            cameraShutdownTopic.publish(b); //Send powerdown signal to camera
+
+            if (!powerGood_) {
                 openExtSwitch();
             } 
 
@@ -231,13 +240,13 @@ void ElectricalMonitoring::readValues(bool setValue) {
     currentReactionWheel_ = float(adcWheel_.read(adcWheelPin_)) / 1023 * 3.3f / HBRIDGE_I_FACTOR;
 
     //Check if power is good
-    powerGood_ = (voltage5VBus_ < 5.0f + BUS_VOLTAGE_TOLERANCE) && (voltage5VBus_ >  5.0f - BUS_VOLTAGE_TOLERANCE);
+    powerGood_ = (voltage5VBus_ < 5.0f + BUS_VOLTAGE_TOLERANCE) && (voltage5VBus_ >  5.0f - BUS_VOLTAGE_TOLERANCE) && (voltageBattery_ > batteryCutoffVoltage);
 
     //Check if RPI is running
     rpiRunning_ = (currentRPI_ > RPI_RUNNING_CURRENT);
 
     //Print everything
-    //PRINTF("VBAT: %f V, 5V: %f V, Stepper: %f A, Aux: %f A, RPI: %f A, RW: %f A, PowerGood: %d, RPI Running: %d\n", voltageBattery_, voltage5VBus_, currentStepper_, currentAux_, currentRPI_, currentReactionWheel_, powerGood_, rpiRunning_);
+    PRINTF("VBAT: %f V, 5V: %f V, Stepper: %f A, Aux: %f A, RPI: %f A, RW: %f A, PowerGood: %d, RPI Running: %d\n", voltageBattery_, voltage5VBus_, currentStepper_, currentAux_, currentRPI_, currentReactionWheel_, powerGood_, rpiRunning_);
 
 }
 
@@ -310,9 +319,17 @@ void ElectricalMonitoring::run() {
         }
     }
 
+
+    bool shutingDown = false;
+
     while (1) {
 
         update();
+
+        if (SECONDS_NOW() > 10) {
+            //powerDown();
+            shutingDown = true;
+        }
 
         suspendCallerUntil(NOW() + config::electrical_monitoring_thread_period*MILLISECONDS);
 

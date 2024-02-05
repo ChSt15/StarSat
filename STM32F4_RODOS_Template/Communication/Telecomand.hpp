@@ -18,8 +18,8 @@ class Telecommand
 {
 private:
 
-	int commandCnt = 0;
-	int lastCmndID = 0;
+	int16_t commandCnt = 0;
+	int16_t lastCmndID = 0;
 
 public:
 
@@ -30,7 +30,7 @@ public:
 	int getCommandCounter();
 
 	int getLastCommand();
-};
+} __attribute__ ((packed));
 
 // @brief Global telecommand object
 extern Telecommand telecommand;

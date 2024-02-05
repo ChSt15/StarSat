@@ -1,11 +1,11 @@
 #include "PIDController.hpp"
 
 
-void PID::config(const PIDParams &params, float limit, bool use_BackCalculation, bool use_DerivativofMeasurment)
+void PID::config(const PIDParams &params, float limit, bool use_Antiwindup, bool use_DerivativofMeasurment)
 {
     this->params = params;
     this->lim = limit;
-    this->use_BackCalculation = use_BackCalculation;
+    this->use_Antiwindup = use_Antiwindup;
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
 
@@ -30,28 +30,26 @@ float PID::calculate(float measurement, float timestamp)
         // Delta t in seconds
         float dt = timestamp - this->lastTimestamp;
      
-
         // Integral term
         float integTerm = 0;
-        if (!use_BackCalculation)
+        if (params.ki != 0.f)
         {
-            this->integError += error * dt;
+            if (!use_Antiwindup || (use_Antiwindup && !saturated)) this->integError += error * dt;
             integTerm = params.ki * this->integError;
-        }
-        else 
-        {
-            integTerm = this->integError;
         }
 
         // Derivation term
         float derivTerm = 0;
-        if (use_DerivativofMeasurment)
+        if (params.kd != 0.f)
         {
-            derivTerm = params.kd * (measurement - this->lastMeasurment) / dt;
-        }
-        else
-        {
-            derivTerm = params.kd * (error - this->lastError) / dt;
+            if (use_DerivativofMeasurment)
+            {
+                derivTerm = params.kd * -(measurement - this->lastMeasurment) / dt;
+            }
+            else
+            {
+                derivTerm = params.kd * (error - this->lastError) / dt;
+            }
         }
 
 
@@ -65,19 +63,22 @@ float PID::calculate(float measurement, float timestamp)
 
         // WARNING
         // temporary values, should be changed
-        if (!settled && abs((error - this->lastError) / dt) < 0.1f && abs(error) < 0.1f) settled = true;
+        if (!settled && abs((error - this->lastError) / dt) < 0.5f && abs(error) < 3.f) settled = true;
 
         // Limit control signal
         float controlSignalSaturated = controlSignal;
-        if(controlSignalSaturated > lim) controlSignalSaturated = lim;
-        else if (controlSignalSaturated < -lim) controlSignalSaturated = -lim;
-        
-        // Backcalculation
-        if (use_BackCalculation)
+        if (controlSignalSaturated > lim)
         {
-            this->integError += (params.ki * error + controlSignalSaturated - controlSignal) * dt;
+            controlSignalSaturated = lim;
+            saturated = true;
         }
-
+        else if (controlSignalSaturated < -lim)
+        {
+            controlSignalSaturated = -lim;
+            saturated = true;
+        }
+        else saturated = false;
+        
         return controlSignalSaturated;
     } 
     else 

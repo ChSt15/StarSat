@@ -19,7 +19,8 @@ void Telecommand::processNewCommand()
 
 	// Work through FIFO queue
 	while (commandFIFO.get(commandReceiver))
-	{
+	{   
+        PRINTF("Command: %d\n", commandReceiver.id);
 		EchoTopic.publish(commandReceiver);
 		switch ((CommandIds) commandReceiver.id)
 		{

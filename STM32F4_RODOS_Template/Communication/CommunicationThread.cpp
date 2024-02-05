@@ -9,6 +9,9 @@ void CommunicationThread::init()
 
 void CommunicationThread::run()
 {
+	// Wait for Electrical
+	while (getMode() == Electrical_Startup) suspendCallerUntil(NOW() + 200 * MILLISECONDS);
+
 	// Config
 	using namespace config;
 	{
