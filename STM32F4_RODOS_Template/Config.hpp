@@ -32,7 +32,7 @@ namespace config
     inline const int  com_thread_period = 1000;             // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = true;
+    inline const bool debug_thread_enable = false;
     inline const int  debug_thread_period = 1000;           // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)

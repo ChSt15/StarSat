@@ -43,7 +43,7 @@ void ControlThread::run()
 		if (percent < -100 + incrementsSize/2) percent_step = -100;
 		else if (percent > 100 - incrementsSize/2) percent_step = 100;
 
-        float out = float(percent_step) * 0.001f;
+        float out = float(percent_step) * 0.004f;
 
 		if (getMode() == Control_Vel) AngularVelocitySetpointTopic.publish(out);
 		
