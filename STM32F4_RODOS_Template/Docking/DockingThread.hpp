@@ -16,7 +16,7 @@ class DockingThread : public Thread
 public:
 
 	// Set name, prio and stack size
-	DockingThread() : Thread("Docking Thread", 110, 2000) {}
+	DockingThread() : Thread("Docking Thread", 140, 2000) {}
 
 	void init();
 	void run();

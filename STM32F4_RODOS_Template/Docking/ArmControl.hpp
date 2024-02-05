@@ -16,6 +16,7 @@ private:
 
 	int max_vel;			// [step/s]
 	int min_vel;			// [step/s]
+    int dock_vel;           // [step/s]
 	int max_accel;			// [step/s^2]
 	int deccel_margin;		// [steps]
 	float steps2mm;			// [mm/steps]
@@ -31,22 +32,31 @@ private:
 	bool moving = false;
 	bool deccel = false;
 
+    bool valid_CameraData = false;
+    bool valid_LastYaw = false;
+
 public:
 
-	void config(int max_vel, int min_vel, int max_accel, int deccel_margin, float steps2mm);
+	void config(int max_vel, int min_vel, int dock_vel, int max_accel, int deccel_margin, float steps2mm);
 
 	bool InitialExtension(CameraData& camera);
 
 	bool FinalExtension(CameraData& camera);
 
-	void CalcAngularVelocity(CameraData& camera);
-
-	void updateTelemetry(CameraData& camera);
+	bool Calibrate();
 
 	// Hard stop, use not recommended. Its there to make sure theres no dual input
 	void Stop();
 
-	bool Calibrate();
+    void reset();
+
+private:
+
+	bool updateTelemetryMockup(CameraData& camera);
+
+	void updateTelemetryArm();
+
+
 };
 
 

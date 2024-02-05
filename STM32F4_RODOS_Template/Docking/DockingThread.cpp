@@ -26,14 +26,12 @@ void DockingThread::run()
 		if (!docking_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		// ArmController
-		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
+		armController.config(max_vel, min_vel, dock_vel, max_accel, deccel_margin, steps2mm);
 	}
 
     bool cameraState = false;
-
 	while (true)
 	{   
-
         cameraPwrCmdTopic.publishConst(cameraState);
 
 		// Get new Cameradata if availible
@@ -42,7 +40,7 @@ void DockingThread::run()
 			//cameraData.getDistance();
 			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
 			//if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
-
+            //PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
 			//PRINTF("%f, %f\n\n", rad2Grad(cameraData.getYawtoMockup()), cameraData.getDistance());
             //Print all data from struct
             //auto &data = cameraData.telemetryCamera;
@@ -69,30 +67,27 @@ void DockingThread::run()
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
+
 			cameraState = true;
-			if (!cameraData.validFrame()) break;
-			setMode(Mission_Point);
+			if (cameraData.validFrame()) setMode(Mission_Point);
+            armController.Calibrate();
+            armController.reset();
 			break;
 
 		case Mission_Dock_initial:
-            cameraState = true;
-			if (!armController.InitialExtension(cameraData))
-			{
-				if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
-				break;
-			}
 
-			setMode(Mission_Dock_final);
+            cameraState = true;
+			if (armController.InitialExtension(cameraData)) setMode(Mission_Dock_final);		
 			break;
 
 		case Mission_Dock_final:
+
             cameraState = true;
-			if (!cameraData.validFrame()) break;
-			if (!armController.FinalExtension(cameraData)) break;
-
-
-			suspendCallerUntil(NOW() + 2 * SECONDS);
-			setMode(Idle);
+			if (armController.FinalExtension(cameraData))
+			{
+				suspendCallerUntil(NOW() + 2 * SECONDS);
+				setMode(Idle);
+			}
 			break;
 
 		default:
