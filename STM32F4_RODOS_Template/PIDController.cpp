@@ -48,9 +48,9 @@ float PID::calculate(float measurement, float timestamp)
         }
 
         // Integral term
-        if (use_Antiwindup) // Anti-windup by subtracting the differnce between the saturated and unsaturated control signal from the integral term
+        if (use_Antiwindup && saturated) // Anti-windup by subtracting the differnce between the saturated and unsaturated control signal from the integral term
         {
-            if (this->integError > lim && error < 0 || this->integError < -lim && error > 0 || this->integError < lim && this->integError > -lim)
+            if (this->integError > 0 && error < 0 || this->integError < 0 && error > 0)
             {
                 this->integError += error * dt;
             }
@@ -93,11 +93,15 @@ float PID::calculate(float measurement, float timestamp)
         if (controlSignalSaturated > lim)
         {
             controlSignalSaturated = lim;
+            saturated = true;
         }
         else if (controlSignalSaturated < -lim)
         {
             controlSignalSaturated = -lim;
+            saturated = true;
         }
+        else saturated = false;
+        
         
         return controlSignalSaturated;
     } 
