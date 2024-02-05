@@ -101,4 +101,4 @@ void DockingThread::run()
 }
 
 
-DockingThread dockingThread;
+//DockingThread dockingThread;

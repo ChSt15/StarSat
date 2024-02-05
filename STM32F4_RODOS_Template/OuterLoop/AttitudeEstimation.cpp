@@ -137,7 +137,7 @@ TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& i
 	*/
 	data.timestamp = imudata.timestamp;
 	data.data.attitude = Quaternion_F();
-	data.data.angularVelocity = imudata.data.angularVelocity;
+	data.data.angularVelocity = Vector3D(imudata.data.angularVelocity.x, imudata.data.angularVelocity.y, imudata.data.angularVelocity.z);
 	return data;
 }
 

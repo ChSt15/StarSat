@@ -32,7 +32,7 @@ namespace config
     inline const int  com_thread_period = 1000;             // [ms]
 
     // Debug
-    inline const bool debug_thread_enable = false;
+    inline const bool debug_thread_enable = true;
     inline const int  debug_thread_period = 1000;           // [ms]
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
@@ -80,7 +80,7 @@ namespace config
     inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           
     inline const float limitVelController = (6000.0f * 2 * M_PI) / 60.0f;           // [rad/s]
-    inline const PIDParams paramsVelController{ -25.0f, -250.0f, 0.0f };              // P, I, D
+    inline const PIDParams paramsVelController{ -10.0f, -150.0f, 0.0f };              // P, I, D
     inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;
 

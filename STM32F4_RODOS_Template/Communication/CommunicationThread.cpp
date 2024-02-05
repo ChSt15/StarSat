@@ -30,4 +30,4 @@ void CommunicationThread::run()
 }
 
 
-CommunicationThread communicationthread;
+//CommunicationThread communicationthread;
