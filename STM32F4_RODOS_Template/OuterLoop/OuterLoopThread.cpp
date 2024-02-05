@@ -62,21 +62,19 @@ void OuterLoopThread::run()
     float mission_timeout;
 	while (true)
 	{	
-		// IMU
-		IMUDataTopic.publish(imu.readData());
-
-		// Atitude estimation
-		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
-
 		// Skip fist IMU values
-		if (meas_cnt < 2 ) 
+		if (meas_cnt < 10) 
 		{
 			meas_cnt++;
 			suspendCallerUntil(NOW() + period * MILLISECONDS);
 			continue;
 		}
 
-        //setMode(Control_Vel);
+		// IMU
+		IMUDataTopic.publish(imu.readData());
+
+		// Atitude estimation
+		AttitudeDataTopic.publish(qekf.estimate(imu.getData()));
 
 		switch (getMode())
 		{

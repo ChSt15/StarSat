@@ -117,6 +117,7 @@ void QEKF::init(const TimestampedData<IMUData>& imudata)
 
 TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& imudata)
 {
+	/*
 	if (!this->is_initialized)
 	{
 		this->init(imudata);
@@ -133,6 +134,10 @@ TimestampedData<Attitude_Data>& QEKF::estimate(const TimestampedData<IMUData>& i
 	data.timestamp = last_t;
 	data.data.attitude = Quaternion(q0, q1, q2, q3);
 	data.data.angularVelocity = Vector3D(wx, wy, wz);
+	*/
+	data.timestamp = imudata.timestamp;
+	data.data.attitude = Quaternion_F();
+	data.data.angularVelocity = imudata.data.angularVelocity;
 	return data;
 }
 

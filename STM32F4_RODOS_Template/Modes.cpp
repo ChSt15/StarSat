@@ -22,12 +22,6 @@ void setMode(modes newmode)
 			newmode = Calib_Gyro;
 			break;;
 		case Calib_Gyro: 
-			newmode = Calib_Accel;
-			break;
-		case Calib_Accel:
-			newmode = Calib_Arm;
-			break;
-		case Calib_Arm:
 			newmode = Reactionwheel_Spinup;
 			break;
 		case Reactionwheel_Spinup:
