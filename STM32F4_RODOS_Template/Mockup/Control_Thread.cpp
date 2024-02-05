@@ -32,14 +32,19 @@ void ControlThread::run()
 
 		int percent = int(desiredVoltage_percent * 100);
 
-        int incrementsSize = 20;
+        int incrementsSize = 25;
 
         // Make percent in increments of 20
-        percent = (percent / incrementsSize) * incrementsSize;
-
-        float out = float(desiredVoltage_percent) * 0.2f;
-        AngularVelocitySetpointTopic.publish(out);
+        int percent_step = ((int)(percent / incrementsSize)) * incrementsSize;
 		
+		// egde cases
+		if (percent < -100 + incrementsSize/2) percent_step = -100;
+		else if (percent > 100 - incrementsSize/2) percent_step = 100;
+
+        float out = float(percent_step) * 0.1f;
+
+        AngularVelocitySetpointTopic.publish(out);
+
 		setMode(Control_Vel);
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}

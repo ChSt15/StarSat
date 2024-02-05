@@ -33,8 +33,26 @@ float PID::calculate(float measurement, float timestamp)
         // Integral term
         float integTerm = 0;
         if (params.ki != 0.f)
-        {
-            if (!use_Antiwindup || (use_Antiwindup && !saturated)) this->integError += error * dt;
+        {   
+            if (!use_Antiwindup || (use_Antiwindup && !saturated))
+            {
+                this->integError += error * dt;
+            }
+            else
+            {
+                if (saturated)
+                {
+                    if (this->integError > 0)
+                    {
+                        if (error < 0) this->integError += error * dt;
+                    }
+                    else
+                    {
+                        if (error > 0) this->integError += error * dt;
+                    }
+                }
+            }
+
             integTerm = params.ki * this->integError;
         }
 

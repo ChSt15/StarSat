@@ -3,6 +3,7 @@
 
 #include "rodos.h"
 #include "matlib.h"
+#include <cmath>
 
 /**
  * @brief Struct for controller parameters 
