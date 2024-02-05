@@ -28,29 +28,19 @@ void ControlThread::run()
 
 	while(true)
 	{
-		desiredVoltage_percent = adc.getVoltage() / 3000.f;
+		desiredVoltage_percent = (adc.getVoltage() / 1500.f) - 1.f;
 
 		int percent = int(desiredVoltage_percent * 100);
 
         int incrementsSize = 20;
+
         // Make percent in increments of 20
         percent = (percent / incrementsSize) * incrementsSize;
 
-		//percent *= 2000/100;
-
-		//hbridge.setVoltage(desiredVoltage_percent);
-		//PRINTF("Desired Voltage:    %f\n", desiredVoltage_percent);
-
-        //speedSetpointTopic.publish(desiredVoltage_percent);
-        float out = float(desiredVoltage_percent)/100*2*3/6;// percent;
+        float out = float(desiredVoltage_percent) * 0.2f;
         AngularVelocitySetpointTopic.publish(out);
-
-        if (percent < 1) {
-            setMode(Control_Vel);
-        } else {
-            setMode(Idle);
-        }
-
+		
+		setMode(Control_Vel);
 		suspendCallerUntil(NOW() + period * MILLISECONDS);
 	}
 }
