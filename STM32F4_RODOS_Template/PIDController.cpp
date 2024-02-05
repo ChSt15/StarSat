@@ -24,12 +24,15 @@ float PID::calculate(float measurement, float timestamp)
     // Proportional term
     float propTerm = params.kp * error;
 
+    // Delta t in seconds
+    float dt = timestamp - this->lastTimestamp;
+
+    //reset after timeout
+    if (dt > 1)  flagInitialized = false;
+
     if(flagInitialized)
     {
- 
-        // Delta t in seconds
-        float dt = timestamp - this->lastTimestamp;
-     
+
         // Integral term
         float integTerm = 0;
         if (params.ki != 0.f)

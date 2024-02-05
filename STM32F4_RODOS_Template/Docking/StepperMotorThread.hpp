@@ -47,8 +47,7 @@ private:
     StepperStatus status;
     StepperInstruction instructions;
  
-    /// @todo ADJUST VALUE
-    const uint16_t max_steps = 500;                       // Max. number of steps the motor can execute
+    const uint16_t max_steps = 750;                       // Max. number of steps the motor can execute
 
 };
 

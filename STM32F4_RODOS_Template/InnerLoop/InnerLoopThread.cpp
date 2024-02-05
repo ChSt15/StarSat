@@ -37,11 +37,6 @@ void InnerLoopThread::run()
 		else reactionwheelControl.config(paramsSpeedControl, limitSpeedController, antiwindupSpeedController, derivativofmeasurmentSpeedController, reactionwheelbase_vel);
 	}
 
-
-	//setMode(Control_Speed);
-	//reactionwheelControl.setSetpoint(0.f);
-
-
 	while (true)
 	{
 		//if (SECONDS_NOW() > 10.f) reactionwheelControl.setSetpoint(100.f);
@@ -57,10 +52,6 @@ void InnerLoopThread::run()
 		case Idle:
 			hbridge.setVoltage(0.f);
 			break;
-		case Standby:
-			reactionwheelControl.setSetpoint(0.f);
-			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
-			break;
 		case Reactionwheel_Spinup:
 			reactionwheelControl.setSetpoint(0.f);
 			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
@@ -70,7 +61,14 @@ void InnerLoopThread::run()
 			setMode(Standby);
 			break;
 		default:
-			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
+            {
+                /*reactionwheelControl.setSetpoint(100);
+                if (SECONDS_NOW() > 10)
+                    reactionwheelControl.setSetpoint(-100);*/
+                float v = reactionwheelControl.update(encoder_speed);
+                //PRINTF("IS: %f, O: %f\n", encoder_speed.data, v);
+                hbridge.setVoltage(v);
+            }
 			break;
 		}
 

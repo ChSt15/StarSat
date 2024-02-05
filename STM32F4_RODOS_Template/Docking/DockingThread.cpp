@@ -26,69 +26,72 @@ void DockingThread::run()
 		if (!docking_thread_enable) suspendCallerUntil(END_OF_TIME);
 
 		// ArmController
-		armController.config(max_vel, min_vel, max_accel, deccel_margin, steps2mm);
+		armController.config(max_vel, min_vel, dock_vel, max_accel, deccel_margin, steps2mm);
 	}
 
-    int64_t lastToggle = 0;
-    bool toggle = false;
-
+    bool cameraState = false;
 	while (true)
-	{
+	{   
+        cameraPwrCmdTopic.publishConst(cameraState);
+
 		// Get new Cameradata if availible
 		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
-        {
+        {	
+			//cameraData.getDistance();
+			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
+			//if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
+            //PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
+			//PRINTF("%f, %f\n\n", rad2Grad(cameraData.getYawtoMockup()), cameraData.getDistance());
             //Print all data from struct
-            auto &data = cameraData.telemetryCamera;
-            PRINTF("CameraData: %d %d %d \n %d %d %d \n%d %d\n",
-                   data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints);
-        }
+            //auto &data = cameraData.telemetryCamera;
+            //PRINTF("CameraData: %f %f %f \n %f %f %f \n%d %d %d %d\n", data.px, data.py, data.pz, data.rx, data.ry, data.rz, data.MeasurmentCnt, data.numLEDs, data.numPoints, data.valid);
 
-        if (NOW() - lastToggle > 5 * SECONDS)
-        {
-            lastToggle = NOW();
-            toggle = !toggle;
-            cameraPwrCmdTopic.publish(toggle);
         }
 
 		switch (getMode())
 		{
 		case Idle:
+            cameraState = false;
 		case Standby:
+            cameraState = false;
 			armController.Stop();
 			break;
 
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Arm:
+            cameraState = false;
 			if (!armController.Calibrate()) break;
 
-			setMode(Idle);
+			setMode(Standby);
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
-			if (!cameraData.validFrame()) break;
 
-			setMode(Mission_Point);
+			cameraState = true;
+			if (cameraData.validFrame()) setMode(Mission_Point);
+            armController.Calibrate();
+            armController.reset();
 			break;
 
 		case Mission_Dock_initial:
-			if (!armController.InitialExtension(cameraData))
-			{
-				if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
-				break;
-			}
 
-			setMode(Mission_Dock_final);
+            cameraState = true;
+			if (armController.InitialExtension(cameraData)) setMode(Mission_Dock_final);		
 			break;
 
 		case Mission_Dock_final:
-			if (!cameraData.validFrame()) break;
-			if (!armController.FinalExtension(cameraData)) break;
 
-			setMode(Idle);
+            cameraState = true;
+			if (armController.FinalExtension(cameraData))
+			{
+				suspendCallerUntil(NOW() + 2 * SECONDS);
+				setMode(Idle);
+			}
 			break;
 
 		default:
+            cameraState = false;
 			break;
 		}
 

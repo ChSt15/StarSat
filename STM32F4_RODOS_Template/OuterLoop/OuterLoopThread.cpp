@@ -52,24 +52,16 @@ void OuterLoopThread::run()
 
 	}
 
-	//setMode(Control_Vel);
-	float temp1 = grad2Rad(170);
+    // default values
+	float temp1 = grad2Rad(0);
 	float temp2 = M_PI/8.f;
-
 	AngularPositionSetpointTopic.publish(temp1);
 	AngularVelocitySetpointTopic.publish(temp2);
 
-
-	float out;
 	int meas_cnt = 0;
+    float mission_timeout;
 	while (true)
 	{	
-		if (SECONDS_NOW() > 120)
-		{
-			temp1 = grad2Rad(20);
-			AngularPositionSetpointTopic.publish(temp1);
-		}
-
 		// IMU
 		IMUDataTopic.publish(imu.readData());
 
@@ -89,29 +81,33 @@ void OuterLoopThread::run()
 		switch (getMode())
 		{
 		case Standby:
-			// just for tests
-			//suspendCallerUntil(NOW() + 10 * SECONDS);
-			//setMode(Calib_Mag);
+            if (config::skip_init) setMode(Idle);
+
+			velocitycontrol.setSetpoint(0.f);
+            publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			break;
 		/* ---------------------------- Calib ---------------------------- */
 		case Calib_Gyro:
 			if (!imucalib.calibrateGyro(imu.getDataRaw())) break;
 			qekf.reset();
-			setMode(Idle);
+			telemetry.send_CalibIMU();
+			setMode(Standby);
 			break;
 
 		case Calib_Accel:
 			if (!imucalib.calibrateAccel(imu.getDataRaw())) break;
 			qekf.reset();
-			setMode(Idle);
+			telemetry.send_CalibIMU();
+			setMode(Standby);
 			break;
 
 		case Calib_Mag:
 			velocitycontrol.setSetpoint(M_PI / 16.f);
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			if (!imucalib.calibrateMag(imu.getDataRaw())) break;
+			telemetry.send_CalibIMU();
 			qekf.reset();
-			setMode(Idle);
+			setMode(Standby);
 			break;
 
 		/* ---------------------------- Controller ---------------------------- */
@@ -123,30 +119,70 @@ void OuterLoopThread::run()
 			break;
 
 		case Control_Pos:
-			PositionSetpointBuffer.getOnlyIfNewData(PositionSetpointReceiver);
-			positionControl.setSetpoint(PositionSetpointReceiver);
+            {
+                PositionSetpointBuffer.getOnlyIfNewData(PositionSetpointReceiver);
+                positionControl.setSetpoint(PositionSetpointReceiver);
 
-			publishSpeed(positionControl.update(qekf.getestimit()));
+                velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
+                publishSpeed(velocitycontrol.update(qekf.getestimit()));
+            }
 			break;
 
 		/* ---------------------------- Mission ----------------------------- */
 		case Mission_Locate:
-			velocitycontrol.setSetpoint(M_PI / 16.f);
-			publishSpeed(velocitycontrol.update(qekf.getestimit()));
-			break;
+            {   
+                mission_timeout = SECONDS_NOW();
 
-		case Mission_Point:
-		case Mission_Dock_initial:
-		case Mission_Dock_final:
-
-			// Get new Cameradata if availible
-			{
                 CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
                 CameraData camera;
                 camera.telemetryCamera = CameraDataReceiver;
 
-                positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
-                publishSpeed(positionControl.update(qekf.getestimit()));
+                float speed = M_PI / 16.f;
+                if (camera.telemetryCamera.numLEDs >= 1) speed /= 2.f;
+
+			    velocitycontrol.setSetpoint(speed);
+			    publishSpeed(velocitycontrol.update(qekf.getestimit()));
+			    break;
+            }
+
+		case Mission_Point:
+            {   
+                if (SECONDS_NOW() - mission_timeout > 2) setMode(Mission_Locate);
+
+                CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
+                CameraData camera;
+                camera.telemetryCamera = CameraDataReceiver;
+
+                if (camera.validFrame())
+                {
+                    positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                    mission_timeout = SECONDS_NOW();
+                }
+                velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
+                publishSpeed(velocitycontrol.update(qekf.getestimit()));
+
+                if (abs(camera.getYawtoMockup()) < 0.1 && abs(qekf.getestimit().data.angularVelocity.z) < 0.2) setMode(Mission_Dock_initial);
+	
+            }
+            break;
+
+		case Mission_Dock_initial:
+		case Mission_Dock_final:
+			{   
+                if (SECONDS_NOW() - mission_timeout > 2) setMode(Mission_Locate);
+
+                // Get new Cameradata if availible
+                CameraDataBuffer.getOnlyIfNewData(CameraDataReceiver);
+                CameraData camera;
+                camera.telemetryCamera = CameraDataReceiver;
+
+                if (camera.validFrame())
+                {
+                    positionControl.setSetpoint(camera.getYawtoMockup() + qekf.getestimit().data.attitude.toYPR().yaw);
+                    mission_timeout = SECONDS_NOW();
+                }
+                velocitycontrol.setSetpoint(positionControl.update(qekf.getestimit()));
+                publishSpeed(velocitycontrol.update(qekf.getestimit()));
             }
 			break;
 
@@ -165,5 +201,6 @@ void OuterLoopThread::publishSpeed(float speed)
 	speedSetpointTopic.publish(speed);
 	innerLoopThread.resume();
 }
+
 
 OuterLoopThread outerLoopThread;

@@ -16,7 +16,7 @@ namespace config
     inline const bool skip_init = true;                     // skips init routine
 
     // Inner Loop
-    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woke up by outer loop
+    inline const bool innerloop_thread_enable = true;       // keep in mind it gets woken up by outer loop
     inline const int  innerloop_thread_period = 20;         // [ms]
 
     // Outer Loop
@@ -37,7 +37,7 @@ namespace config
 
     // ELetrical Monitoring. (DONT MESS WITH THIS! OR BEWARE OF THE MAGIC SMOKE/EXPLOSIONS!)
     inline const bool electrical_monitoring_thread_enable = true; //DO NOT DISABLE THIS THREAD. IT IS NEEDED TO PROTECT THE BATTERY! ONLY DISABLE IF YOU KNOW WHAT YOU ARE DOING AND REALLY NEED TO!
-    inline const int  electrical_monitoring_thread_period = 100;       // [ms]
+    inline const int  electrical_monitoring_thread_period = 200;       // [ms]
 
     /* ---------------------------------------- Hardware ---------------------------------------  */
     // IMU
@@ -58,7 +58,7 @@ namespace config
     // Stepper  
     inline const int microstepping = 2;         // Number of steps to make for a full step
     inline const int stepsPerRevolution = 200;  // Number of steps for a full revolution of the motor shaft
-    inline const float steps2mm = 0.015625;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
+    inline const float steps2mm = 0.1335;     // Convertion from steps to mm Arm extention; 50mm entsprechen 20 Zacken also 1 Umdrehung
     inline const bool invertStepper = false;    // Invert stepper direction
     inline const bool enableStepper = true;     // Disable stepper (Enable pin i set to keeped high to disable driver)
 
@@ -69,16 +69,15 @@ namespace config
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
     inline const float reactionwheelbase_vel = 300.f;  
-    inline const float limitSpeedController = 12.f / 2.f;                           // [V]
-    //inline const PIDParams paramsSpeedControl{ 0.45f, 0.15f, 0.0f };              // P, I, D
-    inline const PIDParams paramsSpeedControl{ 0.15f, 0.05f, 0.0f };                // P, I, D
+    inline const float limitSpeedController = 12;                           // [V]
+    inline const PIDParams paramsSpeedControl{ 0.3f, 0.05f, 0.0f };                // P, I, D
     inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
-    inline const float limitPosController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
-    inline const PIDParams paramsPosController{ -30.0f, -10.0f, -5.0f };            // P, I, D
-    inline const bool antiwindupPosController = false;
-    inline const bool derivativofmeasurmentPosController = false;
+    inline const float limitPosController = (10 * 2 * M_PI) / 60.0f;                // [rad/s]
+    inline const PIDParams paramsPosController{ 0.8, 0.f, 0.05f };                  // P, I, D  //P was 1.
+    inline const bool antiwindupPosController = true;
+    inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           
     inline const float limitVelController = (11000.0f * 2 * M_PI) / 60.0f / 2.f;    // [rad/s]
     inline const PIDParams paramsVelController{ 0.0f, -40.0f, 0.0f };              // P, I, D
@@ -87,13 +86,14 @@ namespace config
 
     // Arm Controller
     inline const int max_vel = 100;			// [step/s]
-    inline const int min_vel = 10;			// [step/s]
+    inline const int min_vel = 40;			// [step/s]
+    inline const int dock_vel = 200;        // [step/s]
     inline const int max_accel = 20;	   	// [step/s^2]
     inline const int deccel_margin = 10;    // [step]
 
     // IMU Calibration
-    inline const int gyro_maxsamples = 80;
-    inline const int accel_maxsamples = 80;
+    inline const int gyro_maxsamples = 20;
+    inline const int accel_maxsamples = 20;
     inline const int mag_maxsamples = 200;
 
     // QEKF

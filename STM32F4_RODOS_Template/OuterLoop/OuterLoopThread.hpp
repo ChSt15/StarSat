@@ -14,6 +14,7 @@
 #include "../InnerLoop/InnerLoopTopics.hpp"
 #include "../InnerLoop/InnerLoopThread.hpp"
 #include "../Communication/Camera.hpp"
+#include "../Communication/Telemetry.hpp"
 
 
 class OuterLoopThread : public Thread

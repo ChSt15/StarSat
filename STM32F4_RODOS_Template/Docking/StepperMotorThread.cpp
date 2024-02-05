@@ -45,7 +45,7 @@ void StepperMotorThread::run()
 
                     // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
                     StepPin.setPins(0);
-                    suspendCallerUntil(NOW() + 100 * MICROSECONDS);
+                    //suspendCallerUntil(NOW() + 100 * MICROSECONDS);
 
                     // Create Rising Edge
                     StepPin.setPins(1);
@@ -59,7 +59,7 @@ void StepperMotorThread::run()
 
                     // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time
                     StepPin.setPins(0);
-                    suspendCallerUntil(NOW() + 100 * MICROSECONDS);
+                    //suspendCallerUntil(NOW() + 100 * MICROSECONDS);
 
                     // Create Rising Edge
                     StepPin.setPins(1);
@@ -72,13 +72,16 @@ void StepperMotorThread::run()
                 stepperStatusTopic.publish(status);
 
                 // Wait for current this->period of time
-                suspendCallerUntil(NOW() + instructions.period * MICROSECONDS - 100 * MICROSECONDS);
+                suspendCallerUntil(NOW() + instructions.period * MICROSECONDS);// - 100 * MICROSECONDS);
             }
             else break;
         }
 
             // Update status after execution of all commaned steps
             status.status_execution = true;
+
+            // Publish updated status
+            stepperStatusTopic.publish(status);
 
             // Wait until woken up 
             suspendCallerUntil(END_OF_TIME);
@@ -98,7 +101,7 @@ bool StepperMotorThread::calibrate()
             StepPin.setPins(0);
             //suspendCallerUntil(NOW() + 100 * MICROSECONDS);
             StepPin.setPins(1);
-            suspendCallerUntil(NOW() + 10 * MILLISECONDS);
+            suspendCallerUntil(NOW() + 5 * MILLISECONDS);
         } 
         else status.status_calib = true;            // Pin is high -> calibration completed
     }

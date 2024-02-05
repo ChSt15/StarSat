@@ -7,7 +7,7 @@
 // @brief Structure of a Telecommand
 struct Command
 {
-	int16_t id;
+	int id;
 	float fval_1, fval_2, fval_3;
 };
 
@@ -16,7 +16,9 @@ enum CommandIds
 {
 	/*-----------------------------Modes----------------------------*/
 	// Changes mode to Idle
-	SetMode_Idle = 1,
+	SetMode_Idle = 0,
+	// Changes mode to Standby
+	SetMode_Standby,
 	// Changes mode to Calib_Gyro
 	SetMode_CalibGyro,	
 	// Changes mode to Calib_Accel

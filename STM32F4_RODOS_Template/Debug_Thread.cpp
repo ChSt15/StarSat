@@ -47,6 +47,10 @@ void DebugThread::run()
 
         //PRINTF("Time: %f\n", time);
 
+        //auto cameraData = getCameraData();
+
+        //PRINTF("Valid: %d\n", cameraData.validFrame());
+
         //suspendCallerUntil(NOW() + SECONDS);
 
         //continue;
