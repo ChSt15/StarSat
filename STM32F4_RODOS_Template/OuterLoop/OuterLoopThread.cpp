@@ -100,7 +100,7 @@ void OuterLoopThread::run()
 			break;
 
 		case Calib_Mag:
-			velocitycontrol.setSetpoint(M_PI / 16.f);
+			velocitycontrol.setSetpoint(M_PI / 32.f);
 			publishSpeed(velocitycontrol.update(qekf.getestimit()));
 			if (!imucalib.calibrateMag(imu.getDataRaw())) break;
 			telemetry.send_CalibIMU();
@@ -135,8 +135,8 @@ void OuterLoopThread::run()
                 CameraData camera;
                 camera.telemetryCamera = CameraDataReceiver;
 
-                float speed = M_PI / 16.f;
-                if (camera.telemetryCamera.numLEDs >= 1) speed /= 2.f;
+                float speed = M_PI / 24.f;
+                if (camera.telemetryCamera.numLEDs >= 1) speed /= 3.f;
 
 			    velocitycontrol.setSetpoint(speed);
 			    publishSpeed(velocitycontrol.update(qekf.getestimit()));

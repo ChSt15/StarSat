@@ -72,6 +72,8 @@ class PID {
         */
         float calculate(float measurement, float dt);
 
+        float calculate(float measurement, float dMeasurement, float dt);
+
 
         /**
          * @brief Set parameter of controller
