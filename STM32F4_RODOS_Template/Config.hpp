@@ -94,7 +94,7 @@ namespace config
     // IMU Calibration
     inline const int gyro_maxsamples = 30;
     inline const int accel_maxsamples = 30;
-    inline const int mag_maxsamples = 200;
+    inline const int mag_maxsamples = 400;
 
     // QEKF
     inline const Vector3D_F sigma_gyro = Vector3D_F(0.0027728, 0.0023483, 0.0018954);      // [rad/s]
