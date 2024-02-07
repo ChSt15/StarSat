@@ -161,18 +161,12 @@ bool ArmController::updateTelemetryMockup(CameraData& camera)
 		float dt = time - last_time_w;
 		while (dyaw > M_PI) dyaw -= 2 * M_PI;
 		while (dyaw < -M_PI) dyaw += 2 * M_PI;
-		if (!valid_CameraData)
-		{
-			telemetry.mockupAngularvelocity = dyaw / dt;
-            telemetry.mockupDistance = camera.getDistance();
-            valid_CameraData = true;
-		}                                                                                                                           
-		else
-		{
-			float w = dyaw / dt;
-			telemetry.mockupAngularvelocity = telemetry.mockupAngularvelocity * 0.5 + 0.5 * w;
-            telemetry.mockupDistance = telemetry.mockupDistance * 0.5 + camera.getDistance() * 0.5;
-		}
+
+		float w = dyaw / dt;
+		listbuffer_w.placeBack(w, true);
+		telemetry.mockupAngularvelocity = listbuffer_w.getMedian();
+		listbuffer_d.placeBack(camera.getDistance(), true);
+        telemetry.mockupDistance = listbuffer_d.getMedian();
 	}
     else
     {
@@ -184,16 +178,15 @@ bool ArmController::updateTelemetryMockup(CameraData& camera)
 
 	dockingTelemetryTopic.publish(telemetry);
 
-    //PRINTF("%d, %d\n", valid_CameraData, valid_LastYaw);
-
-    return valid_CameraData;
+    return valid_LastYaw;
 }
 
 
 void ArmController::reset()
 {
-    valid_CameraData = false;
     valid_LastYaw = false;
+	listbuffer_d.clear();
+	listbuffer_w.clear();
 }
 
 void ArmController::Stop()

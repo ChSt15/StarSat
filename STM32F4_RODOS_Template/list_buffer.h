@@ -5,7 +5,7 @@
 #include "stddef.h"
 #include "math.h"
 
-#include "list.hpp"
+#include "list.h"
 
 namespace VCTR
 {
@@ -467,7 +467,7 @@ namespace VCTR
         ListBuffer<T, SIZE> ListBuffer<T, SIZE>::operator=(const ListBuffer &toBeCopied)
         {
 
-            size_t sizeToBeCopied = toBeCopied.available();
+            size_t sizeToBeCopied = toBeCopied.size();
 
             for (size_t i = 0; i < sizeToBeCopied; i++)
                 this->placeFront(toBeCopied[i]);

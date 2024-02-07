@@ -8,6 +8,7 @@
 #include "StepperMotorTopics.hpp"
 #include "DockingTopics.hpp"
 #include "../Communication/Camera.hpp"
+#include "../list_buffer.h"
 
 
 class ArmController
@@ -34,6 +35,9 @@ private:
 
     bool valid_CameraData = false;
     bool valid_LastYaw = false;
+
+	VCTR::Core::ListBuffer<float, 5> listbuffer_w;
+	VCTR::Core::ListBuffer<float, 5> listbuffer_d;
 
 public:
 
