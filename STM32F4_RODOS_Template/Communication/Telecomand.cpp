@@ -141,7 +141,7 @@ void Telecommand::processNewCommand()
         // TODO
         /*-----------------------------Electrical-----------------------*/
         case Shutdown:
-            electricalMonitor.powerDown();
+            electricalMonitor.openExtSwitch();
 		default:
 			// Skip incrementing commandCnt
 			continue;
