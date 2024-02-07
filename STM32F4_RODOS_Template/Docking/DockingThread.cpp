@@ -38,9 +38,10 @@ void DockingThread::run()
 		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
         {	
 			//cameraData.getDistance();
+			//cameraData.getYawofMockup();
 			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
 			//if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
-            //PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
+            //PRINTF("%f\n", rad2Grad(cameraData.getYawtoMockup()));
 			//PRINTF("%f, %f\n\n", rad2Grad(cameraData.getYawtoMockup()), cameraData.getDistance());
             //Print all data from struct
             //auto &data = cameraData.telemetryCamera;

@@ -1,6 +1,6 @@
 #include "Telecomand.hpp"
 
-#include "Electrical/ElectricalMonitoring.hpp"
+#include "../Electrical/ElectricalMonitoring.hpp"
 
 
 // Telecomand topic
