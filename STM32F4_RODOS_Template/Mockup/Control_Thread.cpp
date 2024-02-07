@@ -39,9 +39,9 @@ void ControlThread::run()
         // Make percent in increments
         int percent_step = ((int)(percent / incrementsSize)) * incrementsSize;
 		
-		// egde cases
-		if (percent < -100 + incrementsSize/2) percent_step = -100;
-		else if (percent > 100 - incrementsSize/2) percent_step = 100;
+		// egde cases (extra speed :) )
+		if (percent < -100 + incrementsSize/2) percent_step = -300;
+		else if (percent > 100 - incrementsSize/2) percent_step = 300;
 
         float out = float(percent_step) * 0.004f;
 
