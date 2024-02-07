@@ -5,7 +5,7 @@ using namespace ORPE;
 
 
 ORPE_LEDControl::ORPE_LEDControl(int64_t frameInterval_ns) : 
-    Thread("LED Thread",100, 5000)
+    Thread("LED Thread",1000, 5000)
     {
 	frameInterval_ns_ = frameInterval_ns;
 	for (size_t i = 0; i < NUMLEDS; i++) {
