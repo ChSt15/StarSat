@@ -73,8 +73,10 @@ enum CommandIds
 	// Toggles Camera Enable (fval_1 < 0 -> off, fval_1 > 0 -> on)
 	ToggleCamera,
 	// Toggles Video Stream (fval_1 < 0 -> off, fval_1 > 0 -> on)
-	ToggleVideoStreaming
-
+	ToggleVideoStreaming,
+    /*-----------------------------Electrical-----------------------*/
+    //Will completely shutdown the floatsat via electrical
+    Shutdown 
 };
 
 #endif

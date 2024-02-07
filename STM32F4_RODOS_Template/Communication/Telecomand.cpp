@@ -1,5 +1,7 @@
 #include "Telecomand.hpp"
 
+#include "Electrical/ElectricalMonitoring.hpp"
+
 
 // Telecomand topic
 Topic<Command> telecommandTopic(TelecommandTopicId, "Telecomand Topic");
@@ -136,7 +138,10 @@ void Telecommand::processNewCommand()
 			telemetry.enable_ExtendedTelemetry(commandReceiver.fval_1 > 0);
 			break;
 		/*-----------------------------Camera---------------------------*/
-		// TODO
+        // TODO
+        /*-----------------------------Electrical-----------------------*/
+        case Shutdown:
+            electricalMonitor.powerDown();
 		default:
 			// Skip incrementing commandCnt
 			continue;
