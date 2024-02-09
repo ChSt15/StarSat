@@ -30,6 +30,8 @@ struct TelemetryContinuous
 	float mockupAngularvelocity;
 	float mockupDistance;
 	float mockupYaw;
+    float yaw2mockup;
+
     // Electrical
     float U_bat;            // [V]
     float I_total;          // [A]

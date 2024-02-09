@@ -71,6 +71,7 @@ void Telemetry::send_Continuous()
 	telemetry_continuous.mockupAngularvelocity = DockingDataReceiver.mockupAngularvelocity;
 	telemetry_continuous.mockupDistance = DockingDataReceiver.mockupDistance;
 	telemetry_continuous.mockupYaw = DockingDataReceiver.mockupYaw;
+	telemetry_continuous.yaw2mockup = DockingDataReceiver.Yaw2Mockup;
 
 
 	// Electrical

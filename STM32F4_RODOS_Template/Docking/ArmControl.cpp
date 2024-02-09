@@ -225,6 +225,8 @@ bool ArmController::updateTelemetryMockup(CameraData& camera)
 	float yaw = camera.getYawofMockup();
 	telemetry.mockupYaw = yaw;
 
+	telemetry.Yaw2Mockup = camera.getYawtoMockup();
+
 	if (valid_LastYaw)
 	{
 		float dyaw = (yaw - last_yaw);

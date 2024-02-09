@@ -11,6 +11,7 @@ struct DockingTememetry
 	float mockupAngularvelocity = 0;
 	float mockupDistance = 0;
 	float mockupYaw = 0;
+	float Yaw2Mockup = 0;
 };
 
 extern Topic<DockingTememetry> dockingTelemetryTopic;
