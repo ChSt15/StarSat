@@ -68,7 +68,7 @@ namespace config
 
     /* ---------------------------------------- Control ----------------------------------------  */
     // Speed Controller
-    inline const float reactionwheelbase_vel = 300.f;  
+    inline const float reactionwheelbase_vel = -300.f;  
     inline const float limitSpeedController = 12;                           // [V]
     inline const PIDParams paramsSpeedControl{ 0.3f, 0.05f, 0.0f };                // P, I, D
     inline const bool antiwindupSpeedController = true;
@@ -87,7 +87,7 @@ namespace config
     // Arm Controller
     inline const int max_vel = 100;			// [step/s]
     inline const int min_vel = 40;			// [step/s]
-    inline const int dock_vel = 200;        // [step/s]
+    inline const int dock_vel = 100;        // [step/s]
     inline const int max_accel = 20;	   	// [step/s^2]
     inline const int deccel_margin = 10;    // [step]
 

@@ -40,6 +40,7 @@ void DockingThread::run()
 			//cameraData.getDistance();
 			//cameraData.getYawofMockup();
 			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
+			//PRINTF("%f\n\n", rad2Grad(cameraData.getYawtoMockup()));
 			//if (cameraData.validFrame()) armController.CalcAngularVelocity(cameraData);
             //PRINTF("%f\n", rad2Grad(cameraData.getYawtoMockup()));
 			//PRINTF("%f, %f\n\n", rad2Grad(cameraData.getYawtoMockup()), cameraData.getDistance());
@@ -86,9 +87,14 @@ void DockingThread::run()
             cameraState = true;
 			if (armController.FinalExtension(cameraData))
 			{
-				suspendCallerUntil(NOW() + 2 * SECONDS);
-				setMode(Idle);
+				suspendCallerUntil(NOW() + 1 * SECONDS);
+				setMode(Mission_Pull_back);
 			}
+			break;
+
+		case Mission_Pull_back:
+			cameraState = true;
+			if (armController.PullBack(cameraData)) setMode(Idle);
 			break;
 
 		default:

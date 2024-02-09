@@ -37,7 +37,7 @@ void StepperMotorThread::run()
 
             // Check if Arm is within limits limits (0 < stepCounter < MAX_STEPS) and if so, set direction pin accordingly;
             // If not, then break inner while loop and indicate status as ready
-            if (0 < instructions.stepTarget && instructions.stepTarget < max_steps)
+            if (0 <= instructions.stepTarget && instructions.stepTarget < max_steps)
             {
                 if (instructions.stepTarget > status.stepCounter) 
                 {
@@ -55,6 +55,9 @@ void StepperMotorThread::run()
                 }
                 else
                 {
+                    // stop if calib pin is reached
+                    if (CalibPin.readPins() == 0) break;
+
                     DirectionPin.setPins(1);
 
                     // See Datasheet p.57 11.1 Timing -> Consider minimum DIR to STEP setup time and minimum STEP low time

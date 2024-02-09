@@ -67,6 +67,11 @@ void Telemetry::send_Continuous()
 	// Arm
 	DockingDataBuffer.getOnlyIfNewData(DockingDataReceiver);
 	telemetry_continuous.arm_extension = DockingDataReceiver.armExtention;
+	telemetry_continuous.armVelocity = DockingDataReceiver.armVelocity;
+	telemetry_continuous.mockupAngularvelocity = DockingDataReceiver.mockupAngularvelocity;
+	telemetry_continuous.mockupDistance = DockingDataReceiver.mockupDistance;
+	telemetry_continuous.mockupYaw = DockingDataReceiver.mockupYaw;
+
 
 	// Electrical
 	// TODO: not thread safe yet

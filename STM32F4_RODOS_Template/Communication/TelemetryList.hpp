@@ -26,6 +26,10 @@ struct TelemetryContinuous
     float speed;            // [rad/s]
     // Arm
     float arm_extension;    // [cm]
+    float armVelocity;
+	float mockupAngularvelocity;
+	float mockupDistance;
+	float mockupYaw;
     // Electrical
     float U_bat;            // [V]
     float I_total;          // [A]

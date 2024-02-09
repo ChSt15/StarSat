@@ -47,6 +47,8 @@ public:
 
 	bool FinalExtension(CameraData& camera);
 
+	bool PullBack(CameraData &camera);
+
 	bool Calibrate();
 
 	// Hard stop, use not recommended. Its there to make sure theres no dual input

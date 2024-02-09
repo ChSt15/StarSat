@@ -63,7 +63,7 @@ bool ArmController::InitialExtension(CameraData& camera)
 		// Decelerate to vel_min
 		float deccel_time = ((1.f / period * 1000.f * 1000.f) - min_vel) / max_accel;
 		float deccel_distance = -0.5 * max_accel * pow(deccel_time, 2) + (1.f / period * 1000.f * 1000.f) * deccel_time;
-		if (deccel || (instructions.stepTarget - status.stepCounter - deccel_margin) < deccel_distance)
+		if (deccel || (abs(instructions.stepTarget - status.stepCounter) - deccel_margin) < deccel_distance)
 		{
 			float t = (1.f / (1.f / period * 1000.f * 1000.f - max_accel * dt));
 			(t < 1.f / min_vel && t > 0) ? instructions.period = (int) (t * 1000.f * 1000.f) : instructions.period = (int) (1.f / min_vel * 1000.f * 1000.f);
@@ -127,6 +127,9 @@ bool ArmController::FinalExtension(CameraData& camera)
 			time_to_target_mockup = yaw / -w;
 		}
 
+		// RTT (not measured just a guess :( )
+		//time_to_target_mockup -= 0.050f;  
+
 		if (time_to_target_mockup - time_to_target_arm < 1)
 		{
 			instructions.stepTarget = (int)(telemetry.mockupDistance / steps2mm);
@@ -137,6 +140,72 @@ bool ArmController::FinalExtension(CameraData& camera)
 			Thread::suspendCallerUntil(NOW() + (time_to_target_mockup - time_to_target_arm) * SECONDS);
 			steppermotorthread.resume();
 			moving = true;
+		}
+	}
+	return false;
+}
+
+bool ArmController::PullBack(CameraData &camera)
+{
+	// update Mockup data
+	if (camera.validFrame()) updateTelemetryMockup(camera);
+
+	// Get new status if available
+	statusBuffer.getOnlyIfNewData(status);
+
+	if (!moving)
+	{
+		instructions.stepTarget = 0;
+		instructions.period = (int)(1.f / min_vel * 1000.f * 1000.f);
+		stepperInstructionsTopic.publish(instructions);
+		steppermotorthread.resume();
+		updateTelemetryArm();
+
+		last_time_dock = SECONDS_NOW();
+		moving = true;
+		deccel = false;
+
+		return false;
+	}
+	else
+	{
+		// Check if done
+		if (status.status_execution)
+		{
+			instructions.period = 0;
+			stepperInstructionsTopic.publish(instructions);
+			updateTelemetryArm();
+			moving = false;
+			deccel = false;
+			return true;
+		}
+
+		float dt = SECONDS_NOW() - last_time_dock;
+		last_time_dock = SECONDS_NOW();
+
+		int period = instructions.period;
+
+		// Decelerate to vel_min
+		float deccel_time = ((1.f / period * 1000.f * 1000.f) - min_vel) / max_accel;
+		float deccel_distance = -0.5 * max_accel * pow(deccel_time, 2) + (1.f / period * 1000.f * 1000.f) * deccel_time;
+		if (deccel || (abs(instructions.stepTarget - status.stepCounter) - deccel_margin) < deccel_distance)
+		{
+			float t = (1.f / (1.f / period * 1000.f * 1000.f - max_accel * dt));
+			(t < 1.f / min_vel && t > 0) ? instructions.period = (int) (t * 1000.f * 1000.f) : instructions.period = (int) (1.f / min_vel * 1000.f * 1000.f);
+			stepperInstructionsTopic.publish(instructions);
+			updateTelemetryArm();
+			deccel = true;
+			return false;
+		}
+
+		// Accelerate to vel_max
+		if (period > 1.f/max_vel * 1000 * 1000)
+		{
+			float t = (1.f / (1.f / period * 1000.f * 1000.f + max_accel * dt));
+			(t > 1.f / max_vel) ? instructions.period = (int) (t * 1000.f * 1000.f) : instructions.period = (int) (1.f / max_vel * 1000.f * 1000.f);
+			stepperInstructionsTopic.publish(instructions);
+			updateTelemetryArm();
+			return false;
 		}
 	}
 	return false;
@@ -154,6 +223,7 @@ bool ArmController::updateTelemetryMockup(CameraData& camera)
 {
 	float time = SECONDS_NOW();
 	float yaw = camera.getYawofMockup();
+	telemetry.mockupYaw = yaw;
 
 	if (valid_LastYaw)
 	{
@@ -178,7 +248,7 @@ bool ArmController::updateTelemetryMockup(CameraData& camera)
 
 	dockingTelemetryTopic.publish(telemetry);
 
-    return valid_LastYaw;
+    return (listbuffer_d.sizeMax() == listbuffer_d.size()) && (listbuffer_w.sizeMax() == listbuffer_w.sizeMax());
 }
 
 

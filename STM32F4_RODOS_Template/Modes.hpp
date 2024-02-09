@@ -23,7 +23,8 @@ enum modes
 	Mission_Locate, 
     Mission_Point, 
     Mission_Dock_initial, 
-    Mission_Dock_final,   
+    Mission_Dock_final,  
+    Mission_Pull_back, 
     
     Standby
 };
