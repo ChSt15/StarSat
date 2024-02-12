@@ -29,7 +29,7 @@ namespace config
 
     // Comms
     inline const bool com_thread_enable = true;
-    inline const int  com_thread_period = 1000;             // [ms]
+    inline const int  com_thread_period = 500;             // [ms]
 
     // Debug
     inline const bool debug_thread_enable = false;

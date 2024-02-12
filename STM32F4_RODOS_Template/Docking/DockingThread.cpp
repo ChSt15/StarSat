@@ -71,9 +71,9 @@ void DockingThread::run()
 		case Mission_Locate:
 
 			cameraState = true;
-			if (cameraData.validFrame()) setMode(Mission_Point);
-            armController.Calibrate();
+			armController.Calibrate();
             armController.reset();
+			if (cameraData.validFrame()) setMode(Mission_Point);
 			break;
 
 		case Mission_Dock_initial:
@@ -87,8 +87,22 @@ void DockingThread::run()
             cameraState = true;
 			if (armController.FinalExtension(cameraData))
 			{
-				suspendCallerUntil(NOW() + 1 * SECONDS);
-				setMode(Mission_Pull_back);
+				suspendCallerUntil(NOW() + 2 * SECONDS);
+
+				while (!cameraData.validFrame())
+				{
+					ledblue.setPins(~ledblue.readPins());
+					suspendCallerUntil(NOW() + period * MILLISECONDS);
+					cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera);
+				}
+				if (abs(cameraData.getYawofMockup()) > grad2Rad(5))
+				{
+					armController.Calibrate();
+        			armController.reset();
+			 		setMode(Mission_Point);
+				}
+				else setMode(Mission_Pull_back);
+
 			}
 			break;
 

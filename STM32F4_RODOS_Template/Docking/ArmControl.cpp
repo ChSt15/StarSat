@@ -132,7 +132,7 @@ bool ArmController::FinalExtension(CameraData& camera)
 
 		if (time_to_target_mockup - time_to_target_arm < 1)
 		{
-			instructions.stepTarget = (int)(telemetry.mockupDistance / steps2mm);
+			instructions.stepTarget = (int)((telemetry.mockupDistance + 2) / steps2mm);
 			instructions.period = (int)(1.f / dock_vel * 1000.f * 1000.f);
 			stepperInstructionsTopic.publish(instructions);
 			updateTelemetryArm();
@@ -250,7 +250,7 @@ bool ArmController::updateTelemetryMockup(CameraData& camera)
 
 	dockingTelemetryTopic.publish(telemetry);
 
-    return (listbuffer_d.sizeMax() == listbuffer_d.size()) && (listbuffer_w.sizeMax() == listbuffer_w.sizeMax());
+    return (listbuffer_d.sizeMax() == listbuffer_d.size()) && (listbuffer_w.size() == listbuffer_w.sizeMax());
 }
 
 
