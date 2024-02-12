@@ -48,9 +48,9 @@ float PID::calculate(float measurement, float timestamp)
         }
 
         // Integral term
-        if (use_Antiwindup && saturated)
+        if (use_Antiwindup && saturated) // Anti-windup by subtracting the differnce between the saturated and unsaturated control signal from the integral term
         {
-            if ((this->integError > 0 && error < 0) || (this->integError < 0 && error > 0))
+            if (this->integError > 0 && error < 0 || this->integError < 0 && error > 0)
             {
                 this->integError += error * dt;
             }
