@@ -13,7 +13,7 @@
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
-    inline const bool skip_init = true;                     // skips init routine
+    inline const bool skip_init = false;                     // skips init routine
 
     // Inner Loop
     inline const bool innerloop_thread_enable = true;       // keep in mind it gets woken up by outer loop
