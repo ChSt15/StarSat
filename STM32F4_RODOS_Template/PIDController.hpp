@@ -18,7 +18,7 @@ struct PIDParams
 
 class PID {
 
-    private:
+    protected:
 
         Semaphore sem;
 

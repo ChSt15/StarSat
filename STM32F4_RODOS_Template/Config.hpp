@@ -13,7 +13,7 @@
 namespace config
 {
     /* ----------------------------------------- Threads -----------------------------------------  */
-    inline const bool skip_init = false;                     // skips init routine
+    inline const bool skip_init = true;                     // skips init routine
 
     // Inner Loop
     inline const bool innerloop_thread_enable = true;       // keep in mind it gets woken up by outer loop
@@ -70,7 +70,7 @@ namespace config
     // Speed Controller
     inline const float reactionwheelbase_vel = 200.f;  
     inline const float limitSpeedController = 6;                                   // [V]
-    inline const PIDParams paramsSpeedControl{ 0.2f, 0.05f, 0.0f };                // P, I, D
+    inline const PIDParams paramsSpeedControl{ 0.2f, 0.05f, 0.0f };                // P, I, D 
     inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
@@ -79,8 +79,8 @@ namespace config
     inline const bool antiwindupPosController = true;
     inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           
-    inline const float limitVelController = (6000.0f * 2 * M_PI) / 60.0f;           // [rad/s]
-    inline const PIDParams paramsVelController{ -0.0f, -200.0f, 0.0f };              // P, I, D
+    inline const float limitVelController = (4000.0f * 2 * M_PI) / 60.0f;           // [rad/s]
+    inline const PIDParams paramsVelController{ -0.0f, -150.0f, 0.0f };              // P, I, D
     inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;
 

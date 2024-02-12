@@ -5,6 +5,7 @@
 
 #include "../Modes.hpp"
 #include "../OuterLoop/AngularVelocityControl.hpp"
+#include "../InnerLoop/InnerLoopTopics.hpp"
 #include "../InnerLoop/Hbridge.hpp"
 #include "Adc.hpp"
 
@@ -28,7 +29,7 @@ void ControlThread::run()
 
 	while(true)
 	{	
-		if (getMode() == Standby) setMode(Control_Vel);
+		if (getMode() == Standby || getMode() == Idle) setMode(Control_Vel);
 
 		desiredVoltage_percent = (adc.getVoltage() / 1500.f) - 1.f;
 

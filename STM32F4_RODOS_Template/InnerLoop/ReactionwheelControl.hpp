@@ -21,6 +21,8 @@ public:
 
 	void setSetpoint(float setpoint);
 
+	void setSaturation(bool sat);
+
 private:
 
 	float base_vel = 0;

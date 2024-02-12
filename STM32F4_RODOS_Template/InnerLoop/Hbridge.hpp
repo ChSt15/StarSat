@@ -60,7 +60,7 @@ public:
 	 * @brief Set desired output voltage of HBridge
 	 * @param voltage_percentage Percentage of max.possible output voltage of the HBridge, between -1 and 1. -1 is 100% negative, 1 is 100% positive
 	*/
-	void setVoltage(float voltagePercentage);
+	bool setVoltage(float voltagePercentage);
 
 };
 

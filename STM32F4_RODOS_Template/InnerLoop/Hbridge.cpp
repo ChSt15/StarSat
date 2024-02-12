@@ -25,8 +25,9 @@ void HBridge::initialization(int pwmFrequency, int pwmIncrements)
 }
 
 
-void HBridge::setVoltage(float voltagePercentage)
+bool HBridge::setVoltage(float voltagePercentage)
 {      
+    float old = voltagePercentage;
 
     // Dynamically limit the output voltage based on the current reaction wheel speed
     voltagePercentage = checkDynamicOutputLimit(voltagePercentage);
@@ -45,6 +46,8 @@ void HBridge::setVoltage(float voltagePercentage)
         pwm1.write(0);
         pwm2.write(-increments);
     }
+
+    return old != voltagePercentage;
 }
 
 

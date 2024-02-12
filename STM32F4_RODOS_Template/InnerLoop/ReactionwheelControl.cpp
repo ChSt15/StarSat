@@ -17,4 +17,9 @@ float ReactionwheelControl::update(TimestampedData<float> speed_measured)
 }
 
 
+void ReactionwheelControl::setSaturation(bool sat)
+{ 
+    saturated = sat;
+}
+
 ReactionwheelControl reactionwheelControl;

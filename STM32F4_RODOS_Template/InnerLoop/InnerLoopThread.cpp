@@ -53,21 +53,15 @@ void InnerLoopThread::run()
 			break;
 		case Reactionwheel_Spinup:
 			reactionwheelControl.setSetpoint(0.f);
-			hbridge.setVoltage(reactionwheelControl.update(encoder_speed));
+
+			if (hbridge.setVoltage(reactionwheelControl.update(encoder_speed))) reactionwheelControl.setSaturation(true);
 
 			if (!reactionwheelControl.isSettled()) break;
 
 			setMode(Standby);
 			break;
 		default:
-            {
-                /*reactionwheelControl.setSetpoint(100);
-                if (SECONDS_NOW() > 10)
-                    reactionwheelControl.setSetpoint(-100);*/
-                float v = reactionwheelControl.update(encoder_speed);
-                //PRINTF("IS: %f, O: %f\n", encoder_speed.data, v);
-                hbridge.setVoltage(v);
-            }
+            if (hbridge.setVoltage(reactionwheelControl.update(encoder_speed))) reactionwheelControl.setSaturation(true);
 			break;
 		}
 
