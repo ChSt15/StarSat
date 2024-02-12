@@ -120,7 +120,7 @@ float PID::calculate(float measurement, float timestamp)
     // Delta t in seconds
     float dt = timestamp - this->lastTimestamp;
 
-        // Derivation term
+    // Derivation term
     float derivTerm = 0;
     if (use_DerivativofMeasurment)
     {
