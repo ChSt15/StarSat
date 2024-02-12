@@ -72,6 +72,10 @@ class PID {
         */
         float calculate(float measurement, float dt);
 
+        /**
+         * @brief Calculate new control output based on current setpoint and current measurement and use the dMeasurment param as derivative.
+         * @return Control output within minLimit to maxLimit
+        */
         float calculate(float measurement, float dMeasurement, float dt);
 
 

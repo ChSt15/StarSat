@@ -9,7 +9,7 @@ void PID::config(const PIDParams &params, float limit, bool use_Antiwindup, bool
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
 
-float PID::calculate(float measurement, float timestamp)
+float PID::calculate(float measurement, float dMeasurement, float timestamp)
 {   
     if (new_params)
     {
@@ -37,14 +37,7 @@ float PID::calculate(float measurement, float timestamp)
         float derivTerm = 0;
         if (params.kd != 0.f)
         {
-            if (use_DerivativofMeasurment)
-            {
-                derivTerm = params.kd * -(measurement - this->lastMeasurment) / dt;
-            }
-            else
-            {
-                derivTerm = params.kd * (error - this->lastError) / dt;
-            }
+            derivTerm = dMeasurement;
         }
 
         // Integral term
@@ -115,6 +108,30 @@ float PID::calculate(float measurement, float timestamp)
         
         return propTerm;
     }
+    
+}
+
+float PID::calculate(float measurement, float timestamp)
+{   
+
+    // Error
+    float error = setpoint - measurement;
+
+    // Delta t in seconds
+    float dt = timestamp - this->lastTimestamp;
+
+        // Derivation term
+    float derivTerm = 0;
+    if (use_DerivativofMeasurment)
+    {
+        derivTerm = params.kd * -(measurement - this->lastMeasurment) / dt;
+    }
+    else
+    {
+        derivTerm = params.kd * (error - this->lastError) / dt;
+    }
+
+    return calculate(measurement, derivTerm, timestamp);
     
 }
 
