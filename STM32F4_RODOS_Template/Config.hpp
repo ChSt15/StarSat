@@ -79,7 +79,7 @@ namespace config
     inline const bool antiwindupPosController = true;
     inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           
-    inline const float limitVelController = (6000.0f * 2 * M_PI) / 60.0f;           // [rad/s]
+    inline const float limitVelController = (3000.0f * 2 * M_PI) / 60.0f;           // [rad/s]
     inline const PIDParams paramsVelController{ -0.0f, -50.0f, 0.0f };              // P, I, D
     inline const bool antiwindupVelController = true;
     inline const bool derivativofmeasurmentVelController = false;

@@ -129,7 +129,7 @@ bool ArmController::FinalExtension(CameraData& camera)
 
 		if (time_to_target_mockup - time_to_target_arm < 1)
 		{
-			instructions.stepTarget = (int)(telemetry.mockupDistance / steps2mm);
+			instructions.stepTarget = (int)((telemetry.mockupDistance + 2.f) / steps2mm);
 			instructions.period = (int)(1.f / dock_vel * 1000.f * 1000.f);
 			stepperInstructionsTopic.publish(instructions);
 			updateTelemetryArm();
