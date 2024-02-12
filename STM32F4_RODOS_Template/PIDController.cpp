@@ -34,10 +34,10 @@ float PID::calculate(float measurement, float dMeasurement, float timestamp)
     {
 
         // Derivation term
-        float derivTerm = 0;
+        float derivTerm = 0.f;
         if (params.kd != 0.f)
         {
-            derivTerm = dMeasurement;
+            derivTerm = -dMeasurement ;
         }
 
         // Integral term
@@ -52,7 +52,7 @@ float PID::calculate(float measurement, float dMeasurement, float timestamp)
             this->integError += error * dt;
 
         // Determine output signal
-        float controlSignal = propTerm + this->integError * params.ki + derivTerm;
+        float controlSignal = propTerm + this->integError * params.ki + derivTerm * params.kd;
         
 
         // Update state
@@ -124,11 +124,11 @@ float PID::calculate(float measurement, float timestamp)
     float derivTerm = 0;
     if (use_DerivativofMeasurment)
     {
-        derivTerm = params.kd * -(measurement - this->lastMeasurment) / dt;
+        derivTerm = -(measurement - this->lastMeasurment) / dt;
     }
     else
     {
-        derivTerm = params.kd * (error - this->lastError) / dt;
+        derivTerm = (error - this->lastError) / dt;
     }
 
     return calculate(measurement, derivTerm, timestamp);
