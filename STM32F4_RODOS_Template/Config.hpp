@@ -70,12 +70,12 @@ namespace config
     // Speed Controller
     inline const float reactionwheelbase_vel = -300.f;  
     inline const float limitSpeedController = 12;                           // [V]
-    inline const PIDParams paramsSpeedControl{ 0.3f, 0.05f, 0.0f };                // P, I, D
+    inline const PIDParams paramsSpeedControl{ 0.2f, 0.03f, 0.0f };                // P, I, D
     inline const bool antiwindupSpeedController = true;
     inline const bool derivativofmeasurmentSpeedController = false;
     // Position Controller
     inline const float limitPosController = (10 * 2 * M_PI) / 60.0f;                // [rad/s]
-    inline const PIDParams paramsPosController{ 0.8, 0.f, 0.05f };                  // P, I, D  //P was 1.
+    inline const PIDParams paramsPosController{ 0.5, 0.f, 0.03f };                  // P, I, D  //P was 1.
     inline const bool antiwindupPosController = true;
     inline const bool derivativofmeasurmentPosController = true;
     // Velocity Controller                                           
