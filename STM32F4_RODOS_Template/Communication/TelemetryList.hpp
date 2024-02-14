@@ -22,6 +22,7 @@ struct TelemetryContinuous
     float temp;             // [°C]
     // Attitude Quaternion
     float q0, q1, q2, q3;
+    float wz_KF;
     // Encoder
     float speed;            // [rad/s]
     // Arm

@@ -111,6 +111,7 @@ bool ArmController::FinalExtension(CameraData& camera)
 	
 	if (camera.validFrame() && updateTelemetryMockup(camera))
 	{
+
 		float time_to_target_arm = (telemetry.mockupDistance / steps2mm - status.stepCounter ) / this->dock_vel;
 		float time_to_target_mockup;
 		float yaw = camera.getYawofMockup();
@@ -127,12 +128,12 @@ bool ArmController::FinalExtension(CameraData& camera)
 			time_to_target_mockup = yaw / -w;
 		}
 
-		// RTT (not measured just a guess :( )
-		//time_to_target_mockup -= 0.050f;  
+		// RTT
+		time_to_target_mockup -= 0.100f;
 
 		if (time_to_target_mockup - time_to_target_arm < 1)
 		{
-			instructions.stepTarget = (int)((telemetry.mockupDistance + 2) / steps2mm);
+			instructions.stepTarget = (int)((telemetry.mockupDistance + 3) / steps2mm);
 			instructions.period = (int)(1.f / dock_vel * 1000.f * 1000.f);
 			stepperInstructionsTopic.publish(instructions);
 			updateTelemetryArm();

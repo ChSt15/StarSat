@@ -37,7 +37,8 @@ void DockingThread::run()
 		// Get new Cameradata if availible
 		if (cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera))
         {	
-			//cameraData.getDistance();
+			
+			//PRINTF("%f\n", cameraData.getDistance());
 			//cameraData.getYawofMockup();
 			//PRINTF("%f\n", rad2Grad(cameraData.getYawofMockup()));
 			//PRINTF("%f\n\n", rad2Grad(cameraData.getYawtoMockup()));
@@ -87,7 +88,7 @@ void DockingThread::run()
             cameraState = true;
 			if (armController.FinalExtension(cameraData))
 			{
-				suspendCallerUntil(NOW() + 2 * SECONDS);
+				suspendCallerUntil(NOW() + 3 * SECONDS);
 
 				while (!cameraData.validFrame())
 				{
@@ -95,7 +96,7 @@ void DockingThread::run()
 					suspendCallerUntil(NOW() + period * MILLISECONDS);
 					cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera);
 				}
-				if (abs(cameraData.getYawofMockup()) > grad2Rad(5))
+				if (abs(cameraData.getYawofMockup()) > grad2Rad(15))
 				{
 					armController.Calibrate();
         			armController.reset();
@@ -108,7 +109,25 @@ void DockingThread::run()
 
 		case Mission_Pull_back:
 			cameraState = true;
-			if (armController.PullBack(cameraData)) setMode(Idle);
+			if (armController.PullBack(cameraData)) 
+						{
+				suspendCallerUntil(NOW() + 1 * SECONDS);
+
+				while (!cameraData.validFrame())
+				{
+					ledblue.setPins(~ledblue.readPins());
+					suspendCallerUntil(NOW() + period * MILLISECONDS);
+					cameraBuffer.getOnlyIfNewData(cameraData.telemetryCamera);
+				}
+				if (abs(cameraData.getYawofMockup()) > grad2Rad(15))
+				{
+					armController.Calibrate();
+        			armController.reset();
+			 		setMode(Mission_Point);
+				}
+				else setMode(Idle);
+
+			}
 			break;
 
 		default:

@@ -125,7 +125,7 @@ public:
 	/// @brief The maximum voltage the battery should have.
 	static constexpr float batteryMaxVoltage = 3.6*4;
 	/// @brief The minimum operating voltage the battery should reach. After this point the RPI will be shutdown.
-	static constexpr float batteryWarningVoltage = 3.2*4;
+	static constexpr float batteryWarningVoltage = 3.0*4;
 	/// @brief The voltage at which the system will power down.
 	static constexpr float batteryCutoffVoltage = 2.8*4; 
 

@@ -59,6 +59,7 @@ void Telemetry::send_Continuous()
 	telemetry_continuous.q1 = AttitudeDataReceiver.data.attitude.q.x;
 	telemetry_continuous.q2 = AttitudeDataReceiver.data.attitude.q.y;
 	telemetry_continuous.q3 = AttitudeDataReceiver.data.attitude.q.z;
+	telemetry_continuous.wz_KF = AttitudeDataReceiver.data.angularVelocity.z;
 
 	// Encoder
 	EncoderDataBuffer.getOnlyIfNewData(EncoderDataReceiver);

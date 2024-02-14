@@ -119,6 +119,7 @@ void Telecommand::processNewCommand()
 			break;
 		/*-----------------------Control Setpoint----------------------*/
 		case SetControlDesired_speed:
+			commandReceiver.fval_1 -= config::reactionwheelbase_vel;
 			speedSetpointTopic.publish(commandReceiver.fval_1);
 			break;
 		case SetControlDesired_pos:

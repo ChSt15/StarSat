@@ -3,8 +3,8 @@
 
 void PID::config(const PIDParams &params, float limit, bool use_Antiwindup, bool use_DerivativofMeasurment)
 {
-    this->params = params;
-    this->lim = limit;
+    this->params = this->params_buffer = params;
+    this->lim = this->lim_buffer = limit;
     this->use_Antiwindup = use_Antiwindup;
     this->use_DerivativofMeasurment = use_DerivativofMeasurment;
 }
