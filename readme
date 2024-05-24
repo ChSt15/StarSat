@@ -1,64 +1,15 @@
-To use with windows workspace:
-- Install git.
-- Unpack the WindowsPackage_DiscoveryBoard.zip.
-- Go into the workspace folder
-- Delete the STM32F4_RODOS_Template folder.
-- Open console inside the workspace folder.
-- Enter following into console
-   - git init
-   - git remote add origin https://github.com/ChSt15/FloatSat
-   - git fetch origin
-   - git checkout -b main --track origin/main
+#StarSat
+StarSat was built as a group project for the FloatSat course at University Würzburg. The goal was to use a camera utilising ORPE (Optical Relative Pose Estimation) and an extentable arm to reliably dock with another rotating satellite. StarSat can be commanded and monitored witha groundstation over WiFi.
+
+##Mission
+StarSat will rotate at a constant rate and using the camera will search for the LED markers placed onto the Mockup satellite. Once the LED markers are identified it will slow down, once the mockups relative pose is tracked StarSat will point towards the mockup and extend the arm stopping shortly before docking. 
+During this time StarSat will predict the correct time to do the final arm extension. Once docking, StarSat uses the camera to confirm dokcing was successfull and retry if failed. Once docked StarSat retracts the arm to complete the docking procedure.
+
+##ORPE
+ORPE (Optical Relative Pose Estimation) was developed for use with cubesats. It uses low cost parts such as LEDs, Raspberry Pi camera module 2 and Raspberry Pi zero 2 (<100$) to estimate the relative positions and orientation of another object in the camera view at distances from 10 centimeters upto 15 meters at a rate 
+of 10Hz with <3% accuracy and <1% precistion.
 
 
-Working with git:
-- If working on a new subject (Feature, system class etc. anythign new), create a new branch for this.
-- Do not make any changes to other things during this time, especially if being worked on by someone else.
-- To work on something else temporarily, upload changes and then switch branch.
-- If finished and to move new feature to main branch, follow adding changes to main branch.
 
-
-Resolving conflicts:
-- Results from people making changes to the same thing or removing files you worked on.
-- Either accept our or their changes.
-- Do: git merge --strategy-option ours/theirs
-
-
-Creating a new branch for your changes:
-- Open console inside the workspace folder.
-- Enter "git checkout -b "Your branch name"" to create a new branch.
-- Enter "git checkout "Your branch name"" to switch to your branch.
-
-
-Adding your changes to the main branch:
-- Open console inside the workspace folder.
-- Go through the upload you changes to the repository steps.
-- Publish your branch to github "git push --set-upstream origin "Your branch name"".
-- Click on "Compare & pull request" for your branch.
-- Click on "Create pull request".
-- Enter a title and a description for your pull request.
-- Click on "Create pull request".
-- Wait for the pull request to be merged.
-
-
-Uploading your changes to the repository:
-- Open console inside the workspace folder.
-- Enter "git add ." to add all changes.
-- Enter "git commit -m "Your changes"" to commit your changes.
-- Enter "git push" to upload your changes to the repository.
-
-
-Downloading changes from the repository:
-- Open console inside the workspace folder.
-- Enter "git pull" to download the changes from the repository.
-
-
-Update your branch with the main branch:
-- Open console inside the workspace folder.
-- Enter "git checkout main" to switch to the main branch.
-- Enter "git pull" to download the changes from the repository.
-- Enter "git checkout "Your branch name"" to switch to your branch.
-- Enter "git merge main" to merge the changes from the main branch into your branch.
-- Enter "git push" to upload your changes to the repository.
 
 
