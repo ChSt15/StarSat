@@ -1,7 +1,7 @@
 # StarSat
 StarSat was built as a group project for the FloatSat course at University Würzburg. The goal was to use a camera utilising ORPE (Optical Relative Pose Estimation) and an extentable arm to reliably dock with another rotating satellite. StarSat can be commanded and monitored witha groundstation over WiFi.
 A detailed report on the StarSat can be found in the docs folder.
-![Watch the video](https://github.com/ChSt15/StarSat/blob/93281863b36b69db6f022e0cd22bd44aff152e34/docs/MissionVideo.mp4)
+![Watch the video on Youtube](https://youtu.be/PJqEq-_xzOE)
 
 ## Mission
 StarSat will rotate at a constant rate and using the camera will search for the LED markers placed onto the Mockup satellite. Once the LED markers are identified it will slow down, once the mockups relative pose is tracked StarSat will point towards the mockup and extend the arm stopping shortly before docking. 
